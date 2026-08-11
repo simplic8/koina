@@ -25,6 +25,12 @@ export function SiteHeader({ profile }: { profile: Profile | null }) {
     { href: "/#spaces", label: t("nav.spaces") },
     { href: "/#ethos", label: t("nav.ethos") },
     { href: "/#about", label: t("nav.about") },
+    {
+      href: "/vibe-code",
+      label: t("nav.vibeCode"),
+      accent: "vibeCode" as const,
+      isNew: true,
+    },
   ];
 
   useEffect(() => {
@@ -65,17 +71,38 @@ export function SiteHeader({ profile }: { profile: Profile | null }) {
             open ? "flex" : "hidden min-[861px]:flex"
           }`}
         >
-          {links.map((l) => (
-            <li key={l.href}>
-              <Link
-                href={l.href}
-                className="text-ink-70 no-underline hover:text-ink max-[860px]:block max-[860px]:border-b max-[860px]:border-ink-08 max-[860px]:py-3"
-                onClick={() => setOpen(false)}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
+          {links.map((l) => {
+            const isVibeCode = "accent" in l && l.accent === "vibeCode";
+            const isNew = "isNew" in l && Boolean(l.isNew);
+            return (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className={`no-underline max-[860px]:block max-[860px]:border-b max-[860px]:border-ink-08 max-[860px]:py-3 ${
+                    isVibeCode
+                      ? "inline-block origin-left font-semibold transition-transform duration-200 hover:scale-110"
+                      : "text-ink-70 hover:text-ink"
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="relative inline-block">
+                    <span
+                      className={
+                        isVibeCode ? "vibe-code-gradient-text" : undefined
+                      }
+                    >
+                      {l.label}
+                    </span>
+                    {isNew ? (
+                      <span className="animate-new-badge pointer-events-none absolute right-0 bottom-0 translate-x-[55%] translate-y-[35%] rounded-[3px] bg-[#e11d48] px-1 py-[1px] font-[family-name:var(--font-ibm-plex-mono)] text-[8px] font-semibold leading-none tracking-[0.04em] text-white uppercase">
+                        {t("nav.new")}
+                      </span>
+                    ) : null}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
           {isAdminProfile(profile) && (
             <li>
               <Link

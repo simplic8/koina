@@ -8,6 +8,7 @@ export type MessageKey =
   | "nav.spaces"
   | "nav.ethos"
   | "nav.about"
+  | "nav.vibeCode"
   | "nav.chat"
   | "nav.admin"
   | "nav.signIn"
@@ -374,6 +375,7 @@ const en: Dictionary = {
   "nav.spaces": "Spaces",
   "nav.ethos": "Ethos",
   "nav.about": "About",
+  "nav.vibeCode": "Vibe Code",
   "nav.chat": "Chat",
   "nav.admin": "Admin",
   "nav.signIn": "Sign in",
