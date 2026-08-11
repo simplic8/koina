@@ -168,8 +168,8 @@ export async function GET(request: NextRequest) {
         confirmUrl.searchParams.set(
           "message",
           sendResult.ok && sendResult.reusedToken
-            ? `${label} sign-in needs email confirmation first. Use the link we already sent from noreply@koina.community (or resend below).`
-            : `${label} sign-in needs email confirmation first. We sent a link from noreply@koina.community.`,
+            ? `${label} sign-in needs email confirmation first. Use the link we already sent from noreply@koina.space (or resend below).`
+            : `${label} sign-in needs email confirmation first. We sent a link from noreply@koina.space.`,
         );
       }
     } else {

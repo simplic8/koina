@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const DEFAULT_FROM = "KOINA <noreply@koina.community>";
+const DEFAULT_FROM = "KOINA <noreply@koina.space>";
 
 export function isResendConfigured() {
   const apiKey = process.env.RESEND_API_KEY?.trim();

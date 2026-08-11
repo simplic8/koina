@@ -1,5 +1,4 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
-import { SEED_CHAT, SEED_GAMES, SEED_SCORES } from "@/lib/seed";
 
 async function getStats() {
   if (!isSupabaseConfigured()) {
@@ -8,15 +7,6 @@ async function getStats() {
       users7d: 0,
       active: 0,
       suspended: 0,
-      published: SEED_GAMES.filter((g) => g.is_published).length,
-      vetted: SEED_GAMES.filter((g) => g.is_vetted).length,
-      draft: 0,
-      scores: SEED_SCORES.length,
-      chat24h: SEED_CHAT.length,
-      chat7d: SEED_CHAT.length,
-      chatWeb: 0,
-      chatDiscord: SEED_CHAT.length,
-      sessions: 3,
       signups: [] as { day: string; count: number }[],
       usingSeed: true,
     };
@@ -29,24 +19,8 @@ async function getStats() {
 
   const now = Date.now();
   const d7 = new Date(now - 7 * 86400000).toISOString();
-  const d1 = new Date(now - 86400000).toISOString();
 
-  const [
-    users,
-    users7d,
-    active,
-    suspended,
-    published,
-    vetted,
-    allGames,
-    scores,
-    chat24h,
-    chat7d,
-    chatWeb,
-    chatDiscord,
-    sessions,
-    recentProfiles,
-  ] = await Promise.all([
+  const [users, users7d, active, suspended, recentProfiles] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase
       .from("profiles")
@@ -60,33 +34,6 @@ async function getStats() {
       .from("profiles")
       .select("*", { count: "exact", head: true })
       .eq("status", "suspended"),
-    supabase
-      .from("games")
-      .select("*", { count: "exact", head: true })
-      .eq("is_published", true),
-    supabase
-      .from("games")
-      .select("*", { count: "exact", head: true })
-      .eq("is_vetted", true),
-    supabase.from("games").select("*", { count: "exact", head: true }),
-    supabase.from("scores").select("*", { count: "exact", head: true }),
-    supabase
-      .from("chat_messages")
-      .select("*", { count: "exact", head: true })
-      .gte("created_at", d1),
-    supabase
-      .from("chat_messages")
-      .select("*", { count: "exact", head: true })
-      .gte("created_at", d7),
-    supabase
-      .from("chat_messages")
-      .select("*", { count: "exact", head: true })
-      .eq("source", "web"),
-    supabase
-      .from("chat_messages")
-      .select("*", { count: "exact", head: true })
-      .eq("source", "discord"),
-    supabase.from("sessions").select("*", { count: "exact", head: true }),
     supabase
       .from("profiles")
       .select("created_at")
@@ -109,15 +56,6 @@ async function getStats() {
     users7d: users7d.count ?? 0,
     active: active.count ?? 0,
     suspended: suspended.count ?? 0,
-    published: published.count ?? 0,
-    vetted: vetted.count ?? 0,
-    draft: Math.max(0, (allGames.count ?? 0) - (vetted.count ?? 0)),
-    scores: scores.count ?? 0,
-    chat24h: chat24h.count ?? 0,
-    chat7d: chat7d.count ?? 0,
-    chatWeb: chatWeb.count ?? 0,
-    chatDiscord: chatDiscord.count ?? 0,
-    sessions: sessions.count ?? 0,
     signups: Array.from(buckets.entries()).map(([day, count]) => ({
       day,
       count,
@@ -161,22 +99,21 @@ export default async function AdminDashboardPage() {
       <h1 className="mb-2 text-3xl">Dashboard</h1>
       <p className="mb-8 text-ink-70">
         Usage overview for KOINA.
-        {stats.usingSeed && " Showing seed placeholders until Supabase is connected."}
+        {stats.usingSeed &&
+          " Showing seed placeholders until Supabase is connected."}
       </p>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Users" value={stats.users} hint={`+${stats.users7d} in 7d`} />
-        <StatCard label="Active" value={stats.active} hint={`${stats.suspended} suspended`} />
         <StatCard
-          label="Published games"
-          value={stats.published}
-          hint={`${stats.vetted} vetted · ${stats.draft} draft`}
+          label="Users"
+          value={stats.users}
+          hint={`+${stats.users7d} in 7d`}
         />
-        <StatCard label="Scores synced" value={stats.scores} />
-        <StatCard label="Chat (24h)" value={stats.chat24h} hint={`${stats.chat7d} in 7d`} />
-        <StatCard label="Chat web" value={stats.chatWeb} />
-        <StatCard label="Chat Discord" value={stats.chatDiscord} />
-        <StatCard label="Sessions" value={stats.sessions} />
+        <StatCard
+          label="Active"
+          value={stats.active}
+          hint={`${stats.suspended} suspended`}
+        />
       </div>
 
       <div className="rounded-[6px] border border-ink-08 bg-base p-5">

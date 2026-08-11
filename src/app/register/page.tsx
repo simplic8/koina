@@ -43,7 +43,7 @@ export default function RegisterPage() {
       const confirmedEmail = (data.email ?? email).trim().toLowerCase();
       router.push(
         `/confirm-email?email=${encodeURIComponent(confirmedEmail)}&message=${encodeURIComponent(
-          "We sent a confirmation link from noreply@koina.community. Click it before signing in.",
+          "We sent a confirmation link from noreply@koina.space. Click it before signing in.",
         )}`,
       );
     } catch (err) {

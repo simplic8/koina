@@ -65,7 +65,7 @@ export async function POST(request: Request) {
           error: "unconfirmed",
           email,
           message:
-            "Confirm your email before signing in. Check your inbox for the link from noreply@koina.community.",
+            "Confirm your email before signing in. Check your inbox for the link from noreply@koina.space.",
         },
         { status: 403 },
       );
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
         error: "unconfirmed",
         email,
         message:
-          "Confirm your email before signing in. Check your inbox for the link from noreply@koina.community.",
+          "Confirm your email before signing in. Check your inbox for the link from noreply@koina.space.",
       },
       { status: 403 },
     );

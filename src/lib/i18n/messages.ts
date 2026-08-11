@@ -743,7 +743,7 @@ const en: Dictionary = {
   "confirm.eyebrow": "Almost there",
   "confirm.title": "Confirm your email",
   "confirm.lead":
-    "Your account isn't active yet. Open the unique link we sent from noreply@koina.community, then come back here if you need a new one.",
+    "Your account isn't active yet. Open the unique link we sent from noreply@koina.space, then come back here if you need a new one.",
   "confirm.resend": "Resend confirmation email",
   "confirm.already": "Already confirmed?",
   "confirm.signIn": "Sign in",

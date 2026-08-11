@@ -91,6 +91,6 @@ export async function POST(request: Request) {
     ok: true,
     email,
     message:
-      "We sent a confirmation link from noreply@koina.community. Confirm it before signing in.",
+      "We sent a confirmation link from noreply@koina.space. Confirm it before signing in.",
   });
 }

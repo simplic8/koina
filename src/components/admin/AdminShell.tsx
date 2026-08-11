@@ -8,7 +8,6 @@ const STORAGE_KEY = "koina-admin-nav-collapsed";
 
 const nav = [
   { href: "/admin", label: "Dashboard", short: "D" },
-  { href: "/admin/games", label: "Games", short: "G" },
   { href: "/admin/users", label: "Users", short: "U" },
   { href: "/admin/settings", label: "Settings", short: "S" },
 ];

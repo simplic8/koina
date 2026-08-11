@@ -27,12 +27,14 @@ Use a **new** Supabase project for KOINA — do not reuse the JustVibing / Oshik
 
 1. Create a project at [supabase.com](https://supabase.com)
 2. Paste URL + anon key + service role key into `.env.local`
-3. Run [`supabase/schema.sql`](supabase/schema.sql) once in the SQL editor (all migrations compiled into one file)
-4. Auth → enable **Email**, **Google**, and **Discord** (optional)
-5. Auth → URL Configuration:
-   - **Site URL** = your production host (e.g. `https://koina.community`)
+3. Run [`supabase/schema.sql`](supabase/schema.sql) once in the SQL editor (hub-only tables)
+4. If you previously applied the full JustVibing schema, also run [`supabase/cleanup_unused_tables.sql`](supabase/cleanup_unused_tables.sql)
+5. Auth → enable **Email**, **Google**, and **Discord** (optional)
+6. Auth → URL Configuration:
+   - **Site URL** = your production host (e.g. `https://koina.space`)
    - **Redirect URLs**: production + `http://localhost:3000/auth/callback`
-6. Seeded admin (from `003_seed_default_admin.sql`): `admin@koina.community` / `Indigitous2026!` — change after first login
+7. Seeded admin: `admin@koina.space` / `Indigitous2026!` — change after first login
+   - To rename an older seed admin, run [`supabase/fix_admin_seed.sql`](supabase/fix_admin_seed.sql)
 
 ### 3. Resend (optional, registration emails)
 
