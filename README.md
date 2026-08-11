@@ -59,7 +59,7 @@ Open [http://localhost:3000](http://localhost:3000). Without Supabase env vars, 
 
 ## Notes
 
-- Logo asset: `public/koina-logo.png` (exported from the Canva deck)
+- Logo asset: `public/koina-logo.svg` (replaces the former PNG in header/hero)
 - Landing copy (ethos, etymology, ecosystem) follows the Canva presentation
 - Auth, profile, inbox, and admin remain available for the commons
 - Games / sessions routes from the JustVibing template are still in the codebase but are not linked from the primary nav

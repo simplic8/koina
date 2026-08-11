@@ -46,10 +46,10 @@ export function Hero({ quotes }: { quotes: HeroQuote[] }) {
             </span>
             <BrandMark withGems className="h-[0.72em] w-[0.72em]" />
           </h1>
-          <p className="mb-5 text-[clamp(20px,2.4vw,28px)] leading-[1.25] text-ink-70 italic">
+          <p className="mb-5 text-[clamp(20px,2.4vw,28px)] leading-[1.25] italic">
             <span
               key={`hero-a-${quoteTick}`}
-              className="animate-hero-line inline-block"
+              className="animate-hero-line inline-block text-ink"
             >
               {firstLine}
             </span>{" "}

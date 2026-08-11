@@ -579,7 +579,7 @@ const en: Dictionary = {
     "KOINA is an open commons where every member has a place to belong. Shared spaces break down social barriers so authentic relationships can grow.",
   "about.f1Title": "Shared spaces",
   "about.f1Desc":
-    "Common rooms — digital and social — where people can simply be present with one another.",
+    "Common spaces — digital and social — where people can simply be present with one another.",
   "about.f2Title": "Shared interests",
   "about.f2Desc":
     "Gather around gaming, fandom, immersive presence, and more — interests that spark belonging.",

@@ -12,6 +12,7 @@ const SPACES = [
     gem: "#E85A32",
     bodyKey: "spaces.jvBody" as const,
     badgeKey: "spaces.jvBadge" as const,
+    live: true as const,
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
         <rect x="2" y="9" width="4.5" height="6" rx="2" fill="currentColor" />
@@ -22,12 +23,13 @@ const SPACES = [
   },
   {
     id: "oshikatsu",
-    href: "#",
+    href: "https://oshikatsu.justvibing.fun",
     title: "OSHIKATSU",
     accent: "#E73C7E",
     gem: "#E73C7E",
     bodyKey: "spaces.oshiBody" as const,
     badgeKey: "spaces.oshiBadge" as const,
+    live: true as const,
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
         <path
@@ -45,6 +47,7 @@ const SPACES = [
     gem: "#29C194",
     bodyKey: "spaces.numaBody" as const,
     badgeKey: "spaces.numaBadge" as const,
+    live: false as const,
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
         <path
@@ -77,7 +80,7 @@ export function SpacesSection() {
         </div>
 
         <div className="grid gap-[22px] lg:grid-cols-3">
-          {SPACES.map((space, i) => (
+          {SPACES.map((space) => (
             <article
               key={space.id}
               className="group relative overflow-hidden rounded-[6px] border border-ink-15 bg-base transition-[border-color,transform] duration-300 hover:-translate-y-0.5"
@@ -108,9 +111,9 @@ export function SpacesSection() {
                   href={space.href}
                   variant="outline"
                   size="sm"
-                  className={i === 0 ? undefined : "pointer-events-none opacity-60"}
+                  className={space.live ? undefined : "pointer-events-none opacity-60"}
                 >
-                  {i === 0 ? t("spaces.visit") : t("spaces.comingSoon")}
+                  {space.live ? t("spaces.visit") : t("spaces.comingSoon")}
                 </Button>
               </div>
             </article>

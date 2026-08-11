@@ -84,7 +84,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://oshikatsu.justvibing.fun"
                   className="text-[13.5px] text-on-inverse-muted no-underline hover:text-on-inverse"
                 >
                   Oshikatsu
@@ -106,20 +106,20 @@ export function SiteFooter() {
             </h4>
             <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/terms"
                   className="text-[13.5px] text-on-inverse-muted no-underline hover:text-on-inverse"
                 >
                   {t("footer.terms")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/privacy"
                   className="text-[13.5px] text-on-inverse-muted no-underline hover:text-on-inverse"
                 >
                   {t("footer.privacy")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

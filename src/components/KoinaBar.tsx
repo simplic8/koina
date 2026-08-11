@@ -2,7 +2,7 @@ import { KoinaMark } from "./BrandMark";
 
 const ECOSYSTEM = [
   { name: "JustVibing", href: "https://justvibing.fun" },
-  { name: "Oshikatsu", href: "#" },
+  { name: "Oshikatsu", href: "https://oshikatsu.justvibing.fun" },
   { name: "NUMA", href: "#" },
 ] as const;
 
