@@ -1,3 +1,5 @@
+import { VibeCodeRegisterModal } from "@/components/vibe-code/VibeCodeRegisterModal";
+
 export function VibeCodeFlyer() {
   return (
     <article className="vibe-poster mx-auto w-full max-w-[820px]">
@@ -135,11 +137,7 @@ export function VibeCodeFlyer() {
           You don&apos;t need to be a developer to start coding. You just need the{" "}
           <span>heart, mind and tools.</span>
         </p>
-        <div className="vibe-reg">
-          <p className="vibe-label vibe-label-flush">Register</p>
-          <a href="#">Vibe Code</a>
-          <p className="vibe-free">Limited seats · All tools free</p>
-        </div>
+        <VibeCodeRegisterModal />
       </div>
     </article>
   );

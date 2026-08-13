@@ -70,6 +70,11 @@ export default function LoginPage() {
 
   async function signInOAuth(provider: "google" | "discord") {
     setError(null);
+    if (provider === "google") {
+      setMessage(t("auth.googleComingSoon"));
+      return;
+    }
+    setMessage(null);
     setOauthLoading(provider);
     const { error: err } = await signInWithOAuthProvider(provider);
     if (err) {
@@ -137,9 +142,7 @@ export default function LoginPage() {
             onClick={() => signInOAuth("google")}
             disabled={loading || Boolean(oauthLoading)}
           >
-            {oauthLoading === "google"
-              ? `${t("auth.continueGoogle")}…`
-              : t("auth.continueGoogle")}
+            {t("auth.continueGoogle")}
           </Button>
           <Button
             variant="dark"
@@ -151,6 +154,7 @@ export default function LoginPage() {
               ? `${t("auth.continueDiscord")}…`
               : t("auth.continueDiscord")}
           </Button>
+          {message && <p className="text-sm text-ink-70">{message}</p>}
         </div>
 
         <p className="mt-6 text-sm text-ink-70">

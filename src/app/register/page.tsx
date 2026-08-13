@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<"google" | "discord" | null>(
     null,
@@ -56,6 +57,11 @@ export default function RegisterPage() {
 
   async function signInOAuth(provider: "google" | "discord") {
     setError(null);
+    if (provider === "google") {
+      setMessage(t("auth.googleComingSoon"));
+      return;
+    }
+    setMessage(null);
     setOauthLoading(provider);
     const { error: err } = await signInWithOAuthProvider(
       provider,
@@ -141,9 +147,7 @@ export default function RegisterPage() {
             onClick={() => signInOAuth("google")}
             disabled={loading || Boolean(oauthLoading)}
           >
-            {oauthLoading === "google"
-              ? `${t("auth.continueGoogle")}…`
-              : t("auth.continueGoogle")}
+            {t("auth.continueGoogle")}
           </Button>
           <Button
             variant="dark"
@@ -155,6 +159,7 @@ export default function RegisterPage() {
               ? `${t("auth.continueDiscord")}…`
               : t("auth.continueDiscord")}
           </Button>
+          {message && <p className="text-sm text-ink-70">{message}</p>}
         </div>
 
         <p className="mt-6 text-sm text-ink-70">

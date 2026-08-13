@@ -677,7 +677,7 @@
   text-align: right;
 }
 
-.vibe-reg a {
+.vibe-reg-btn {
   font-family: var(--font-ibm-plex-mono), monospace;
   font-size: 15px;
   color: var(--vibe-night);
@@ -685,13 +685,217 @@
   text-decoration: none;
   padding: 11px 22px;
   display: inline-block;
+  border: 0;
   border-radius: 2px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.vibe-reg-btn:focus-visible {
+  outline: 3px solid var(--vibe-violet);
+  outline-offset: 3px;
+}
+
+.vibe-modal {
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(90vh, 820px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid #1c2551;
+  border-radius: 8px;
+  background: transparent;
+  color: #edeff7;
+  overflow: hidden;
+}
+
+.vibe-modal::backdrop {
+  background: rgba(5, 8, 26, 0.78);
+  backdrop-filter: blur(4px);
+}
+
+.vibe-modal-panel {
+  background:
+    radial-gradient(ellipse 80% 50% at 100% 0%, rgba(140, 123, 245, 0.18), transparent 55%),
+    linear-gradient(178deg, #080d20 0%, #0e1533 55%, #121a3f 100%);
+  padding: 22px 22px 24px;
+  overflow: auto;
+  max-height: min(90vh, 820px);
+}
+
+.vibe-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.vibe-modal-eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f5a524;
+}
+
+.vibe-modal-title {
+  margin: 0;
+  font-family: var(--font-bricolage), var(--font-space-grotesk), sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #edeff7;
+}
+
+.vibe-modal-close {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #1c2551;
+  border-radius: 4px;
+  background: transparent;
+  color: #9aa3c4;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.vibe-modal-close:hover {
+  color: #edeff7;
+  border-color: #9aa3c4;
+}
+
+.vibe-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vibe-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.vibe-modal-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 8px;
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #edeff7;
+}
+
+.vibe-modal-field input {
+  width: 100%;
+  margin-top: 2px;
+  border: 1px solid #1c2551;
+  border-radius: 4px;
+  background: rgba(5, 8, 26, 0.55);
+  color: #edeff7;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.vibe-modal-field input::placeholder {
+  color: #6b7394;
+}
+
+.vibe-modal-field input:focus {
+  border-color: #f5a524;
+}
+
+.vibe-modal-optional {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7394;
   font-weight: 500;
 }
 
-.vibe-reg a:focus-visible {
-  outline: 3px solid var(--vibe-violet);
-  outline-offset: 3px;
+.vibe-modal-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.vibe-modal-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #9aa3c4;
+  cursor: pointer;
+}
+
+.vibe-modal-check input {
+  margin-top: 2px;
+  accent-color: #f5a524;
+  flex-shrink: 0;
+}
+
+.vibe-modal-check strong {
+  color: #edeff7;
+  font-weight: 600;
+}
+
+.vibe-modal-error {
+  margin: 0;
+  font-size: 13px;
+  color: #ff7a45;
+}
+
+.vibe-modal-submit {
+  margin-top: 4px;
+  border: 0;
+  border-radius: 2px;
+  background: #f5a524;
+  color: #080d20;
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 18px;
+  cursor: pointer;
+}
+
+.vibe-modal-submit:hover:not(:disabled) {
+  background: #ff7a45;
+}
+
+.vibe-modal-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.vibe-modal-success {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #9aa3c4;
+}
+
+.vibe-modal-success-title {
+  margin: 0;
+  font-family: var(--font-bricolage), var(--font-space-grotesk), sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #f5a524;
+}
+
+@media (max-width: 640px) {
+  .vibe-modal-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .vibe-free {

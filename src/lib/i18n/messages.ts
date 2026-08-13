@@ -90,6 +90,7 @@ export type MessageKey =
   | "auth.username"
   | "auth.or"
   | "auth.continueGoogle"
+  | "auth.googleComingSoon"
   | "auth.continueDiscord"
   | "auth.newHere"
   | "auth.createAccount"
@@ -471,6 +472,8 @@ const en: Dictionary = {
   "auth.username": "Username",
   "auth.or": "or",
   "auth.continueGoogle": "Continue with Google",
+  "auth.googleComingSoon":
+    "Google authentication will be added in the future.",
   "auth.continueDiscord": "Continue with Discord",
   "auth.newHere": "New here?",
   "auth.createAccount": "Create an account",
