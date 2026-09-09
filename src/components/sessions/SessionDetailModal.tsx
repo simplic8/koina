@@ -7,7 +7,6 @@ import {
   type MouseEvent,
 } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -80,7 +79,6 @@ export function SessionDetailModal({
   const [shareNote, setShareNote] = useState<string | null>(null);
   const [shareNoteOpaque, setShareNoteOpaque] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [needsHolodoriGameId, setNeedsHolodoriGameId] = useState(false);
   const [friendBusyId, setFriendBusyId] = useState<string | null>(null);
   const canEdit = !past && canDelete && games.length > 0;
 
@@ -111,41 +109,6 @@ export function SessionDetailModal({
   useEffect(() => {
     if (!open) setEditing(false);
   }, [open]);
-
-  useEffect(() => {
-    if (
-      !open ||
-      !session ||
-      !signedIn ||
-      !joined ||
-      past ||
-      session.game?.slug !== "holodori"
-    ) {
-      setNeedsHolodoriGameId(false);
-      return;
-    }
-
-    let cancelled = false;
-    void (async () => {
-      try {
-        const response = await fetch("/api/profile/game-profiles/holodori");
-        if (!response.ok) return;
-        const payload = (await response.json()) as {
-          profile?: { holodori_game_id?: string | null };
-        };
-        if (cancelled) return;
-        setNeedsHolodoriGameId(
-          !payload.profile?.holodori_game_id?.trim(),
-        );
-      } catch {
-        if (!cancelled) setNeedsHolodoriGameId(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [open, session?.id, session?.game?.slug, signedIn, joined, past]);
 
   useEffect(() => {
     if (!open || !session) return;
@@ -405,22 +368,6 @@ export function SessionDetailModal({
               ×
             </button>
           </div>
-
-          {needsHolodoriGameId ? (
-            <div
-              className="mb-5 rounded-[6px] border border-accent-500/35 bg-accent-100 px-3.5 py-3 text-sm text-ink"
-              role="status"
-            >
-              <p>{t("sessions.holodoriGameIdRequired")}</p>
-              <Link
-                href="/profile?section=holodori"
-                className="mt-2 inline-flex font-semibold text-accent-600 underline-offset-2 hover:underline"
-                onClick={onClose}
-              >
-                {t("sessions.holodoriGameIdCta")}
-              </Link>
-            </div>
-          ) : null}
 
           <div className="mb-5">
             <h3 className="mb-2 text-sm font-semibold tracking-[0.04em] text-ink-40 uppercase">

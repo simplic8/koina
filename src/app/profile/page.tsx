@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PageIntro } from "@/components/i18n/T";
 import { ProfilePageContent } from "@/components/profile/ProfilePageContent";
-import { getCurrentProfile, getGameProfilesForUser } from "@/lib/data";
+import { getCurrentProfile } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
-import type { GameProfile } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Profile | KOINA",
@@ -42,12 +41,6 @@ export default async function ProfilePage({
     (identity) => identity.provider === "discord",
   );
 
-  const gameProfiles = await getGameProfilesForUser(profile.id);
-  const holodoriProfile =
-    gameProfiles.find((item) => item.platform === "holodori") ?? null;
-  const robloxProfile =
-    gameProfiles.find((item) => item.platform === "roblox") ?? null;
-
   return (
     <div className="py-10">
       <div className="mx-auto max-w-[900px] px-6">
@@ -59,8 +52,6 @@ export default async function ProfilePage({
           hasGoogleIdentity={hasGoogleIdentity}
           hasDiscordIdentity={hasDiscordIdentity}
           identityCount={identities.length || 1}
-          holodoriProfile={holodoriProfile as GameProfile | null}
-          robloxProfile={robloxProfile as GameProfile | null}
           initialSection={sectionParam}
         />
       </div>

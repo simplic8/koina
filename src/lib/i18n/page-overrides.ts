@@ -7,8 +7,7 @@ export const pageOverrides: Record<
 > = {
   ja: {
     "profile.pageTitle": "プロフィール",
-    "profile.pageLead":
-      "アカウント、Holodoriのおし、Robloxプロフィールを管理。",
+    "profile.pageLead": "アカウントとフレンドを管理。",
     "common.roblox": "Roblox",
     "common.external": "外部",
     "common.game": "ゲーム",
@@ -148,8 +147,7 @@ export const pageOverrides: Record<
   },
   ko: {
     "profile.pageTitle": "프로필",
-    "profile.pageLead":
-      "계정, Holodori 오시, Roblox 게임 프로필을 관리하세요.",
+    "profile.pageLead": "계정과 친구를 관리하세요.",
     "common.roblox": "Roblox",
     "common.external": "외부",
     "common.game": "게임",
@@ -283,8 +281,7 @@ export const pageOverrides: Record<
   },
   fil: {
     "profile.pageTitle": "Profile",
-    "profile.pageLead":
-      "I-manage ang account, Holodori oshi, at Roblox game profile.",
+    "profile.pageLead": "I-manage ang iyong account at friends.",
     "common.roblox": "Roblox",
     "common.external": "External",
     "common.game": "Game",
@@ -424,8 +421,7 @@ export const pageOverrides: Record<
   },
   ms: {
     "profile.pageTitle": "Profil",
-    "profile.pageLead":
-      "Urus akaun, oshi Holodori, dan profil permainan Roblox anda.",
+    "profile.pageLead": "Urus akaun dan rakan anda.",
     "common.roblox": "Roblox",
     "common.external": "Luaran",
     "common.game": "Permainan",
@@ -565,8 +561,7 @@ export const pageOverrides: Record<
   },
   id: {
     "profile.pageTitle": "Profil",
-    "profile.pageLead":
-      "Kelola akun, oshi Holodori, dan profil game Roblox Anda.",
+    "profile.pageLead": "Kelola akun dan teman Anda.",
     "common.roblox": "Roblox",
     "common.external": "Eksternal",
     "common.game": "Game",
@@ -706,7 +701,7 @@ export const pageOverrides: Record<
   },
   "zh-CN": {
     "profile.pageTitle": "个人资料",
-    "profile.pageLead": "管理账号、Holodori 推し与 Roblox 游戏资料。",
+    "profile.pageLead": "管理账号与好友。",
     "common.roblox": "Roblox",
     "common.external": "外部",
     "common.game": "游戏",
@@ -835,7 +830,7 @@ export const pageOverrides: Record<
   },
   "zh-TW": {
     "profile.pageTitle": "個人資料",
-    "profile.pageLead": "管理帳號、Holodori 推し與 Roblox 遊戲資料。",
+    "profile.pageLead": "管理帳號與好友。",
     "common.roblox": "Roblox",
     "common.external": "外部",
     "common.game": "遊戲",

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four Weeks to Live — Builder's Cheat Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ===================================================================
+     KOINA THEME TOKENS — swap these six values to match koina.space
+     exactly. Everything else on the page derives from them.
+     =================================================================== */
+  :root{
+    --void:#0A0D18;        /* page ground */
+    --surface:#141A2E;     /* cards */
+    --line:#2A3352;        /* hairlines + borders */
+    --text:#E9ECF7;        /* body text */
+    --muted:#96A0C0;       /* secondary text */
+    --koina:#7C6BF5;       /* primary accent */
+    --glow:#4FD3C4;        /* secondary accent */
+
+    --font-display:"Bricolage Grotesque","Public Sans",system-ui,sans-serif;
+    --font-body:"Public Sans",system-ui,-apple-system,sans-serif;
+    --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--void);
+    background-image:
+      radial-gradient(900px 420px at 82% -8%, rgba(124,107,245,.20), transparent 68%),
+      radial-gradient(700px 380px at 8% 4%, rgba(79,211,196,.09), transparent 66%);
+    background-repeat:no-repeat;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.5;
+  }
+  .sheet{max-width:1120px;margin:0 auto;padding:44px 28px 72px}
+
+  /* ---------- masthead ---------- */
+  .masthead{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;padding-bottom:18px}
+  .eyebrow{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--glow);margin:0 0 10px
+  }
+  h1{
+    font-family:var(--font-display);font-weight:800;font-size:clamp(34px,6vw,58px);
+    line-height:.94;letter-spacing:-.025em;margin:0;max-width:13ch
+  }
+  h1 em{font-style:normal;color:var(--koina)}
+  .standfirst{max-width:34ch;font-size:14px;color:var(--muted);margin:0}
+  .standfirst strong{color:var(--text);font-weight:700}
+
+  /* ---------- signature: the horizon ---------- */
+  .horizon{margin:8px 0 40px}
+  .horizon svg{display:block;width:100%;height:auto}
+  .horizon-key{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:.05em;
+    color:var(--muted);margin-top:-6px
+  }
+  .horizon-key span{text-align:center}
+  .horizon-key span:first-child{text-align:left}
+  .horizon-key span:last-child{text-align:right;color:var(--glow)}
+
+  /* ---------- generic blocks ---------- */
+  .band{border-top:1.5px solid var(--koina);padding-top:10px;margin:0 0 18px}
+  .band h2{
+    font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.14em;
+    text-transform:uppercase;margin:0;color:var(--text)
+  }
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .grid-5{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 16px 18px}
+
+  /* ---------- stack ---------- */
+  .tool-name{font-family:var(--font-display);font-weight:800;font-size:17px;letter-spacing:-.01em;margin:0 0 2px}
+  .tool-role{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--glow);margin:0 0 8px}
+  .tool-desc{margin:0;font-size:13px;color:var(--muted)}
+
+  /* ---------- weeks ---------- */
+  .week{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 16px 16px;display:flex;flex-direction:column;overflow:hidden}
+  .week::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--koina)}
+  .week-4::before{background:var(--glow)}
+  .week-no{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);margin:0 0 6px}
+  .week-no b{color:var(--koina)}
+  .week-4 .week-no b{color:var(--glow)}
+  .week-title{font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1.05;letter-spacing:-.02em;margin:0 0 8px}
+  .week-line{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .week ul{margin:0 0 14px;padding-left:16px;font-size:13px;color:var(--text)}
+  .week li{margin-bottom:5px}
+  .week li::marker{color:var(--koina)}
+  .week ul ul{
+    list-style:none;margin:7px 0 3px;padding-left:12px;
+    border-left:1px solid var(--line)
+  }
+  .week ul ul li{margin-bottom:5px;font-size:12.5px;color:var(--muted)}
+  .week ul ul li:last-child{margin-bottom:0}
+  .leave{margin-top:auto;border-top:1px dashed var(--line);padding-top:10px;font-size:12.5px}
+  .leave b{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--glow);display:block;margin-bottom:3px}
+
+  /* ---------- code ---------- */
+  code,kbd{font-family:var(--font-mono);font-size:12.5px}
+  code{background:rgba(124,107,245,.15);color:#C9C2FF;padding:1px 5px;border-radius:3px;white-space:nowrap}
+  kbd{background:var(--line);color:var(--text);padding:2px 6px;border-radius:4px;font-size:11px;white-space:nowrap;border:1px solid #3B4772}
+  .cmds{list-style:none;margin:0;padding:0}
+  .cmds li{padding:7px 0;border-bottom:1px dotted var(--line);font-size:12.5px}
+  .cmds li:last-child{border-bottom:0}
+  .cmds .c{font-family:var(--font-mono);font-weight:700;display:block;color:var(--glow)}
+  .cmds .d{color:var(--muted);font-size:12px}
+
+  /* ---------- paired prompts / commands table ---------- */
+  .pairs-wrap{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  table.pairs{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.pairs th{
+    text-align:left;padding:10px 16px;font-family:var(--font-mono);font-weight:400;
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--koina);
+    border-bottom:1px solid var(--line)
+  }
+  table.pairs th+th{color:var(--glow)}
+  table.pairs td{
+    vertical-align:top;padding:12px 16px;
+    border-bottom:1px dotted var(--line)
+  }
+  table.pairs th+th,table.pairs td+td{border-left:1px solid var(--line)}
+  table.pairs tr:last-child td{border-bottom:0}
+  .ask{font-size:13px;color:var(--text);line-height:1.45}
+  .cmd{display:block;font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:var(--glow);margin-bottom:3px;overflow-wrap:anywhere}
+  .note{font-size:12px;color:var(--muted)}
+  .note b{color:var(--text);font-weight:700}
+  .cmd+.note{margin-top:5px;display:block}
+  /* ---------- appendix: simulated screenshots ---------- */
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .shot-wrap{margin:0}
+  .shot{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#0F1424}
+  .shot-bar{display:flex;align-items:center;gap:9px;padding:8px 10px;border-bottom:1px solid var(--line)}
+  .dots{display:flex;gap:4px;flex:0 0 auto}
+  .dots i{width:8px;height:8px;border-radius:50%;background:#3B4772;display:block}
+  .url{
+    flex:1;font-family:var(--font-mono);font-size:10px;color:var(--muted);
+    background:var(--void);border:1px solid var(--line);border-radius:20px;
+    padding:3px 10px;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis
+  }
+  .url b{color:var(--glow);font-weight:400}
+  .shot-body{background:#fff;color:#0F1424;padding:18px 16px;min-height:186px;position:relative}
+
+  .app-nav{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #E3E7F0;padding-bottom:8px;margin-bottom:13px}
+  .app-brand{font-family:var(--font-display);font-weight:800;font-size:12px;color:#0F1424}
+  .app-user{font-size:9.5px;color:#7C86A0}
+  .app-h{font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.1;color:#0F1424;margin:0 0 6px}
+  .app-p{font-size:10.5px;line-height:1.45;color:#5B6478;margin:0 0 13px}
+  .app-btn{display:inline-block;background:#0F1424;color:#fff;font-size:10px;padding:6px 13px;border-radius:5px}
+  .app-btn.alt{background:#7C6BF5}
+  .app-field{border:1px solid #D5DAE6;border-radius:5px;padding:7px 9px;font-size:10px;color:#98A1B6;margin-bottom:8px}
+  .app-card{border:1px solid #E9ECF4;border-left:2px solid #7C6BF5;border-radius:5px;padding:7px 10px;margin-bottom:6px;font-size:10px;color:#3A4358;line-height:1.4}
+  .app-card i{display:block;font-style:normal;font-size:8.5px;color:#98A1B6;margin-top:2px}
+  .app-foot{margin-top:11px;padding-top:8px;border-top:1px solid #E3E7F0;font-size:8.5px;color:#98A1B6}
+  .app-toast{
+    position:absolute;right:12px;bottom:12px;background:#0F1424;color:#fff;
+    border-radius:5px;padding:6px 10px;font-size:9px;font-family:var(--font-mono)
+  }
+  .app-toast b{color:#4FD3C4;font-weight:400}
+  .shot-cap{margin-top:11px;font-size:12.5px;color:var(--muted);line-height:1.45}
+  .shot-cap b{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--koina);margin-bottom:4px}
+
+  /* numbered variant of the pairs table */
+  table.triage-table{counter-reset:trow}
+  table.triage-table tbody tr{counter-increment:trow}
+  table.triage-table tbody td:first-child{position:relative;padding-left:44px}
+  table.triage-table tbody td:first-child::before{
+    content:counter(trow,decimal-leading-zero);position:absolute;left:16px;top:13px;
+    font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--koina)
+  }
+  table.triage-table th:first-child{padding-left:44px}
+
+  .eg{display:grid;gap:9px}
+  .eg>div{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:baseline}
+  .eg-l{
+    font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)
+  }
+  .eg .cmd{margin-bottom:0}
+  .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .keys div{border-top:2px solid var(--koina);padding-top:8px;font-size:12.5px;color:var(--muted)}
+  .keys b{display:block;margin-bottom:3px;color:var(--text);font-weight:400}
+
+  /* ---------- triage ---------- */
+  .triage{counter-reset:step;list-style:none;margin:0;padding:0}
+  .triage li{counter-increment:step;position:relative;padding:0 0 9px 30px;font-size:13px;color:var(--muted)}
+  .triage li::before{
+    content:counter(step,decimal-leading-zero);position:absolute;left:0;top:1px;
+    font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--koina)
+  }
+  .triage li b{color:var(--text);font-weight:700}
+
+  /* ---------- prompting ---------- */
+  .swap{margin:0 0 12px}
+  .swap p{margin:0;font-size:13px;padding:6px 10px;border-left:3px solid var(--line)}
+  .swap .no{color:var(--muted);text-decoration:line-through;text-decoration-color:#4A5578}
+  .swap .yes{border-left-color:var(--glow);font-family:var(--font-mono);font-size:12px;background:rgba(79,211,196,.09);color:var(--text)}
+
+  /* ---------- goals ---------- */
+  .goals{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;list-style:none;margin:0;padding:0;counter-reset:goal}
+  .goals li{
+    counter-increment:goal;border-top:3px solid var(--glow);padding-top:10px;
+    font-family:var(--font-display);font-weight:600;font-size:15px;line-height:1.25;letter-spacing:-.01em
+  }
+  .goals li::before{
+    content:counter(goal,decimal-leading-zero);display:block;margin-bottom:6px;
+    font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--glow)
+  }
+
+  /* ---------- warn ---------- */
+  .warn{background:rgba(124,107,245,.10);border:1px solid var(--koina);border-radius:6px;padding:16px 18px;margin-top:22px}
+  .warn h3{font-family:var(--font-display);font-weight:800;font-size:15px;margin:0 0 8px;color:var(--koina)}
+  .warn p{margin:0 0 6px;font-size:13px;color:var(--text)}
+  .warn p:last-child{margin-bottom:0}
+
+  footer{margin-top:34px;padding-top:12px;border-top:1.5px solid var(--koina);display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  footer .brand{color:var(--glow)}
+
+  section{margin-bottom:34px}
+
+  @media (max-width:860px){
+    .grid-2,.grid-3,.grid-4,.grid-5,.goals,.keys,.shots{grid-template-columns:1fr}
+    .horizon-key{font-size:9px}
+    table.pairs th{padding:8px 10px;font-size:9px;letter-spacing:.1em}
+    table.pairs td{padding:10px}
+    table.triage-table tbody td:first-child,table.triage-table th:first-child{padding-left:32px}
+    table.triage-table tbody td:first-child::before{left:9px;top:11px}
+    .ask{font-size:12px;line-height:1.4}
+    .cmd{font-size:11.5px}
+    .note{font-size:11px}
+  }
+
+  /* ---------- print: ink on white, not a toner massacre ---------- */
+  @media print{
+    @page{size:A4;margin:12mm}
+    body{background:#fff;background-image:none;color:#0A0D18;font-size:10.5px}
+    .sheet{padding:0;max-width:none}
+    .card,.week,.pairs-wrap{break-inside:avoid;background:#fff;border-color:#B8BFD6}
+    table.pairs th,table.pairs td,.week ul ul{border-color:#B8BFD6}
+    table.pairs thead{display:table-header-group}
+    table.triage-table tbody td:first-child::before{color:#0A0D18}
+    table.pairs tr{break-inside:avoid}
+    .ask,.eg-l{color:#0A0D18}
+    .cmd{color:#0A0D18}
+    .note{color:#4B5578}
+    .note b{color:#0A0D18}
+    .keys div{border-top-color:#0A0D18}
+    .goals li{border-top-color:#0A0D18}
+    .goals li::before{color:#0A0D18}
+    .keys b{color:#0A0D18}
+    section{break-inside:avoid;margin-bottom:16px}
+    .page-2{break-before:page}
+    .page-3{break-before:page}
+    .shot{break-inside:avoid;border-color:#B8BFD6}
+    .shot-wrap{break-inside:avoid}
+    .shot,.shot-bar{background:#fff}
+    .shot-bar,.url{border-color:#B8BFD6}
+    .url{color:#4B5578;background:#fff}
+    .url b{color:#0A0D18}
+    .dots i{background:#B8BFD6}
+    .shot-cap{color:#4B5578}
+    .shot-cap b{color:#0A0D18}
+    .app-toast{background:#0A0D18}
+    h1{font-size:34px;color:#0A0D18}
+    .week-title{font-size:15px}
+    .standfirst,.tool-desc,.week-line,.cmds .d,.triage li{color:#4B5578}
+    .week ul,.warn p,.triage li b,.swap .yes{color:#0A0D18}
+    .cmds .c{color:#0A0D18}
+    code{background:#EDEBFB;color:#3B2E9E}
+    kbd{background:#EDEBFB;color:#0A0D18;border-color:#B8BFD6}
+    .warn{background:#fff;border-color:#0A0D18}
+    .swap .yes{background:#EEFAF8}
+    footer .brand{color:#0A0D18}
+  }
+
+  @media (prefers-reduced-motion:no-preference){
+    .week{transition:transform .18s ease,border-color .18s ease}
+    .week:hover{transform:translateY(-2px);border-color:var(--koina)}
+  }
+  a{color:var(--glow)}
+  a:focus-visible,.week:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">KOINA.SPACE · Build Week · Cheat Sheet</p>
+      <h1>Four weeks<br>from idea to <em>live</em>.</h1>
+    </div>
+    <p class="standfirst">Cursor, Next.js, Supabase, GitHub, Vercel and Resend — the same stack behind <strong>koina.space</strong>. Every tool is free. Keep this open on your second screen.</p>
+  </header>
+
+  <div class="horizon" aria-hidden="true">
+    <svg viewBox="0 0 1200 128" preserveAspectRatio="none" role="presentation">
+      <defs>
+        <linearGradient id="ground" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stop-color="#7C6BF5" stop-opacity=".05"/>
+          <stop offset="100%" stop-color="#4FD3C4" stop-opacity=".24"/>
+        </linearGradient>
+        <linearGradient id="arc" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stop-color="#7C6BF5"/>
+          <stop offset="100%" stop-color="#4FD3C4"/>
+        </linearGradient>
+      </defs>
+      <path d="M40,96 C 220,96 300,91 420,87 S 660,74 800,64 S 1060,48 1160,36 L1160,128 L40,128 Z" fill="url(#ground)"/>
+      <path d="M40,96 C 220,96 300,91 420,87 S 660,74 800,64 S 1060,48 1160,36" fill="none" stroke="url(#arc)" stroke-width="1.75"/>
+      <circle cx="1160" cy="36" r="19" fill="#4FD3C4" opacity=".20"/>
+      <circle cx="40" cy="96" r="4.5" fill="#7C6BF5"/>
+      <circle cx="420" cy="87" r="4.5" fill="#8E7CF6"/>
+      <circle cx="800" cy="64" r="4.5" fill="#63B0E0"/>
+      <circle cx="1160" cy="36" r="6.5" fill="#4FD3C4"/>
+      <g font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" fill="#E9ECF7">
+        <text x="40" y="76" text-anchor="middle">01</text>
+        <text x="420" y="67" text-anchor="middle">02</text>
+        <text x="800" y="44" text-anchor="middle">03</text>
+        <text x="1160" y="14" text-anchor="middle">04</text>
+      </g>
+    </svg>
+    <div class="horizon-key">
+      <span>localhost:3000</span><span>your first public url</span><span>real logins, real data</span><span>the world</span>
+    </div>
+  </div>
+
+  <!-- ============ STACK ============ -->
+  <section>
+    <div class="band"><h2>The stack — what each thing actually does</h2></div>
+    <div class="grid-5">
+      <div class="card">
+        <p class="tool-name">Cursor</p>
+        <p class="tool-role">Where you write</p>
+        <p class="tool-desc">Your editor. You describe what you want in plain English; it writes and edits the code with you.</p>
+      </div>
+      <div class="card">
+        <p class="tool-name">Next.js</p>
+        <p class="tool-role">The app itself</p>
+        <p class="tool-desc">The framework your app is built on. A folder becomes a page. <code>app/about/page.tsx</code> → <code>/about</code>.</p>
+      </div>
+      <div class="card">
+        <p class="tool-name">Supabase</p>
+        <p class="tool-role">Memory + logins</p>
+        <p class="tool-desc">Your database and your sign-in system. Where a form submission goes so it's still there tomorrow.</p>
+      </div>
+      <div class="card">
+        <p class="tool-name">GitHub</p>
+        <p class="tool-role">The safety net</p>
+        <p class="tool-desc">Every version of your code, saved off your laptop. Break something? You can always go back.</p>
+      </div>
+      <div class="card">
+        <p class="tool-name">Vercel</p>
+        <p class="tool-role">The front door</p>
+        <p class="tool-desc">Puts your app on the internet. Push to GitHub and it rebuilds and redeploys on its own.</p>
+      </div>
+      <div class="card">
+        <p class="tool-name">Resend</p>
+        <p class="tool-role">The messenger</p>
+        <p class="tool-desc">Sends real email from your app — a welcome note, a confirmation, an alert to you when someone signs up.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WEEKS ============ -->
+  <section>
+    <div class="band"><h2>The route</h2></div>
+    <div class="grid-4">
+
+      <article class="week">
+        <p class="week-no">Week <b>01</b> · dream</p>
+        <h3 class="week-title">Dream it,<br>build it</h3>
+        <p class="week-line">Your first idea to code in hour one.</p>
+        <ul>
+          <li>Download, install and set up a Cursor account</li>
+          <li>Install Node.js</li>
+          <li>Use Cursor with Build mode to sketch your idea</li>
+          <li>Cursor runs this for you:
+            <ul>
+              <li><code>npx create-next-app@latest</code></li>
+              <li><code>npm run dev</code> → localhost:3000</li>
+            </ul>
+          </li>
+          <li>First real edit — click it in the browser, say what you want</li>
+        </ul>
+        <p class="leave"><b>You leave with</b>Your idea running on your own machine.</p>
+      </article>
+
+      <article class="week">
+        <p class="week-no">Week <b>02</b> · world</p>
+        <h3 class="week-title">Take it to<br>the world</h3>
+        <p class="week-line">Your code to the world — beyond localhost.</p>
+        <ul>
+          <li>Git in three commands: add, commit, push</li>
+          <li>Push to a GitHub repo</li>
+          <li>Import the repo into Vercel</li>
+          <li>Every push now redeploys automatically</li>
+          <li>Secrets live in <code>.env.local</code> — never in the repo</li>
+        </ul>
+        <p class="leave"><b>You leave with</b>A URL you can send to your mum.</p>
+      </article>
+
+      <article class="week">
+        <p class="week-no">Week <b>03</b> · horizons</p>
+        <h3 class="week-title">Expand your<br>horizons</h3>
+        <p class="week-line">More features, and connecting to APIs.</p>
+        <ul>
+          <li>A Supabase table + Row Level Security on</li>
+          <li>Email sign-in, so users have accounts</li>
+          <li>A form that saves and reads back</li>
+          <li>Resend wired up, sending real email</li>
+          <li>Keys go into Vercel too, not just your laptop</li>
+        </ul>
+        <p class="leave"><b>You leave with</b>Logins, stored data, a sent email.</p>
+      </article>
+
+      <article class="week week-4">
+        <p class="week-no">Week <b>04</b> · all in</p>
+        <h3 class="week-title">Summing<br>it up</h3>
+        <p class="week-line">Connections, opportunities, showcases.</p>
+        <ul>
+          <li>Tidy the README so a stranger can run it</li>
+          <li>Custom domain, if you want one</li>
+          <li>Show your work — two minutes, live</li>
+          <li>Where this plugs into missions tech</li>
+          <li>What you build next, and with whom</li>
+        </ul>
+        <p class="leave"><b>You leave with</b>A shipped project and a global team.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ GOALS ============ -->
+  <section>
+    <div class="band"><h2>By the end of week four</h2></div>
+    <ol class="goals">
+      <li>Your idea, turned into working code</li>
+      <li>An app with logins, forms, a database and a live email connection</li>
+      <li>The know-how to put your own work on the internet</li>
+      <li>A door into a global team building technology for missions</li>
+    </ol>
+  </section>
+
+  <!-- ============ PAGE 2 ============ -->
+  <section class="page-2">
+    <div class="band"><h2>The same job, two ways — every single week</h2></div>
+    <div class="pairs-wrap">
+      <table class="pairs">
+        <thead>
+          <tr><th scope="col">Ask Cursor</th><th scope="col">Or type it yourself</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ask">“Start the dev server so I can see the app in my browser.”</span></td>
+            <td><span class="cmd">npm run dev</span><span class="note">Leave it running in its own terminal tab all evening.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">“Stop the server that's running in the terminal.”</span></td>
+            <td><span class="cmd">Ctrl + C</span><span class="note">Ctrl on Mac too, not Cmd. Click the terminal first.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">“It says a package isn't found — install what this project needs.”</span></td>
+            <td><span class="cmd">npm install</span><span class="note">Also run this after pulling someone else's code.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">“Save my work and push it to GitHub. Call the commit ‘add signup form’.”</span></td>
+            <td><span class="cmd">git add -A<br>git commit -m "add signup form"<br>git push</span><span class="note">Write what the change does, never just "update".</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">“Add Supabase to this project and set up the client file.”</span></td>
+            <td><span class="cmd">npm install @supabase/supabase-js</span><span class="note">Cursor still has to write the client file — let it.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="keys">
+      <div><b><kbd>Cmd/Ctrl</kbd> + <kbd>L</kbd></b>Open chat — ask a question about your code.</div>
+      <div><b><kbd>Cmd/Ctrl</kbd> + <kbd>I</kbd></b>Agent — let it change several files at once.</div>
+      <div><b>Browser pane</b>Opens your running app inside Cursor, with Select element.</div>
+      <div><b><kbd>Ctrl</kbd> + <kbd>`</kbd></b>Show or hide the terminal panel.</div>
+    </div>
+
+    <p class="note" style="margin-top:12px">Ask first — then read the command Cursor runs. By week four you'll be typing most of these without thinking about it.</p>
+  </section>
+
+  <section>
+    <div class="band"><h2>Your first edit — point at it in the browser</h2></div>
+    <div class="grid-2">
+      <div class="card">
+        <ol class="triage">
+          <li><b>Get the app running.</b> <code>npm run dev</code> must be live at localhost:3000 first.</li>
+          <li><b>Open Cursor's Browser</b> and point it at your app. Keep it in the pane inside Cursor — select element stops working if you pop the browser into a separate window.</li>
+          <li><b>Click Select element</b> — the pointer icon in the browser toolbar. Hover the page and elements light up one by one.</li>
+          <li><b>Click the thing you want to change.</b> It's attached to the chat as context, so Cursor already knows which component and file it came from. You never type a file path.</li>
+          <li><b>Describe the change in plain English</b> and send it. Click one element at a time — clicking five floods the chat and Cursor loses the target.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <p class="tool-role">Worked example — changing text</p>
+        <div class="eg">
+          <div><span class="eg-l">You click</span><span class="ask">The big headline on your homepage reading “Create Next App”.</span></div>
+          <div><span class="eg-l">You type</span><span class="ask">“Change this heading to Wednesday Night Build.”</span></div>
+          <div><span class="eg-l">Cursor opens</span><span class="cmd">app/page.tsx</span></div>
+          <div><span class="eg-l">Before</span><span class="cmd">&lt;h1&gt;Create Next App&lt;/h1&gt;</span></div>
+          <div><span class="eg-l">After</span><span class="cmd">&lt;h1&gt;Wednesday Night Build&lt;/h1&gt;</span></div>
+        </div>
+        <p class="note" style="margin-top:12px">You pointed at a thing on screen and said what you wanted. You never had to know the file was called <code>page.tsx</code> — that's the whole idea.</p>
+      </div>
+    </div>
+
+    <div class="keys" style="grid-template-columns:1fr 1fr">
+      <div><b>Looking for "Inspect Element"?</b>Cursor names it <b style="display:inline">Select element</b>. It hands the element to the agent rather than opening DevTools.</div>
+      <div><b>Drag things around too</b>The visual editor lets you reorder and resize elements, then tell the agent to apply it to the code.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="band"><h2>Connecting Supabase — keys, env file, tables</h2></div>
+    <div class="pairs-wrap">
+      <table class="pairs triage-table">
+        <thead>
+          <tr><th scope="col">Step</th><th scope="col">What to do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ask">Get your three values</span></td>
+            <td><span class="note">Supabase dashboard → Project Settings → API. Copy the <b>Project URL</b>, the <b>anon public</b> key, and the <b>service_role</b> key.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Make the env file</span></td>
+            <td><span class="note">In your project root — the folder with <code>package.json</code> — create a file called <code>.env.local</code>.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Paste them in</span></td>
+            <td><span class="cmd">NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co<br>NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...<br>SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...</span><span class="note">No quotes, no spaces around the <code>=</code>. Only the first two get <code>NEXT_PUBLIC_</code> — that prefix means "send to the browser", which the service_role key must never be.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Restart the server</span></td>
+            <td><span class="note">Keys only load at startup. <kbd>Ctrl</kbd>+<kbd>C</kbd>, then <code>npm run dev</code>.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Ask Cursor for the SQL</span></td>
+            <td><span class="note">“Write the SQL to create a <code>prayers</code> table with id, name, message and created_at, with Row Level Security enabled and a policy that lets signed-in users read and insert.”</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Run it in Supabase</span></td>
+            <td><span class="note">Dashboard → SQL Editor → New query → paste → Run. Then open Table Editor to see the table exists.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Keep the SQL</span></td>
+            <td><span class="note">Save it in your repo as <code>schema.sql</code>. It's how you rebuild the database if you ever start a fresh project.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="band"><h2>Connecting Vercel — repo, region, keys, logs</h2></div>
+    <div class="pairs-wrap">
+      <table class="pairs triage-table">
+        <thead>
+          <tr><th scope="col">Step</th><th scope="col">What to do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ask">Link your GitHub repo</span></td>
+            <td><span class="note">vercel.com → Add New → Project → choose your repo → Import. Vercel spots that it's Next.js and fills in the build settings itself. Every push to your main branch now rebuilds automatically.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Pick your region</span></td>
+            <td><span class="note">Settings → Functions → Function Region → <b>Singapore (sin1)</b>. Choose the one nearest your users, and match it to your Supabase region so the two aren't talking across the planet.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Copy your keys across (or generate new keys for Production)</span></td>
+            <td><span class="note">Settings → Environment Variables. Open <code>.env.local</code>, add each line as a Name / Value pair, tick <b>Production</b>. Your <code>.env.local</code> never leaves your laptop — Vercel has no idea it exists unless you do this.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Redeploy</span></td>
+            <td><span class="note">New keys only apply to new builds. Deployments → latest → ⋯ → Redeploy.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Watch the build</span></td>
+            <td><span class="note">The Deployments screen shows <b>Building</b>, then <b>Ready</b> or <b>Error</b>. Click any deployment to open its Build Logs.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">If it says Error</span></td>
+            <td><span class="note">Open Build Logs, scroll to the red line, copy it, paste it into Cursor and ask why the build failed.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="band"><h2>Design skills — bolt these onto Cursor so your app doesn't look AI-made</h2></div>
+    <p class="note" style="margin:-6px 0 18px">Skills are instruction files your agent reads automatically. Install them from your project root, in this order — each one assumes the last. Save this for week 3 or 4, once you have something real to improve.</p>
+
+    <div class="grid-3">
+
+      <div class="card">
+        <p class="week-no">Start with <b>01</b></p>
+        <p class="tool-name">Emil Kowalski's Design Eng</p>
+        <p class="tool-role">emilkowal.ski/skill</p>
+        <p class="tool-desc">UI polish, component design and animation decisions, from a design engineer who worked at Vercel and Linear. Agents left alone pick the wrong easing constantly; this is the fix.</p>
+        <div class="eg" style="margin-top:13px">
+          <div><span class="eg-l">Install</span><span class="cmd">npx skills add emilkowalski/skill</span></div>
+          <div><span class="eg-l">Run</span><span class="cmd">/emil-design-eng<br>/animate</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="week-no">Follow with <b>02</b></p>
+        <p class="tool-name">Impeccable</p>
+        <p class="tool-role">impeccable.style</p>
+        <p class="tool-desc">A shared design vocabulary between you and the agent. <code>init</code> interviews you about audience and purpose and writes it to a <code>PRODUCT.md</code>; <code>polish</code> then cleans up something that already exists.</p>
+        <div class="eg" style="margin-top:13px">
+          <div><span class="eg-l">Install</span><span class="cmd">npx impeccable install</span></div>
+          <div><span class="eg-l">Run</span><span class="cmd">/impeccable init<br>/impeccable polish</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="week-no">Finish with <b>03</b></p>
+        <p class="tool-name">Taste Skill</p>
+        <p class="tool-role">tasteskill.dev/docs</p>
+        <p class="tool-desc">Anti-slop rules for landing pages and portfolios. The agent reads your brief and infers a direction — industry, audience, mood — instead of reaching for the same purple-gradient template every time.</p>
+        <div class="eg" style="margin-top:13px">
+          <div><span class="eg-l">Install</span><span class="cmd">npx skills add Leonxlnx/taste-skill</span></div>
+          <div><span class="eg-l">Run</span><span class="cmd">/taste</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="keys" style="grid-template-columns:1fr 1fr">
+      <div><b>Run from your project root</b>The same folder as <code>package.json</code>. Reload Cursor afterwards so it picks the skill up.</div>
+      <div><b>One at a time, then look</b>Run a skill, check the browser, commit. Three skills in a row and you won't know which change did what.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="band"><h2>Asking Cursor for things — say what you'd see, not how to code it</h2></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="swap">
+          <p class="no">"Make a useState hook and a handler"</p>
+          <p class="yes">"When someone types their email and clicks Join, save it to Supabase and show 'You're on the list'."</p>
+        </div>
+        <div class="swap">
+          <p class="no">"Fix my app"</p>
+          <p class="yes">"The Join button does nothing. Here's the whole error from the terminal: …"</p>
+        </div>
+        <p class="tool-desc" style="margin-top:12px">Paste the <em>entire</em> error, not your summary of it. The part you'd skip is usually the part that matters.</p>
+      </div>
+      <div class="card">
+        <ul style="margin:0;padding-left:16px;font-size:13px">
+          <li style="margin-bottom:7px"><b>Tell it the stack once per chat.</b> "Next.js App Router, TypeScript, Tailwind, Supabase."</li>
+          <li style="margin-bottom:7px"><b>One change at a time.</b> Five requests in one message gets you five half-done things.</li>
+          <li style="margin-bottom:7px"><b>Check it after every change.</b> Look at the browser before you ask for the next thing.</li>
+          <li style="margin-bottom:7px"><b>Ask it to teach you.</b> "Explain this file to me like I've never seen React." That's a normal thing to ask.</li>
+          <li style="margin-bottom:0"><b>Going in circles? Start a fresh chat.</b> A long confused conversation stays confused.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="band"><h2>When it breaks — work down this list before asking for help</h2></div>
+    <div class="pairs-wrap">
+      <table class="pairs triage-table">
+        <thead>
+          <tr><th scope="col">Check</th><th scope="col">What to do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ask">Did you save the file?</span></td>
+            <td><span class="note">Genuinely the most common one. Save, then look again.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Read the error, last line first</span></td>
+            <td><span class="note">It usually names the file and the line number.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Is <code>npm run dev</code> still running?</span></td>
+            <td><span class="note">Check the terminal tab — it may have stopped.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Restart it</span></td>
+            <td><span class="note">In your terminal, press <kbd>Ctrl</kbd>+<kbd>C</kbd>, then run <code>npm run dev</code> again.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Still nothing obvious?</span></td>
+            <td><span class="note">Paste the full error into Cursor chat and ask why it's happening.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Added a new key to <code>.env.local</code>?</span></td>
+            <td><span class="note">Restart the server. Keys only load at startup.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Still odd?</span></td>
+            <td><span class="note">Stop the server with <kbd>Ctrl</kbd>+<kbd>C</kbd>, clear the cache by running <code>rm -rf .next</code>, then start up again with <code>npm run dev</code>.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Works locally, broken on Vercel?</span></td>
+            <td><span class="note">Your keys could be missing in Vercel. Set up the keys in Environment Variables, then redeploy. Alternatively, go to Deployment logs, copy the error and paste it in Cursor to fix.</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Data won't load and there's no error?</span></td>
+            <td><span class="note">Possible causes: Row Level Security is on with no policy. That's Supabase doing its job — write the policy. Also, did you check your Supabase keys are set in <code>.env</code>?</span></td>
+          </tr>
+          <tr>
+            <td><span class="ask">Still stuck after 15 minutes?</span></td>
+            <td><span class="note">Post it in the group chat with the error and what you already tried. That's the job, not a failure.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn">
+      <h3>Three things to never do (for security reasons)</h3>
+      <p><b>Never commit <code>.env.local</code>.</b> Check that <code>.gitignore</code> lists it before your first push.</p>
+      <p><b>Never put the Supabase <code>service_role</code> key in front-end code.</b> The <code>anon</code> key is designed to be public; <code>service_role</code> bypasses every security rule you've written. Server-side only.</p>
+      <p><b>Never leave a table with Row Level Security switched off.</b> Off means anyone with your public key can read and rewrite it.</p>
+    </div>
+  </section>
+
+  <section class="page-3">
+    <div class="band"><h2>Appendix — what your screen looks like at the end of each week</h2></div>
+    <p class="note" style="margin:-6px 0 20px">One example project carried across all four weeks: a prayer wall for a youth group. Yours will look different — the shape of the progress won't.</p>
+
+    <div class="shots">
+
+      <figure class="shot-wrap">
+        <div class="shot">
+          <div class="shot-bar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url">http://localhost:3000</span>
+          </div>
+          <div class="shot-body">
+            <p class="app-h">Prayer Wall</p>
+            <p class="app-p">A place for our youth group to share what they're praying for this week.</p>
+            <span class="app-btn">Add a request</span>
+            <div class="app-foot">Only you can see this. It lives on your laptop.</div>
+          </div>
+        </div>
+        <figcaption class="shot-cap"><b>End of week 01</b>One page, your words, running on your own machine. The button doesn't do anything yet — that's expected. Close the laptop and the site is gone.</figcaption>
+      </figure>
+
+      <figure class="shot-wrap">
+        <div class="shot">
+          <div class="shot-bar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url"><b>https://</b>prayer-wall-jia.vercel.app</span>
+          </div>
+          <div class="shot-body">
+            <p class="app-h">Prayer Wall</p>
+            <p class="app-p">A place for our youth group to share what they're praying for this week.</p>
+            <span class="app-btn">Add a request</span>
+            <div class="app-foot">Anyone with the link can open this, on any phone, anywhere.</div>
+          </div>
+        </div>
+        <figcaption class="shot-cap"><b>End of week 02</b>Same page, different address. It's on the internet with a real https link, rebuilt automatically every time you push to GitHub.</figcaption>
+      </figure>
+
+      <figure class="shot-wrap">
+        <div class="shot">
+          <div class="shot-bar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url"><b>https://</b>prayer-wall-jia.vercel.app</span>
+          </div>
+          <div class="shot-body">
+            <div class="app-nav"><span class="app-brand">Prayer Wall</span><span class="app-user">jia@example.com · Sign out</span></div>
+            <div class="app-field">What can we pray for?</div>
+            <span class="app-btn alt" style="margin-bottom:11px">Post request</span>
+            <div class="app-card">Exams next week — praying for a clear head.<i>Posted by Marcus · 2 hours ago</i></div>
+            <div class="app-card">My grandmother's surgery on Friday.<i>Posted by Jia · yesterday</i></div>
+            <div class="app-toast">✓ Email sent via <b>Resend</b></div>
+          </div>
+        </div>
+        <figcaption class="shot-cap"><b>End of week 03</b>People sign in, write something, and it's still there tomorrow — because it's in your Supabase database, not the page. Every new request emails you.</figcaption>
+      </figure>
+
+      <figure class="shot-wrap">
+        <div class="shot">
+          <div class="shot-bar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url"><b>https://</b>prayerwall.yourname.com</span>
+          </div>
+          <div class="shot-body">
+            <div class="app-nav"><span class="app-brand">Prayer Wall</span><span class="app-user">42 requests · 11 people</span></div>
+            <div class="app-card">Safe travels for the team heading to Chiang Mai.<i>Answered · 6 prayed</i></div>
+            <div class="app-card">Exams next week — praying for a clear head.<i>3 prayed</i></div>
+            <div class="app-card">My grandmother's surgery on Friday.<i>Answered · 9 prayed</i></div>
+            <div class="app-foot">Built at KOINA.SPACE Build Week · source on GitHub</div>
+          </div>
+        </div>
+        <figcaption class="shot-cap"><b>End of week 04</b>Your own domain, real people using it, and a README a stranger can follow. This is the version you show — and the version someone else can build on.</figcaption>
+      </figure>
+
+    </div>
+  </section>
+
+  <footer>
+    <span>Wednesday nights · Zoom · Singapore time</span>
+    <span class="brand">koina.space</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -906,6 +906,40 @@
   letter-spacing: 0.08em;
 }
 
+.vibe-cheatsheet {
+  margin-top: 36px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(154, 163, 196, 0.28);
+  text-align: center;
+}
+
+.vibe-cheatsheet p {
+  margin: 0;
+  font-family: var(--font-ibm-plex-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--vibe-mute);
+}
+
+.vibe-cheatsheet a {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--vibe-dawn);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.vibe-cheatsheet a:hover {
+  color: var(--vibe-ember);
+}
+
+.vibe-cheatsheet a:focus-visible {
+  outline: 3px solid var(--vibe-violet);
+  outline-offset: 3px;
+}
+
 @media (max-width: 640px) {
   .vibe-poster {
     padding: 36px 26px 34px;

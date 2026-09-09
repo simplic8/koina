@@ -2,21 +2,14 @@
 
 import { useState } from "react";
 import { ProfileSettings } from "@/components/profile/ProfileSettings";
-import { HolodoriGameProfile } from "@/components/profile/HolodoriGameProfile";
-import { RobloxGameProfile } from "@/components/profile/RobloxGameProfile";
 import { FriendsProfile } from "@/components/profile/FriendsProfile";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import type { GameProfile, Profile } from "@/lib/types";
+import type { Profile } from "@/lib/types";
 
-type Section = "general" | "holodori" | "roblox" | "friends";
+type Section = "general" | "friends";
 
 function parseSection(value?: string | null): Section {
-  return value === "holodori" ||
-    value === "roblox" ||
-    value === "friends" ||
-    value === "general"
-    ? value
-    : "general";
+  return value === "friends" ? "friends" : "general";
 }
 
 type Props = {
@@ -26,8 +19,6 @@ type Props = {
   hasGoogleIdentity: boolean;
   hasDiscordIdentity: boolean;
   identityCount: number;
-  holodoriProfile: GameProfile | null;
-  robloxProfile: GameProfile | null;
   initialSection?: string | null;
 };
 
@@ -38,8 +29,6 @@ export function ProfilePageContent({
   hasGoogleIdentity,
   hasDiscordIdentity,
   identityCount,
-  holodoriProfile,
-  robloxProfile,
   initialSection = null,
 }: Props) {
   const { t } = useLocale();
@@ -50,8 +39,6 @@ export function ProfilePageContent({
   const tabs: Array<{ id: Section; label: string }> = [
     { id: "general", label: t("profile.section.general") },
     { id: "friends", label: t("profile.section.friends") },
-    { id: "holodori", label: t("profile.section.holodori") },
-    { id: "roblox", label: t("profile.section.roblox") },
   ];
 
   return (
@@ -92,12 +79,6 @@ export function ProfilePageContent({
             hasDiscordIdentity={hasDiscordIdentity}
             identityCount={identityCount}
           />
-        ) : null}
-        {section === "holodori" ? (
-          <HolodoriGameProfile initial={holodoriProfile} />
-        ) : null}
-        {section === "roblox" ? (
-          <RobloxGameProfile initial={robloxProfile} />
         ) : null}
         {section === "friends" ? (
           <FriendsProfile viewerId={profile.id} />

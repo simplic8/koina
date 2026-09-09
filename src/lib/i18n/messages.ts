@@ -484,8 +484,7 @@ const en: Dictionary = {
   "profile.languageHint":
     "Choose how KOINA appears for you on this device.",
   "profile.pageTitle": "Profile",
-  "profile.pageLead":
-    "Manage your account, friends, and connected space profiles.",
+  "profile.pageLead": "Manage your account and friends.",
   "profile.sections": "Profile sections",
   "profile.section.general": "General",
   "profile.section.holodori": "Holodori",
@@ -551,10 +550,10 @@ const en: Dictionary = {
   "profile.friends.lead":
     "People you’ve added. Remove anyone anytime.",
   "profile.friends.listEmpty":
-    "No friends yet. Add people from sessions or recently played.",
+    "No friends yet. Add people from events or recently played.",
   "profile.friends.playedTitle": "Recently played with",
   "profile.friends.playedLead":
-    "The last 10 people you shared a session with. Add them as friends anytime.",
+    "The last 10 people you shared an event with. Add them as friends anytime.",
   "profile.friends.loading": "Loading friends…",
   "profile.friends.loadError": "Couldn’t load friends data.",
   "profile.friends.actionError": "Couldn’t update friend. Try again.",
@@ -567,11 +566,11 @@ const en: Dictionary = {
   "profile.friends.add": "Add friend",
   "profile.friends.remove": "Remove",
   "profile.friends.playedEmpty":
-    "No one here yet. Join a session to meet players.",
-  "profile.friends.sessionsTitle": "Sessions you joined",
+    "No one here yet. Join an event to meet players.",
+  "profile.friends.sessionsTitle": "Events you joined",
   "profile.friends.sessionsLead":
-    "Open a session to see who played and manage friends.",
-  "profile.friends.sessionsEmpty": "You haven’t joined any sessions yet.",
+    "Open an event to see who played and manage friends.",
+  "profile.friends.sessionsEmpty": "You haven’t joined any events yet.",
   "profile.friends.you": "you",
   "common.player": "Player",
   "common.roblox": "Roblox",

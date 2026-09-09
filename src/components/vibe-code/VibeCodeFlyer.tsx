@@ -139,6 +139,13 @@ export function VibeCodeFlyer() {
         </p>
         <VibeCodeRegisterModal />
       </div>
+
+      <div className="vibe-cheatsheet">
+        <p>
+          Check out what we hacked over 4 weeks/sessions{" "}
+          <a href="/vibe-code/cheatsheet">View Cheatsheet</a>
+        </p>
+      </div>
     </article>
   );
 }

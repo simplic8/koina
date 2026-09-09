@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/vibe-code/cheatsheet",
+        destination: "/vibe-code/cheatsheet.html",
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
