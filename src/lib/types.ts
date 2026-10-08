@@ -251,3 +251,47 @@ export type ChatMessage = {
   user_id: string | null;
   created_at: string;
 };
+
+export type ForumPresenterState = {
+  slideIndex?: number;
+  lang?: "en" | "ja" | "both";
+  lightbox?: {
+    open: boolean;
+    src?: string;
+    alt?: string;
+    capHtml?: string;
+  } | null;
+  qview?: { open: boolean; index?: number | null } | null;
+  ui?: Record<string, string | number | boolean | null>;
+  /** Unique token so viewers re-apply even if slideIndex is unchanged. */
+  syncToken?: number;
+  /** Bumped when presenter clicks “Bring viewers” — pollers detect this. */
+  bringToken?: number;
+  force?: boolean;
+  prompt?: boolean;
+};
+
+export type ForumSession = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  storage_path: string;
+  created_by: string | null;
+  is_live: boolean;
+  presenter_state: ForumPresenterState;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ForumResponse = {
+  id: string;
+  session_id: string;
+  activity_key: string;
+  option_key: string;
+  participant_key: string;
+  payload: Record<string, unknown>;
+  user_id: string | null;
+  created_at: string;
+  updated_at: string;
+};

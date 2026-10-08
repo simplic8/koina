@@ -31,6 +31,7 @@ export function SiteHeader({ profile }: { profile: Profile | null }) {
       accent: "vibeCode" as const,
       isNew: true,
     },
+    { href: "/forum", label: t("nav.forum") },
   ];
 
   useEffect(() => {
