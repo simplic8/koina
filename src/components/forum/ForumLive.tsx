@@ -400,18 +400,22 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   );
 
   const loadTallies = useCallback(async () => {
-    const res = await fetch(`/api/forum/sessions/${session.id}/responses`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return;
-    const data = (await res.json()) as TalliesPayload;
-    if (data.tallies) {
-      const normalized: TalliesPayload = {
-        tallies: data.tallies,
-        meta: data.meta ?? {},
-      };
-      lastTalliesRef.current = normalized;
-      applyTalliesToIframe(iframeRef.current, normalized);
+    try {
+      const res = await fetch(`/api/forum/sessions/${session.id}/responses`, {
+        cache: "no-store",
+      });
+      if (!res.ok) return;
+      const data = (await res.json()) as TalliesPayload;
+      if (data.tallies) {
+        const normalized: TalliesPayload = {
+          tallies: data.tallies,
+          meta: data.meta ?? {},
+        };
+        lastTalliesRef.current = normalized;
+        applyTalliesToIframe(iframeRef.current, normalized);
+      }
+    } catch {
+      // Transient network / HMR / tab sleep — retry on next poll
     }
   }, [session.id]);
 
