@@ -70,10 +70,6 @@ export default function LoginPage() {
 
   async function signInOAuth(provider: "google" | "discord") {
     setError(null);
-    if (provider === "google") {
-      setMessage(t("auth.googleComingSoon"));
-      return;
-    }
     setMessage(null);
     setOauthLoading(provider);
     const { error: err } = await signInWithOAuthProvider(provider);
@@ -142,7 +138,9 @@ export default function LoginPage() {
             onClick={() => signInOAuth("google")}
             disabled={loading || Boolean(oauthLoading)}
           >
-            {t("auth.continueGoogle")}
+            {oauthLoading === "google"
+              ? `${t("auth.continueGoogle")}…`
+              : t("auth.continueGoogle")}
           </Button>
           <Button
             variant="dark"

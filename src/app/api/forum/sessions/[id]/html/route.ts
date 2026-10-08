@@ -18,7 +18,12 @@ export async function GET(request: Request, { params }: Params) {
 
   const { id } = await params;
   const modeParam = new URL(request.url).searchParams.get("mode");
-  const mode = modeParam === "present" ? "present" : "view";
+  const mode =
+    modeParam === "present"
+      ? "present"
+      : modeParam === "browse"
+        ? "browse"
+        : "view";
 
   const { data: session, error } = await service
     .from("forum_sessions")

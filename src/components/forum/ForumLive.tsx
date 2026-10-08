@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   applyTalliesToIframe,
   wireIframeActivities,
@@ -12,9 +13,15 @@ import type { ForumPresenterState, ForumSession } from "@/lib/types";
 
 type Props = {
   session: ForumSession;
-  mode: "present" | "view";
+  mode: "present" | "view" | "browse";
   isAdmin: boolean;
 };
+
+function modeLabel(mode: Props["mode"]) {
+  if (mode === "present") return "Presenter";
+  if (mode === "browse") return "Browse";
+  return "Viewer";
+}
 
 function participantKey() {
   if (typeof window === "undefined") return "server";
@@ -30,7 +37,7 @@ function participantKey() {
 }
 
 /** Per-tab id so present + view in the same browser never collide. */
-function connectionKey(role: "present" | "view") {
+function connectionKey(role: "present" | "view" | "browse") {
   if (typeof window === "undefined") return `server:${role}`;
   const key = "koina-forum-tab";
   let tab = window.sessionStorage.getItem(key);
@@ -174,6 +181,7 @@ function applySlideToIframe(
 }
 
 export function ForumLive({ session, mode, isAdmin }: Props) {
+  const router = useRouter();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const channelRef = useRef<ReturnType<
     NonNullable<ReturnType<typeof createClient>>["channel"]
@@ -185,7 +193,9 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [live, setLive] = useState(session.is_live);
-  const [status, setStatus] = useState("Connecting…");
+  const [status, setStatus] = useState(
+    mode === "browse" ? "Browsing on your own" : "Connecting…",
+  );
   const [slideLabel, setSlideLabel] = useState<string>(() =>
     typeof session.presenter_state?.slideIndex === "number"
       ? `Slide ${session.presenter_state.slideIndex + 1}`
@@ -407,6 +417,11 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
 
   // Realtime (best-effort) + flush queued broadcasts
   useEffect(() => {
+    if (mode === "browse") {
+      setStatus("Browsing on your own");
+      return;
+    }
+
     const supabase = createClient();
     if (!supabase) {
       setStatus(
@@ -512,6 +527,9 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
 
   // Presence heartbeat — tracks connected viewers (works without Realtime)
   useEffect(() => {
+    // Browse mode: free navigation, do not join viewer/presenter presence
+    if (mode === "browse") return;
+
     let cancelled = false;
 
     async function beat() {
@@ -679,6 +697,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         } else if (mode === "present") {
           postToFrame("request-state");
         }
+        // browse: free navigation — do not force presenter slide
         void loadTallies();
         return;
       }
@@ -887,7 +906,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     markFrameReady();
     if (mode === "present") {
       postToFrame("request-state");
-    } else {
+    } else if (mode === "view") {
       applyViewerState({ ...lastStateRef.current, force: true });
     }
 
@@ -898,6 +917,11 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       participantKey: participantKeyRef.current,
       isPresenter: mode === "present" && isAdmin,
       onTallies: (payload) => {
+        if (mode === "browse") {
+          lastTalliesRef.current = payload;
+          applyTalliesToIframe(iframeRef.current, payload);
+          return;
+        }
         broadcastTallies(payload);
       },
       onError: (message) => setError(message),
@@ -938,9 +962,9 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
             title={
               promptNote ||
               [
-                mode === "present" ? "Presenter" : "Viewer",
+                modeLabel(mode),
                 status,
-                slideLabel,
+                mode === "browse" ? "" : slideLabel,
                 ready ? "" : "loading deck…",
               ]
                 .filter(Boolean)
@@ -949,21 +973,83 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
           >
             {promptNote
               ? promptNote
-              : `${mode === "present" ? "Presenter" : "Viewer"} · ${status}${
-                  slideLabel ? ` · ${slideLabel}` : ""
+              : `${modeLabel(mode)} · ${status}${
+                  mode !== "browse" && slideLabel ? ` · ${slideLabel}` : ""
                 }${ready ? "" : " · loading deck…"}`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className="rounded border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80"
-            title="People connected in the last 30 seconds"
-          >
-            {viewerCount} {viewerCount === 1 ? "viewer" : "viewers"}
-            {presenterCount > 0
-              ? ` · ${presenterCount} presenting`
-              : ""}
-          </span>
+          {mode === "present" ? (
+            <span
+              className="rounded border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80"
+              title="People connected in the last 30 seconds"
+            >
+              {viewerCount} {viewerCount === 1 ? "viewer" : "viewers"}
+              {presenterCount > 0
+                ? ` · ${presenterCount} presenting`
+                : ""}
+            </span>
+          ) : (
+            <>
+              <span
+                className="rounded border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80"
+                title={
+                  mode === "view"
+                    ? "People connected in the last 30 seconds"
+                    : "You are not following the presenter"
+                }
+              >
+                {mode === "view"
+                  ? `${viewerCount} ${viewerCount === 1 ? "viewer" : "viewers"}${
+                      presenterCount > 0
+                        ? ` · ${presenterCount} presenting`
+                        : ""
+                    }`
+                  : "Not synced"}
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={mode === "view"}
+                aria-label={
+                  mode === "view"
+                    ? "Sync with presenter is on"
+                    : "Sync with presenter is off"
+                }
+                title={
+                  mode === "view"
+                    ? "Following the presenter — click to browse freely"
+                    : "Browsing freely — click to follow the presenter"
+                }
+                onClick={() => {
+                  router.replace(
+                    mode === "view"
+                      ? `/forum/${session.id}/browse`
+                      : `/forum/${session.id}/view`,
+                  );
+                }}
+                className={`inline-flex items-center gap-2 rounded border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  mode === "view"
+                    ? "border-[#f5a524]/50 text-[#f5a524] hover:bg-[#f5a524]/10"
+                    : "border-white/20 text-white/80 hover:border-white/40"
+                }`}
+              >
+                <span
+                  className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${
+                    mode === "view" ? "bg-[#f5a524]" : "bg-white/25"
+                  }`}
+                  aria-hidden
+                >
+                  <span
+                    className={`absolute top-0.5 h-3 w-3 rounded-full bg-[#0a0d18] transition-transform ${
+                      mode === "view" ? "left-3.5" : "left-0.5"
+                    }`}
+                  />
+                </span>
+                Sync {mode === "view" ? "on" : "off"}
+              </button>
+            </>
+          )}
           {mode === "present" ? (
             <button
               type="button"

@@ -5,7 +5,21 @@
  */
 export function getConfiguredSiteOrigin(): string | null {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
-  return configured || null;
+  if (!configured) return null;
+  try {
+    const url = new URL(configured);
+    // Production hosts must use https — http://koina.space breaks OAuth allow lists.
+    if (
+      url.protocol === "http:" &&
+      url.hostname !== "localhost" &&
+      url.hostname !== "127.0.0.1"
+    ) {
+      url.protocol = "https:";
+    }
+    return url.origin;
+  } catch {
+    return configured;
+  }
 }
 
 function isLocalOrigin(origin: string) {

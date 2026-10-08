@@ -54,13 +54,16 @@ export default async function ForumSessionPage({ params }: Props) {
           <p className="mb-6 text-ink-70">{session.description}</p>
         ) : (
           <p className="mb-6 text-ink-70">
-            Join as a viewer to follow the presenter and take part in
-            activities.
+            Join as a viewer to follow the presenter, or browse the deck on your
+            own without syncing.
           </p>
         )}
 
         <div className="flex flex-wrap gap-3">
           <Button href={`/forum/${session.id}/view`}>Join as viewer</Button>
+          <Button href={`/forum/${session.id}/browse`} variant="outline">
+            Browse only
+          </Button>
           {isAdmin ? (
             <Button href={`/forum/${session.id}/present`} variant="dark">
               Present
@@ -79,6 +82,10 @@ export default async function ForumSessionPage({ params }: Props) {
           <li>
             <strong className="text-ink">Viewers</strong> stay on the presenter’s
             slide and can answer polls / activities — saved to Supabase.
+          </li>
+          <li>
+            <strong className="text-ink">Browse</strong> lets you navigate the
+            deck freely without joining the live sync or viewer count.
           </li>
           <li>
             Status:{" "}

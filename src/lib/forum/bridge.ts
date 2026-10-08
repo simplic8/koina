@@ -1,6 +1,6 @@
 /** Injected into uploaded deck HTML for presenter/viewer sync. */
 export function buildForumBridgeScript(
-  mode: "present" | "view",
+  mode: "present" | "view" | "browse",
   sessionId: string,
 ) {
   return `<script>
@@ -900,7 +900,7 @@ export function buildForumBridgeScript(
 
 export function injectForumBridge(
   html: string,
-  mode: "present" | "view",
+  mode: "present" | "view" | "browse",
   sessionId: string,
 ) {
   const bridge = buildForumBridgeScript(mode, sessionId);
