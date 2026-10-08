@@ -279,6 +279,7 @@ export type ForumSession = {
   storage_path: string;
   created_by: string | null;
   is_live: boolean;
+  is_hidden: boolean;
   presenter_state: ForumPresenterState;
   created_at: string;
   updated_at: string;

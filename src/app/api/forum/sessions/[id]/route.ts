@@ -27,7 +27,7 @@ export async function GET(_request: Request, { params }: Params) {
   const { data, error } = await service
     .from("forum_sessions")
     .select(
-      "id, slug, title, description, is_live, presenter_state, created_at, updated_at, created_by",
+      "id, slug, title, description, is_live, is_hidden, presenter_state, created_at, updated_at, created_by",
     )
     .eq("id", id)
     .maybeSingle();
@@ -68,6 +68,7 @@ export async function PATCH(request: Request, { params }: Params) {
   const { id } = await params;
   let body: {
     is_live?: boolean;
+    is_hidden?: boolean;
     presenter_state?: Record<string, unknown>;
     title?: string;
     description?: string | null;
@@ -82,6 +83,7 @@ export async function PATCH(request: Request, { params }: Params) {
     updated_at: new Date().toISOString(),
   };
   if (typeof body.is_live === "boolean") patch.is_live = body.is_live;
+  if (typeof body.is_hidden === "boolean") patch.is_hidden = body.is_hidden;
   if (body.presenter_state && typeof body.presenter_state === "object") {
     patch.presenter_state = body.presenter_state;
   }
@@ -100,7 +102,7 @@ export async function PATCH(request: Request, { params }: Params) {
     .update(patch)
     .eq("id", id)
     .select(
-      "id, slug, title, description, is_live, presenter_state, created_at, updated_at, created_by",
+      "id, slug, title, description, is_live, is_hidden, presenter_state, created_at, updated_at, created_by",
     )
     .maybeSingle();
 

@@ -17,22 +17,31 @@ export default async function ForumPage() {
   const isAdmin = isAdminProfile(profile);
   const service = createServiceClient();
 
-  const { data: sessions } = service
-    ? await service
-        .from("forum_sessions")
-        .select(
-          "id, slug, title, description, is_live, created_at, updated_at",
-        )
-        .order("created_at", { ascending: false })
-    : { data: [] as Array<{
-        id: string;
-        slug: string;
-        title: string;
-        description: string | null;
-        is_live: boolean;
-        created_at: string;
-        updated_at: string;
-      }> };
+  type SessionListRow = {
+    id: string;
+    slug: string;
+    title: string;
+    description: string | null;
+    is_live: boolean;
+    is_hidden: boolean;
+    created_at: string;
+    updated_at: string;
+  };
+
+  let sessions: SessionListRow[] = [];
+  if (service) {
+    let query = service
+      .from("forum_sessions")
+      .select(
+        "id, slug, title, description, is_live, is_hidden, created_at, updated_at",
+      )
+      .order("created_at", { ascending: false });
+    if (!isAdmin) {
+      query = query.eq("is_hidden", false);
+    }
+    const { data } = await query;
+    sessions = (data ?? []) as SessionListRow[];
+  }
 
   return (
     <section className="py-12">
@@ -54,7 +63,7 @@ export default async function ForumPage() {
         ) : null}
 
         <h2 className="mb-4 text-xl font-semibold">Sessions</h2>
-        <ForumSessionList sessions={sessions ?? []} isAdmin={isAdmin} />
+        <ForumSessionList sessions={sessions} isAdmin={isAdmin} />
       </div>
     </section>
   );

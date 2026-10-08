@@ -351,6 +351,7 @@ create table if not exists public.forum_sessions (
   storage_path text not null,
   created_by uuid references public.profiles (id) on delete set null,
   is_live boolean not null default false,
+  is_hidden boolean not null default false,
   presenter_state jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -358,6 +359,10 @@ create table if not exists public.forum_sessions (
 
 create index if not exists forum_sessions_created_at_idx
   on public.forum_sessions (created_at desc);
+
+create index if not exists forum_sessions_visible_created_at_idx
+  on public.forum_sessions (created_at desc)
+  where is_hidden = false;
 
 create table if not exists public.forum_responses (
   id uuid primary key default gen_random_uuid(),
