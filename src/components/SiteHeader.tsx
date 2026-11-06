@@ -26,7 +26,7 @@ export function SiteHeader({ profile }: { profile: Profile | null }) {
     { href: "/#ethos", label: t("nav.ethos") },
     { href: "/#about", label: t("nav.about") },
     {
-      href: "/vibe-code",
+      href: "/vibe-code-hack2026",
       label: t("nav.vibeCode"),
       accent: "vibeCode" as const,
       isNew: true,
@@ -95,8 +95,8 @@ export function SiteHeader({ profile }: { profile: Profile | null }) {
                       {l.label}
                     </span>
                     {isNew ? (
-                      <span className="animate-new-badge pointer-events-none absolute right-0 bottom-0 translate-x-[55%] translate-y-[35%] rounded-[3px] bg-[#e11d48] px-1 py-[1px] font-[family-name:var(--font-ibm-plex-mono)] text-[8px] font-semibold leading-none tracking-[0.04em] text-white uppercase">
-                        {t("nav.new")}
+                      <span className="animate-new-badge pointer-events-none absolute right-0 bottom-0 translate-x-[55%] translate-y-[35%] rounded-[3px] bg-[#e11d48] px-1 py-[1px] font-[family-name:var(--font-ibm-plex-mono)] text-[8px] font-semibold leading-none tracking-[0.02em] text-white">
+                        #hack
                       </span>
                     ) : null}
                   </span>
