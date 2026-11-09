@@ -31,8 +31,11 @@ Use a **new** Supabase project for KOINA — do not reuse the JustVibing / Oshik
 4. If you previously applied the full JustVibing schema, also run [`supabase/cleanup_unused_tables.sql`](supabase/cleanup_unused_tables.sql)
 5. Auth → enable **Email**, **Google**, and **Discord** (optional)
 6. Auth → URL Configuration:
-   - **Site URL** = your production host (e.g. `https://koina.space`)
-   - **Redirect URLs**: production + `http://localhost:3000/auth/callback`
+   - **Site URL** = your production host (e.g. `https://www.koina.space` or `https://koina.space` — match the host users actually visit)
+   - **Redirect URLs** (include both apex and www if both resolve):
+     - `https://www.koina.space/auth/callback`
+     - `https://koina.space/auth/callback`
+     - `http://localhost:3000/auth/callback`
 7. Seeded admin: `admin@koina.space` / `Indigitous2026!` — change after first login
    - To rename an older seed admin, run [`supabase/fix_admin_seed.sql`](supabase/fix_admin_seed.sql)
 

@@ -8,6 +8,14 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
+  // When redirectTo is missing from Supabase Auth → Redirect URLs, OAuth falls
+  // back to Site URL as /?code=…. Forward that to the PKCE exchange route.
+  if (path === "/" && request.nextUrl.searchParams.has("code")) {
+    const callbackUrl = request.nextUrl.clone();
+    callbackUrl.pathname = "/auth/callback";
+    return NextResponse.redirect(callbackUrl);
+  }
+
   // Do not touch cookies on the OAuth/PKCE callback — getUser()/refresh can
   // drop the code-verifier cookie before exchangeCodeForSession runs.
   if (path.startsWith("/auth/callback")) {
