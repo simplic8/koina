@@ -290,6 +290,13 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const pendingBroadcastRef = useRef<ForumPresenterState | null>(null);
   const frameReadyRef = useRef(false);
   const persistChainRef = useRef(Promise.resolve());
+  const persistTimerRef = useRef<number | null>(null);
+  const persistPendingRef = useRef<ForumPresenterState | null>(null);
+  const broadcastRafRef = useRef<number | null>(null);
+  const broadcastPendingRef = useRef<{
+    state: ForumPresenterState;
+    event: string;
+  } | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [live, setLive] = useState(session.is_live);
@@ -337,7 +344,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     setReady(true);
   }, []);
 
-  const persistState = useCallback(
+  const flushPersist = useCallback(
     (state: ForumPresenterState) => {
       if (mode !== "present") return;
       const normalized = withSlideIndex(state, lastStateRef.current);
@@ -353,8 +360,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         bringToken: normalized.bringToken,
       };
 
-      persistChainRef.current = persistChainRef.current
-        .catch(() => undefined)
+      // Drop queued older PUTs — only the latest state matters for late joiners
+      persistChainRef.current = Promise.resolve()
         .then(async () => {
           try {
             const res = await fetch(`/api/forum/sessions/${session.id}/sync`, {
@@ -379,6 +386,31 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     [mode, session.id],
   );
 
+  /** Live viewers use realtime; debounce HTTP persist so PUT queues don't lag. */
+  const persistState = useCallback(
+    (state: ForumPresenterState, opts?: { immediate?: boolean }) => {
+      if (mode !== "present") return;
+      if (opts?.immediate) {
+        if (persistTimerRef.current != null) {
+          window.clearTimeout(persistTimerRef.current);
+          persistTimerRef.current = null;
+        }
+        persistPendingRef.current = null;
+        flushPersist(state);
+        return;
+      }
+      persistPendingRef.current = state;
+      if (persistTimerRef.current != null) return;
+      persistTimerRef.current = window.setTimeout(() => {
+        persistTimerRef.current = null;
+        const pending = persistPendingRef.current;
+        persistPendingRef.current = null;
+        if (pending) flushPersist(pending);
+      }, 250);
+    },
+    [flushPersist, mode],
+  );
+
   const sendBroadcast = useCallback(
     (state: ForumPresenterState, event = "presenter-state") => {
       const channel = channelRef.current;
@@ -386,10 +418,33 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         pendingBroadcastRef.current = state;
         return;
       }
-      void channel.send({
-        type: "broadcast",
-        event,
-        payload: state,
+      // Bring-viewers must not be coalesced away by a later presenter-state
+      if (event === "bring-viewers") {
+        void channel.send({
+          type: "broadcast",
+          event,
+          payload: state,
+        });
+        return;
+      }
+      // Coalesce to one realtime message per frame (latest wins)
+      broadcastPendingRef.current = { state, event };
+      if (broadcastRafRef.current != null) return;
+      broadcastRafRef.current = window.requestAnimationFrame(() => {
+        broadcastRafRef.current = null;
+        const pending = broadcastPendingRef.current;
+        broadcastPendingRef.current = null;
+        if (!pending) return;
+        const ch = channelRef.current;
+        if (!ch || !subscribedRef.current) {
+          pendingBroadcastRef.current = pending.state;
+          return;
+        }
+        void ch.send({
+          type: "broadcast",
+          event: pending.event,
+          payload: pending.state,
+        });
       });
     },
     [],
@@ -430,6 +485,15 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       const clickChanged =
         (normalized.lastClick?.at ?? null) !==
         (lastStateRef.current.lastClick?.at ?? null);
+      const stepChanged =
+        (normalized.step ?? 0) !== (lastStateRef.current.step ?? 0);
+      const lightboxChanged =
+        Boolean(normalized.lightbox?.open) !==
+          Boolean(lastStateRef.current.lightbox?.open) ||
+        (normalized.lightbox?.group || "") !==
+          (lastStateRef.current.lightbox?.group || "") ||
+        (normalized.lightbox?.index ?? null) !==
+          (lastStateRef.current.lightbox?.index ?? null);
       const forced = Boolean(state.force || state.prompt || bringChanged);
       const stampChanged = Boolean(
         updatedAt && updatedAt !== lastUpdatedAtRef.current,
@@ -438,6 +502,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       if (
         !tokenChanged &&
         !slideChanged &&
+        !stepChanged &&
+        !lightboxChanged &&
         !clickChanged &&
         !forced &&
         !stampChanged
@@ -486,8 +552,10 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       sendBroadcast(next);
       if (opts?.bring) {
         sendBroadcast(next, "bring-viewers");
+        persistState(next, { immediate: true });
+      } else {
+        persistState(next);
       }
-      persistState(next);
     },
     [persistState, sendBroadcast],
   );
@@ -739,7 +807,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     }
 
     void pull();
-    const id = window.setInterval(pull, 400);
+    // HTTP fallback when realtime is slow/unavailable
+    const id = window.setInterval(pull, 200);
     return () => {
       cancelled = true;
       window.clearInterval(id);
@@ -771,7 +840,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         ...deck,
         syncToken: Date.now(),
       });
-    }, 350);
+    }, 120);
     return () => window.clearInterval(id);
   }, [broadcastState, mode, postToFrame]);
 
@@ -782,7 +851,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       const state = lastStateRef.current;
       if (typeof state.slideIndex !== "number" || !frameReadyRef.current) return;
       postToFrame("force-slide", state);
-    }, 1000);
+    }, 500);
     return () => window.clearInterval(id);
   }, [mode, postToFrame]);
 

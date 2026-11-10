@@ -13,6 +13,7 @@ export function buildForumBridgeScript(
   var forceGo = null;
   var pendingState = null;
   var lastClickPayload = null;
+  var emitRaf = 0;
   var CHROME_SEL = "#bar, #prev, #next, #grid, #gridbtn, #pg, #koinaBring, #clock, .poll, #cloud, #nwCats, #nwClear, #nwInput, #spGrid, #spReset, [data-reset], input, textarea, select, label";
 
   function post(type, payload) {
@@ -297,6 +298,20 @@ export function buildForumBridgeScript(
       for (var k in extra) state[k] = extra[k];
     }
     post("presenter-state", state);
+  }
+
+  /** Coalesce to next frame so deck click handlers (next/lightbox) finish first. */
+  function scheduleEmit(extra) {
+    if (MODE !== "present" || window.__koinaApplying) return;
+    if (extra && typeof extra === "object") {
+      emitState(extra);
+      return;
+    }
+    if (emitRaf) return;
+    emitRaf = requestAnimationFrame(function() {
+      emitRaf = 0;
+      if (!window.__koinaApplying) emitState();
+    });
   }
 
   function applyLang(lang) {
@@ -723,7 +738,7 @@ export function buildForumBridgeScript(
       if (pgTotal) pgTotal.textContent = String(slides.length);
       if (prog) prog.style.width = ((i + 1) / slides.length * 100) + "%";
       if (secname) secname.textContent = (slides[i] && slides[i].dataset.title) || "";
-      if (!fromRemote && !window.__koinaApplying) emitState();
+      if (!fromRemote && !window.__koinaApplying) scheduleEmit();
     }
 
     forceGo = localGo;
@@ -735,7 +750,7 @@ export function buildForumBridgeScript(
       window.go = function(i) {
         if (MODE === "view" && !window.__koinaApplying) return;
         try { originalGo(i); } catch (e) { localGo(i, window.__koinaApplying); }
-        if (!window.__koinaApplying) emitState();
+        if (!window.__koinaApplying) scheduleEmit();
       };
     } else {
       window.go = function(i) {
@@ -751,23 +766,21 @@ export function buildForumBridgeScript(
 
     $$("#bar .seg button").forEach(function(b) {
       b.addEventListener("click", function() {
-        setTimeout(function() {
-          if (!window.__koinaApplying) emitState();
-        }, 0);
+        scheduleEmit();
       });
     });
 
     var lb = lightboxRoot();
     if (lb) {
       new MutationObserver(function() {
-        if (!window.__koinaApplying && MODE === "present") emitState();
+        if (!window.__koinaApplying && MODE === "present") scheduleEmit();
       }).observe(lb, { attributes: true, attributeFilter: ["hidden"] });
     }
 
     slides.forEach(function(s) {
       new MutationObserver(function() {
         if (!window.__koinaApplying && MODE === "present" && isActiveSlide(s)) {
-          emitState();
+          scheduleEmit();
         }
       }).observe(s, { attributes: true, attributeFilter: ["class"] });
     });
@@ -777,7 +790,7 @@ export function buildForumBridgeScript(
       var el = $(sel);
       if (!el) return;
       el.addEventListener("click", function() {
-        setTimeout(function(){ if (!window.__koinaApplying) emitState(); }, 40);
+        scheduleEmit();
       }, true);
     });
 
@@ -1144,15 +1157,15 @@ export function buildForumBridgeScript(
             lastClickPayload = { path: path || undefined, thumb: thumb, at: Date.now() };
           }
         }
-        setTimeout(function(){ emitState(); }, 40);
+        scheduleEmit();
       }, true);
       document.addEventListener("keydown", function(e) {
         if (["ArrowRight","ArrowLeft","PageDown","PageUp"," ","Home","End"].indexOf(e.key) >= 0) {
-          setTimeout(function(){ emitState(); }, 40);
+          scheduleEmit();
         }
       }, true);
 
-      // Reliable slide detection — deck go() is private inside an IIFE
+      // Safety net if an interaction misses scheduleEmit
       var lastIdx = currentSlideIndex();
       var lastLang = currentLang();
       var lastStep = currentStep();
@@ -1166,10 +1179,10 @@ export function buildForumBridgeScript(
           lastIdx = idx;
           lastLang = lang;
           lastStep = step;
-          emitState();
+          scheduleEmit();
         } else if (lb.open !== (window.__koinaLastLbOpen === true)) {
           window.__koinaLastLbOpen = lb.open;
-          emitState();
+          scheduleEmit();
         } else if (
           lb.open &&
           (
@@ -1179,9 +1192,9 @@ export function buildForumBridgeScript(
         ) {
           window.__koinaLastLbGroup = lb.group || "";
           window.__koinaLastLbIndex = lb.index;
-          emitState();
+          scheduleEmit();
         }
-      }, 200);
+      }, 100);
     }
 
     if (pendingState) {
