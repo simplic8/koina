@@ -348,7 +348,17 @@ export function buildForumBridgeScript(
     var box = lightboxRoot();
     if (!box) return;
     if (!lb || !lb.open) {
-      box.hidden = true;
+      if (!box.hidden) box.hidden = true;
+      return;
+    }
+    // Already showing this artifact — don't re-click (restarts transitions)
+    var current = readLightbox();
+    if (
+      current.open &&
+      (current.group || "") === (lb.group || "") &&
+      (current.index != null ? current.index : -1) ===
+        (typeof lb.index === "number" ? lb.index : -1)
+    ) {
       return;
     }
     // Prefer opening the local thumb so gallery prev/next keeps working
@@ -380,11 +390,17 @@ export function buildForumBridgeScript(
     var nodes = slide.querySelectorAll("[data-step]");
     if (!nodes.length) return;
     var max = 0;
+    var dirty = false;
     for (var i = 0; i < nodes.length; i++) {
       var n = parseInt(nodes[i].getAttribute("data-step") || "0", 10) || 0;
       if (n > max) max = n;
-      nodes[i].classList.toggle("pending", n > step);
+      var shouldPending = n > step;
+      if (nodes[i].classList.contains("pending") !== shouldPending) {
+        nodes[i].classList.toggle("pending", shouldPending);
+        dirty = true;
+      }
     }
+    if (!dirty && currentStep() === step) return;
     var dots = $("#dots");
     if (dots) {
       var html = "";
@@ -452,31 +468,30 @@ export function buildForumBridgeScript(
       pendingState = state;
       return;
     }
+    var slideIndex = typeof state.slideIndex === "number" ? state.slideIndex : currentSlideIndex();
+    var step = typeof state.step === "number" ? state.step : 0;
+    var lbKey = state.lightbox && state.lightbox.open
+      ? String(state.lightbox.group || "") + ":" + String(state.lightbox.index)
+      : "closed";
+    var clickAt = state.lastClick && typeof state.lastClick.at === "number" ? state.lastClick.at : 0;
+    var applyKey = slideIndex + "|" + step + "|" + lbKey + "|" + clickAt + "|" + (state.lang || "");
+    // Identical apply — skip so CSS transitions are not restarted
+    if (window.__koinaApplyKey === applyKey && !state.prompt) {
+      return;
+    }
+    window.__koinaApplyKey = applyKey;
+
     window.__koinaApplying = true;
     try {
       if (typeof state.slideIndex === "number") {
-        forceGo(state.slideIndex, true);
-        // Re-apply on next frames — deck private go() can fight the first paint
-        if (state.force || state.prompt) {
-          var idx = state.slideIndex;
-          requestAnimationFrame(function() {
-            if (forceGo) forceGo(idx, true);
-            requestAnimationFrame(function() {
-              if (forceGo) forceGo(idx, true);
-            });
-          });
+        // Skip re-navigation when already on this slide — avoids double CSS transitions
+        if (currentSlideIndex() !== state.slideIndex) {
+          forceGo(state.slideIndex, true);
         }
       }
       if (state.lang) applyLang(state.lang);
       applyArtifacts(state);
-      // Beat any late deck render()/hashchange that resets build steps
-      requestAnimationFrame(function() {
-        window.__koinaApplying = true;
-        try { applyArtifacts(state); } finally {
-          setTimeout(function(){ window.__koinaApplying = false; }, 80);
-        }
-      });
-      if (state.force || state.prompt) {
+      if (state.prompt) {
         try {
           var slides = $$(".slide");
           var i = typeof state.slideIndex === "number" ? state.slideIndex : 0;
@@ -488,7 +503,7 @@ export function buildForumBridgeScript(
         } catch (e) {}
       }
     } finally {
-      setTimeout(function(){ window.__koinaApplying = false; }, 120);
+      setTimeout(function(){ window.__koinaApplying = false; }, 80);
     }
   }
 
@@ -682,7 +697,8 @@ export function buildForumBridgeScript(
     function paintCurSlides(i) {
       for (var s = 0; s < slides.length; s++) {
         var on = s === i;
-        slides[s].classList.toggle("cur", on);
+        var wasOn = slides[s].classList.contains("cur");
+        if (on !== wasOn) slides[s].classList.toggle("cur", on);
         slides[s].classList.remove("push-in", "push-out");
         // Clear any prior display overrides from legacy sync
         slides[s].style.removeProperty("display");
@@ -709,19 +725,23 @@ export function buildForumBridgeScript(
       if (usesCur) {
         // Never set location.hash on remote apply — hashchange resets private step to 0
         // and wipes build-step / artifact sync. Paint classes only.
-        paintCurSlides(i);
+        var already = slides[i] && slides[i].classList.contains("cur");
+        if (!already) paintCurSlides(i);
         if (!fromRemote) {
           try { history.replaceState(null, "", "#s" + (i + 1)); } catch (e) {}
         }
       } else {
         // Classic decks: .on + display
-        for (var s = 0; s < slides.length; s++) {
-          var on = s === i;
-          slides[s].classList.toggle("on", on);
-          if (on) {
-            slides[s].style.setProperty("display", "flex", "important");
-          } else {
-            slides[s].style.setProperty("display", "none", "important");
+        var alreadyOn = slides[i] && slides[i].classList.contains("on");
+        if (!alreadyOn) {
+          for (var s = 0; s < slides.length; s++) {
+            var on = s === i;
+            slides[s].classList.toggle("on", on);
+            if (on) {
+              slides[s].style.setProperty("display", "flex", "important");
+            } else {
+              slides[s].style.setProperty("display", "none", "important");
+            }
           }
         }
         if (!fromRemote) {

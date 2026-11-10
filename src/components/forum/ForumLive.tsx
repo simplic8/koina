@@ -159,127 +159,6 @@ function readDeckStateFromIframe(
   }
 }
 
-type DeckWindow = Window & {
-  __koinaForceGo?: (index: number, fromRemote?: boolean) => void;
-};
-
-/** Force a slide in the same-origin viewer iframe (bypasses postMessage). */
-function applySlideToIframe(
-  iframe: HTMLIFrameElement | null,
-  state: ForumPresenterState,
-) {
-  try {
-    const doc = iframe?.contentDocument;
-    const win = iframe?.contentWindow as DeckWindow | null;
-    if (!doc) return false;
-
-    const slides = Array.from(doc.querySelectorAll<HTMLElement>(".slide"));
-    if (!slides.length || typeof state.slideIndex !== "number") return false;
-
-    const i = Math.max(0, Math.min(slides.length - 1, state.slideIndex));
-    const usesCur = slides.some((s) => s.classList.contains("cur"));
-    if (typeof win?.__koinaForceGo === "function") {
-      win.__koinaForceGo(i, true);
-    } else if (usesCur) {
-      slides.forEach((slide, idx) => {
-        const on = idx === i;
-        slide.classList.toggle("cur", on);
-        slide.classList.remove("push-in", "push-out");
-        slide.style.removeProperty("display");
-        if (on) slide.removeAttribute("aria-hidden");
-        else slide.setAttribute("aria-hidden", "true");
-      });
-      const count = doc.querySelector("#count");
-      if (count) count.textContent = `${i + 1} / ${slides.length}`;
-      const ttl = doc.querySelector("#ttl");
-      if (ttl) ttl.textContent = slides[i]?.dataset.title || "";
-    } else {
-      slides.forEach((slide, idx) => {
-        const on = idx === i;
-        slide.classList.toggle("on", on);
-        slide.style.setProperty("display", on ? "flex" : "none", "important");
-      });
-      const pg = doc.querySelector("#pg") as HTMLInputElement | null;
-      if (pg) pg.value = String(i + 1);
-      const pgTotal = doc.querySelector("#pgTotal");
-      if (pgTotal) pgTotal.textContent = String(slides.length);
-      const prog = doc.querySelector("#prog") as HTMLElement | null;
-      if (prog) prog.style.width = `${((i + 1) / slides.length) * 100}%`;
-      const secname = doc.querySelector("#secname");
-      if (secname) {
-        secname.textContent = slides[i]?.dataset.title || "";
-      }
-    }
-
-    if (typeof state.step === "number") {
-      const active = slides[i];
-      if (active) {
-        active.querySelectorAll("[data-step]").forEach((el) => {
-          const n = parseInt(el.getAttribute("data-step") || "0", 10) || 0;
-          el.classList.toggle("pending", n > state.step!);
-        });
-      }
-    }
-
-    const lb = doc.querySelector("#lightbox, #lb") as HTMLElement | null;
-    if (lb && state.lightbox) {
-      if (!state.lightbox.open) {
-        lb.hidden = true;
-      } else {
-        const group = state.lightbox.group;
-        const index = state.lightbox.index;
-        let opened = false;
-        if (typeof index === "number") {
-          const root = group
-            ? (doc.querySelector(
-                `.thumbs[data-group="${CSS.escape(group)}"]`,
-              ) as HTMLElement | null)
-            : (doc.querySelector(".thumbs") as HTMLElement | null);
-          const btn = root?.querySelectorAll(".thumb")[index] as
-            | HTMLElement
-            | undefined;
-          if (btn && typeof btn.click === "function") {
-            btn.click();
-            opened = true;
-          }
-        }
-        if (!opened) {
-          const img = doc.querySelector("#lbImg") as HTMLImageElement | null;
-          const cap = doc.querySelector("#lbCap");
-          if (img && state.lightbox.src && !/^data:/i.test(state.lightbox.src)) {
-            img.src = state.lightbox.src;
-            img.alt = state.lightbox.alt || "";
-          }
-          if (cap) {
-            cap.textContent = state.lightbox.capHtml || state.lightbox.alt || "";
-          }
-          lb.hidden = false;
-        }
-      }
-    }
-
-    if (state.lang) {
-      doc.body.classList.remove("m-en", "m-ja", "m-both");
-      doc.body.classList.add(`m-${state.lang}`);
-    }
-
-    if (state.force || state.prompt) {
-      const target = slides[i];
-      if (target) {
-        target.scrollTop = 0;
-        target.classList.add("koina-sync-flash");
-        window.setTimeout(
-          () => target.classList.remove("koina-sync-flash"),
-          700,
-        );
-      }
-    }
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export function ForumLive({ session, mode, isAdmin }: Props) {
   const router = useRouter();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -453,19 +332,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const pushToFrame = useCallback(
     (state: ForumPresenterState) => {
       if (!frameReadyRef.current) return;
-      const applied = applySlideToIframe(iframeRef.current, {
-        ...state,
-        force: true,
-      });
-      // Keep postMessage as a secondary path for bridge-managed UI (lightbox etc.)
+      // Single apply path — dual host+bridge applies caused slide transitions to fire twice
       postToFrame("force-slide", { ...state, force: true });
-      if (!applied) {
-        // Retry shortly — deck script may still be booting
-        window.setTimeout(() => {
-          applySlideToIframe(iframeRef.current, { ...state, force: true });
-          postToFrame("force-slide", { ...state, force: true });
-        }, 120);
-      }
     },
     [postToFrame],
   );
@@ -473,6 +341,17 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const applyViewerState = useCallback(
     (state: ForumPresenterState, updatedAt?: string) => {
       const normalized = withSlideIndex(state, lastStateRef.current);
+
+      // HTTP poll often lags debounced persist — never rewind past a newer realtime state
+      if (
+        typeof normalized.syncToken === "number" &&
+        typeof lastSyncTokenRef.current === "number" &&
+        normalized.syncToken < lastSyncTokenRef.current &&
+        !state.force &&
+        !state.prompt
+      ) {
+        return;
+      }
 
       const tokenChanged =
         typeof normalized.syncToken === "number" &&
@@ -495,19 +374,20 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         (normalized.lightbox?.index ?? null) !==
           (lastStateRef.current.lightbox?.index ?? null);
       const forced = Boolean(state.force || state.prompt || bringChanged);
-      const stampChanged = Boolean(
-        updatedAt && updatedAt !== lastUpdatedAtRef.current,
-      );
+      const visualChanged =
+        slideChanged ||
+        stepChanged ||
+        lightboxChanged ||
+        clickChanged ||
+        forced;
 
-      if (
-        !tokenChanged &&
-        !slideChanged &&
-        !stepChanged &&
-        !lightboxChanged &&
-        !clickChanged &&
-        !forced &&
-        !stampChanged
-      ) {
+      // Same visuals (duplicate heartbeat / late persist) — refresh refs only
+      if (!visualChanged) {
+        if (tokenChanged && typeof normalized.syncToken === "number") {
+          lastSyncTokenRef.current = normalized.syncToken;
+          lastStateRef.current = normalized;
+        }
+        if (updatedAt) lastUpdatedAtRef.current = updatedAt;
         return;
       }
 
@@ -522,7 +402,12 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       if (updatedAt) lastUpdatedAtRef.current = updatedAt;
       setSlideLabel(`Slide ${normalized.slideIndex + 1}`);
 
-      pushToFrame({ ...normalized, force: true, prompt: forced });
+      pushToFrame({
+        ...normalized,
+        force: true,
+        // Flash outline only for explicit bring-viewers, not every sync
+        prompt: Boolean(state.prompt || bringChanged),
+      });
 
       if (state.prompt || bringChanged) {
         setPromptNote("Presenter moved everyone to their slide");
@@ -807,8 +692,9 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     }
 
     void pull();
-    // HTTP fallback when realtime is slow/unavailable
-    const id = window.setInterval(pull, 200);
+    // HTTP fallback when realtime is slow/unavailable (keep slower than realtime
+    // so a lagging persist cannot thrash over a fresh broadcast)
+    const id = window.setInterval(pull, 750);
     return () => {
       cancelled = true;
       window.clearInterval(id);
@@ -844,14 +730,24 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     return () => window.clearInterval(id);
   }, [broadcastState, mode, postToFrame]);
 
-  // Viewer: keep re-asserting slide in case the deck fights back
+  // Viewer: only re-assert when the deck visually drifted (avoid re-triggering transitions)
   useEffect(() => {
     if (mode !== "view") return;
     const id = window.setInterval(() => {
-      const state = lastStateRef.current;
-      if (typeof state.slideIndex !== "number" || !frameReadyRef.current) return;
-      postToFrame("force-slide", state);
-    }, 500);
+      if (!frameReadyRef.current) return;
+      const want = lastStateRef.current;
+      if (typeof want.slideIndex !== "number") return;
+      const deck = readDeckStateFromIframe(iframeRef.current);
+      if (!deck) return;
+      const drifted =
+        deck.slideIndex !== want.slideIndex ||
+        (deck.step ?? 0) !== (want.step ?? 0) ||
+        Boolean(deck.lightbox?.open) !== Boolean(want.lightbox?.open) ||
+        (deck.lightbox?.group || "") !== (want.lightbox?.group || "") ||
+        (deck.lightbox?.index ?? null) !== (want.lightbox?.index ?? null);
+      if (!drifted) return;
+      postToFrame("force-slide", { ...want, force: true });
+    }, 1000);
     return () => window.clearInterval(id);
   }, [mode, postToFrame]);
 
