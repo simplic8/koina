@@ -88,6 +88,14 @@ export function buildForumBridgeScript(
   function $(sel) { return document.querySelector(sel); }
   function $$(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
 
+  function isActiveSlide(el) {
+    return el && (el.classList.contains("on") || el.classList.contains("cur"));
+  }
+
+  function lightboxRoot() {
+    return $("#lightbox") || $("#lb");
+  }
+
   function currentSlideIndex() {
     // Prefer the deck's page input — private go() always updates #pg
     var pg = $("#pg");
@@ -95,21 +103,36 @@ export function buildForumBridgeScript(
       var n = parseInt(pg.value, 10);
       if (n >= 1 && isFinite(n)) return n - 1;
     }
+    var slides = $$(".slide");
+    for (var i = 0; i < slides.length; i++) {
+      if (isActiveSlide(slides[i])) return i;
+    }
     var hash = String(location.hash || "").match(/^#s(\d+)$/);
     if (hash) {
       var h = parseInt(hash[1], 10);
       if (h >= 1 && isFinite(h)) return h - 1;
     }
-    var slides = $$(".slide");
-    for (var i = 0; i < slides.length; i++) {
-      if (slides[i].classList.contains("on")) return i;
-    }
     // Visible slide fallback (inline styles / CSS)
     for (var j = 0; j < slides.length; j++) {
       var st = window.getComputedStyle(slides[j]);
-      if (st.display !== "none" && st.visibility !== "hidden") return j;
+      if (st.display !== "none" && st.visibility !== "hidden" && st.opacity !== "0") return j;
     }
     return 0;
+  }
+
+  function currentStep() {
+    var slides = $$(".slide");
+    var slide = slides[currentSlideIndex()];
+    if (!slide) return 0;
+    var nodes = slide.querySelectorAll("[data-step]");
+    if (!nodes.length) return 0;
+    var max = 0;
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].classList.contains("pending")) continue;
+      var n = parseInt(nodes[i].getAttribute("data-step") || "0", 10);
+      if (isFinite(n) && n > max) max = n;
+    }
+    return max;
   }
 
   function currentLang() {
@@ -119,7 +142,7 @@ export function buildForumBridgeScript(
   }
 
   function readLightbox() {
-    var lb = $("#lightbox");
+    var lb = lightboxRoot();
     if (!lb || lb.hidden) return { open: false };
     var img = $("#lbImg");
     var cap = $("#lbCap");
@@ -127,7 +150,7 @@ export function buildForumBridgeScript(
       open: true,
       src: img ? img.getAttribute("src") || "" : "",
       alt: img ? img.getAttribute("alt") || "" : "",
-      capHtml: cap ? cap.innerHTML : ""
+      capHtml: cap ? (cap.innerHTML || cap.textContent || "") : ""
     };
   }
 
@@ -185,12 +208,17 @@ export function buildForumBridgeScript(
     if (!t || !t.closest) return false;
     if (t.closest(CHROME_SEL)) return false;
     if (t.closest("a[href^='http'], a[target='_blank']")) return false;
-    return Boolean(t.closest(".slide, #deck, #lightbox, #qview, #lbClose, .lightbox"));
+    // Stage background clicks only advance slides — synced via slideIndex/step
+    if (t.closest("#stage") && !t.closest(".thumb, .slide button, .slide a, img, [data-step]")) {
+      return false;
+    }
+    return Boolean(t.closest(".slide, #deck, #stage, #lightbox, #lb, #qview, #lbClose, .lightbox, .thumb"));
   }
 
   function collectState() {
     return {
       slideIndex: currentSlideIndex(),
+      step: currentStep(),
       lang: currentLang(),
       lightbox: readLightbox(),
       qview: readQview(),
@@ -219,7 +247,7 @@ export function buildForumBridgeScript(
   }
 
   function applyLightbox(lb) {
-    var box = $("#lightbox");
+    var box = lightboxRoot();
     if (!box) return;
     if (!lb || !lb.open) {
       box.hidden = true;
@@ -231,8 +259,39 @@ export function buildForumBridgeScript(
       img.src = lb.src || "";
       img.alt = lb.alt || "";
     }
-    if (cap) cap.innerHTML = lb.capHtml || "";
+    if (cap) {
+      if (lb.capHtml && /[<]/.test(lb.capHtml)) cap.innerHTML = lb.capHtml;
+      else cap.textContent = lb.capHtml || lb.alt || "";
+    }
     box.hidden = false;
+  }
+
+  function applyStep(slideIndex, step) {
+    if (typeof step !== "number" || !isFinite(step)) return;
+    var slides = $$(".slide");
+    var slide = slides[slideIndex];
+    if (!slide) return;
+    var nodes = slide.querySelectorAll("[data-step]");
+    if (!nodes.length) return;
+    var max = 0;
+    for (var i = 0; i < nodes.length; i++) {
+      var n = parseInt(nodes[i].getAttribute("data-step") || "0", 10) || 0;
+      if (n > max) max = n;
+      nodes[i].classList.toggle("pending", n > step);
+    }
+    var dots = $("#dots");
+    if (dots) {
+      var html = "";
+      for (var d = 0; d < max; d++) {
+        html += '<i class="' + (d < step ? "on" : "") + '"></i>';
+      }
+      dots.innerHTML = html;
+    }
+    var progress = $("#progress");
+    if (progress && slides.length) {
+      progress.style.width =
+        ((slideIndex + (max ? step / max : 1)) / slides.length * 100) + "%";
+    }
   }
 
   function applyQview(qv) {
@@ -281,6 +340,9 @@ export function buildForumBridgeScript(
         }
       }
       if (state.lang) applyLang(state.lang);
+      if (typeof state.slideIndex === "number") {
+        applyStep(state.slideIndex, typeof state.step === "number" ? state.step : 0);
+      }
       // Replay in-slide UI clicks (modals, expands) before snapshot overrides
       applyClick(state.lastClick);
       applyLightbox(state.lightbox);
@@ -484,21 +546,69 @@ export function buildForumBridgeScript(
 
   waitForDeck(function() {
     var slides = $$(".slide");
+    // Kairos / Vision Japan decks use .slide.cur + opacity, not .on + display
+    var usesCur = slides.some(function(s) { return s.classList.contains("cur"); });
+
+    function paintCurSlides(i) {
+      for (var s = 0; s < slides.length; s++) {
+        var on = s === i;
+        slides[s].classList.toggle("cur", on);
+        slides[s].classList.remove("push-in", "push-out");
+        // Clear any prior display overrides from legacy sync
+        slides[s].style.removeProperty("display");
+        if (on) {
+          slides[s].removeAttribute("aria-hidden");
+          try { slides[s].inert = false; } catch (e) {}
+        } else {
+          slides[s].setAttribute("aria-hidden", "true");
+          try { slides[s].inert = true; } catch (e) {}
+        }
+      }
+      var count = $("#count");
+      if (count) count.textContent = (i + 1) + " / " + slides.length;
+      var ttl = $("#ttl");
+      if (ttl) ttl.textContent = (slides[i] && slides[i].dataset.title) || "";
+      var notesText = $("#notesText");
+      if (notesText) notesText.textContent = (slides[i] && slides[i].dataset.notes) || "";
+    }
 
     function localGo(i, fromRemote) {
       if (!slides.length) return;
       i = Math.max(0, Math.min(slides.length - 1, i | 0));
-      // Turn off every slide, then enable target (avoids stale private cur)
-      for (var s = 0; s < slides.length; s++) {
-        var on = s === i;
-        slides[s].classList.toggle("on", on);
-        // Inline display beats deck CSS if class sync races with private go()
-        if (on) {
-          slides[s].style.setProperty("display", "flex", "important");
+
+      if (usesCur) {
+        // Drive the deck's private go via hashchange when possible
+        var want = "#s" + (i + 1);
+        if (fromRemote && location.hash !== want) {
+          try {
+            location.hash = want;
+          } catch (e) {
+            paintCurSlides(i);
+          }
+          // hashchange may no-op in some embeds — always paint as fallback
+          paintCurSlides(i);
         } else {
-          slides[s].style.setProperty("display", "none", "important");
+          paintCurSlides(i);
+          if (!fromRemote) {
+            try { history.replaceState(null, "", want); } catch (e) {}
+          }
+        }
+      } else {
+        // Classic decks: .on + display
+        for (var s = 0; s < slides.length; s++) {
+          var on = s === i;
+          slides[s].classList.toggle("on", on);
+          if (on) {
+            slides[s].style.setProperty("display", "flex", "important");
+          } else {
+            slides[s].style.setProperty("display", "none", "important");
+          }
+        }
+        if (!fromRemote) {
+          try { history.replaceState(null, "", "#s" + (i + 1)); } catch (e) {}
         }
       }
+
       if (slides[i]) slides[i].scrollTop = 0;
       var pg = $("#pg");
       var pgTotal = $("#pgTotal");
@@ -508,10 +618,6 @@ export function buildForumBridgeScript(
       if (pgTotal) pgTotal.textContent = String(slides.length);
       if (prog) prog.style.width = ((i + 1) / slides.length * 100) + "%";
       if (secname) secname.textContent = (slides[i] && slides[i].dataset.title) || "";
-      // Avoid hash updates on remote apply — can fight the deck's private go()
-      if (!fromRemote) {
-        try { history.replaceState(null, "", "#s" + (i + 1)); } catch (e) {}
-      }
       if (!fromRemote && !window.__koinaApplying) emitState();
     }
 
@@ -546,7 +652,7 @@ export function buildForumBridgeScript(
       });
     });
 
-    var lb = $("#lightbox");
+    var lb = lightboxRoot();
     if (lb) {
       new MutationObserver(function() {
         if (!window.__koinaApplying && MODE === "present") emitState();
@@ -555,7 +661,7 @@ export function buildForumBridgeScript(
 
     slides.forEach(function(s) {
       new MutationObserver(function() {
-        if (!window.__koinaApplying && MODE === "present" && s.classList.contains("on")) {
+        if (!window.__koinaApplying && MODE === "present" && isActiveSlide(s)) {
           emitState();
         }
       }).observe(s, { attributes: true, attributeFilter: ["class"] });
@@ -578,21 +684,29 @@ export function buildForumBridgeScript(
 
       document.addEventListener("keydown", function(e) {
         if (e.target && e.target.closest && e.target.closest("input,textarea")) return;
-        if (["ArrowRight","ArrowLeft","PageDown","PageUp"," ","Home","End","g","G"].indexOf(e.key) >= 0) {
+        if (["ArrowRight","ArrowLeft","PageDown","PageUp"," ","Home","End","g","G","Enter","Backspace"].indexOf(e.key) >= 0) {
           e.stopImmediatePropagation();
           e.preventDefault();
         }
       }, true);
 
-      var deck = document.getElementById("deck");
-      if (deck) {
-        deck.addEventListener("touchstart", function(e) { e.stopImmediatePropagation(); }, true);
-        deck.addEventListener("touchend", function(e) { e.stopImmediatePropagation(); }, true);
-      }
+      ["deck", "stage"].forEach(function(id) {
+        var root = document.getElementById(id);
+        if (!root) return;
+        root.addEventListener("touchstart", function(e) { e.stopImmediatePropagation(); }, true);
+        root.addEventListener("touchend", function(e) { e.stopImmediatePropagation(); }, true);
+      });
       document.addEventListener("click", function(e) {
         var t = e.target;
         if (!t || !t.closest) return;
+        if (window.__koinaApplying) return;
         if (t.closest("#prev, #next, #gridbtn, #pg, #grid, [data-go], .road button")) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          return;
+        }
+        // Block stage tap-to-advance (Vision Japan / Kairos), keep thumbs usable for local peek
+        if (t.closest("#stage") && !t.closest(".thumb, #lb, #lightbox, button.lbbtn")) {
           e.preventDefault();
           e.stopImmediatePropagation();
         }
@@ -933,17 +1047,23 @@ export function buildForumBridgeScript(
       // Reliable slide detection — deck go() is private inside an IIFE
       var lastIdx = currentSlideIndex();
       var lastLang = currentLang();
+      var lastStep = currentStep();
       setInterval(function() {
         if (window.__koinaApplying) return;
         var idx = currentSlideIndex();
         var lang = currentLang();
+        var step = currentStep();
         var lb = readLightbox();
-        if (idx !== lastIdx || lang !== lastLang) {
+        if (idx !== lastIdx || lang !== lastLang || step !== lastStep) {
           lastIdx = idx;
           lastLang = lang;
+          lastStep = step;
           emitState();
         } else if (lb.open !== (window.__koinaLastLbOpen === true)) {
           window.__koinaLastLbOpen = lb.open;
+          emitState();
+        } else if (lb.open && lb.src !== window.__koinaLastLbSrc) {
+          window.__koinaLastLbSrc = lb.src || "";
           emitState();
         }
       }, 200);

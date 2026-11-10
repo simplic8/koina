@@ -254,6 +254,8 @@ export type ChatMessage = {
 
 export type ForumPresenterState = {
   slideIndex?: number;
+  /** Build/animation step within the current slide (Kairos-style decks). */
+  step?: number;
   lang?: "en" | "ja" | "both";
   lightbox?: {
     open: boolean;

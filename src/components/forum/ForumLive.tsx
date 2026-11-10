@@ -78,13 +78,15 @@ function readDeckStateFromIframe(
     if (!doc?.body) return null;
 
     let slideIndex = 0;
+    const slides = Array.from(doc.querySelectorAll(".slide"));
     const pg = doc.querySelector("#pg") as HTMLInputElement | null;
     if (pg) {
       const n = parseInt(pg.value, 10);
       if (Number.isFinite(n) && n >= 1) slideIndex = n - 1;
     } else {
-      const slides = Array.from(doc.querySelectorAll(".slide"));
-      const onIdx = slides.findIndex((s) => s.classList.contains("on"));
+      const onIdx = slides.findIndex(
+        (s) => s.classList.contains("cur") || s.classList.contains("on"),
+      );
       if (onIdx >= 0) {
         slideIndex = onIdx;
       } else {
@@ -93,18 +95,31 @@ function readDeckStateFromIframe(
       }
     }
 
+    let step = 0;
+    const active = slides[slideIndex];
+    if (active) {
+      active.querySelectorAll("[data-step]").forEach((el) => {
+        if (el.classList.contains("pending")) return;
+        const n = parseInt(el.getAttribute("data-step") || "0", 10);
+        if (Number.isFinite(n) && n > step) step = n;
+      });
+    }
+
     let lang: ForumPresenterState["lang"] = "both";
     if (doc.body.classList.contains("m-ja")) lang = "ja";
     else if (doc.body.classList.contains("m-en")) lang = "en";
 
-    const lb = doc.querySelector("#lightbox") as HTMLElement | null;
+    const lb = doc.querySelector("#lightbox, #lb") as HTMLElement | null;
     const lightbox =
       lb && !lb.hidden
         ? {
             open: true as const,
             src: doc.querySelector("#lbImg")?.getAttribute("src") || "",
             alt: doc.querySelector("#lbImg")?.getAttribute("alt") || "",
-            capHtml: doc.querySelector("#lbCap")?.innerHTML || "",
+            capHtml:
+              doc.querySelector("#lbCap")?.innerHTML ||
+              doc.querySelector("#lbCap")?.textContent ||
+              "",
           }
         : { open: false as const };
 
@@ -114,7 +129,7 @@ function readDeckStateFromIframe(
         ? { open: true as const, index: null }
         : { open: false as const, index: null };
 
-    return { slideIndex, lang, lightbox, qview };
+    return { slideIndex, step, lang, lightbox, qview };
   } catch {
     return null;
   }
@@ -138,8 +153,22 @@ function applySlideToIframe(
     if (!slides.length || typeof state.slideIndex !== "number") return false;
 
     const i = Math.max(0, Math.min(slides.length - 1, state.slideIndex));
+    const usesCur = slides.some((s) => s.classList.contains("cur"));
     if (typeof win?.__koinaForceGo === "function") {
       win.__koinaForceGo(i, true);
+    } else if (usesCur) {
+      slides.forEach((slide, idx) => {
+        const on = idx === i;
+        slide.classList.toggle("cur", on);
+        slide.classList.remove("push-in", "push-out");
+        slide.style.removeProperty("display");
+        if (on) slide.removeAttribute("aria-hidden");
+        else slide.setAttribute("aria-hidden", "true");
+      });
+      const count = doc.querySelector("#count");
+      if (count) count.textContent = `${i + 1} / ${slides.length}`;
+      const ttl = doc.querySelector("#ttl");
+      if (ttl) ttl.textContent = slides[i]?.dataset.title || "";
     } else {
       slides.forEach((slide, idx) => {
         const on = idx === i;
@@ -155,6 +184,34 @@ function applySlideToIframe(
       const secname = doc.querySelector("#secname");
       if (secname) {
         secname.textContent = slides[i]?.dataset.title || "";
+      }
+    }
+
+    if (typeof state.step === "number") {
+      const active = slides[i];
+      if (active) {
+        active.querySelectorAll("[data-step]").forEach((el) => {
+          const n = parseInt(el.getAttribute("data-step") || "0", 10) || 0;
+          el.classList.toggle("pending", n > state.step!);
+        });
+      }
+    }
+
+    const lb = doc.querySelector("#lightbox, #lb") as HTMLElement | null;
+    if (lb && state.lightbox) {
+      if (!state.lightbox.open) {
+        lb.hidden = true;
+      } else {
+        const img = doc.querySelector("#lbImg") as HTMLImageElement | null;
+        const cap = doc.querySelector("#lbCap");
+        if (img) {
+          img.src = state.lightbox.src || "";
+          img.alt = state.lightbox.alt || "";
+        }
+        if (cap) {
+          cap.textContent = state.lightbox.capHtml || state.lightbox.alt || "";
+        }
+        lb.hidden = false;
       }
     }
 
@@ -244,6 +301,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
 
       const body: ForumPresenterState = {
         slideIndex: normalized.slideIndex,
+        step: normalized.step ?? 0,
         lang: normalized.lang,
         lightbox: normalized.lightbox ?? { open: false },
         qview: normalized.qview ?? { open: false, index: null },
@@ -658,8 +716,10 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       const prev = lastStateRef.current;
       if (
         deck.slideIndex === prev.slideIndex &&
+        (deck.step ?? 0) === (prev.step ?? 0) &&
         deck.lang === prev.lang &&
-        Boolean(deck.lightbox?.open) === Boolean(prev.lightbox?.open)
+        Boolean(deck.lightbox?.open) === Boolean(prev.lightbox?.open) &&
+        (deck.lightbox?.src || "") === (prev.lightbox?.src || "")
       ) {
         return;
       }
@@ -742,8 +802,10 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         // Skip no-op spam from the poller / heartbeat
         if (
           normalized.slideIndex === prev.slideIndex &&
+          (normalized.step ?? 0) === (prev.step ?? 0) &&
           normalized.lang === prev.lang &&
           Boolean(normalized.lightbox?.open) === Boolean(prev.lightbox?.open) &&
+          (normalized.lightbox?.src || "") === (prev.lightbox?.src || "") &&
           Boolean(normalized.qview?.open) === Boolean(prev.qview?.open) &&
           (normalized.lastClick?.at ?? null) === (prev.lastClick?.at ?? null) &&
           !payload.force &&
