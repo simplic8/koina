@@ -110,18 +110,42 @@ function readDeckStateFromIframe(
     else if (doc.body.classList.contains("m-en")) lang = "en";
 
     const lb = doc.querySelector("#lightbox, #lb") as HTMLElement | null;
-    const lightbox =
-      lb && !lb.hidden
-        ? {
-            open: true as const,
-            src: doc.querySelector("#lbImg")?.getAttribute("src") || "",
-            alt: doc.querySelector("#lbImg")?.getAttribute("alt") || "",
-            capHtml:
-              doc.querySelector("#lbCap")?.innerHTML ||
-              doc.querySelector("#lbCap")?.textContent ||
-              "",
-          }
-        : { open: false as const };
+    let lightbox: ForumPresenterState["lightbox"] = { open: false };
+    if (lb && !lb.hidden) {
+      const src = doc.querySelector("#lbImg")?.getAttribute("src") || "";
+      let group: string | null = null;
+      let index: number | null = null;
+      const countText = doc.querySelector("#lbCount")?.textContent || "";
+      const countMatch = countText.match(/^(.+?)\s*·\s*(\d+)\s*\/\s*(\d+)/);
+      if (countMatch) {
+        group = countMatch[1].trim();
+        index = Math.max(0, parseInt(countMatch[2], 10) - 1);
+      } else if (src) {
+        doc.querySelectorAll(".thumbs").forEach((g) => {
+          if (group != null) return;
+          const gName = g.getAttribute("data-group");
+          g.querySelectorAll("img").forEach((img, i) => {
+            if (group != null) return;
+            if (img.getAttribute("src") === src) {
+              group = gName;
+              index = i;
+            }
+          });
+        });
+      }
+      lightbox = {
+        open: true,
+        group,
+        index,
+        // Never put data: URLs on the wire
+        src: src && !/^data:/i.test(src) && src.length < 2000 ? src : "",
+        alt: doc.querySelector("#lbImg")?.getAttribute("alt") || "",
+        capHtml:
+          doc.querySelector("#lbCap")?.textContent ||
+          doc.querySelector("#lbCap")?.innerHTML ||
+          "",
+      };
+    }
 
     const qv = doc.querySelector("#qview") as HTMLElement | null;
     const qview =
@@ -202,16 +226,35 @@ function applySlideToIframe(
       if (!state.lightbox.open) {
         lb.hidden = true;
       } else {
-        const img = doc.querySelector("#lbImg") as HTMLImageElement | null;
-        const cap = doc.querySelector("#lbCap");
-        if (img) {
-          img.src = state.lightbox.src || "";
-          img.alt = state.lightbox.alt || "";
+        const group = state.lightbox.group;
+        const index = state.lightbox.index;
+        let opened = false;
+        if (typeof index === "number") {
+          const root = group
+            ? (doc.querySelector(
+                `.thumbs[data-group="${CSS.escape(group)}"]`,
+              ) as HTMLElement | null)
+            : (doc.querySelector(".thumbs") as HTMLElement | null);
+          const btn = root?.querySelectorAll(".thumb")[index] as
+            | HTMLElement
+            | undefined;
+          if (btn && typeof btn.click === "function") {
+            btn.click();
+            opened = true;
+          }
         }
-        if (cap) {
-          cap.textContent = state.lightbox.capHtml || state.lightbox.alt || "";
+        if (!opened) {
+          const img = doc.querySelector("#lbImg") as HTMLImageElement | null;
+          const cap = doc.querySelector("#lbCap");
+          if (img && state.lightbox.src && !/^data:/i.test(state.lightbox.src)) {
+            img.src = state.lightbox.src;
+            img.alt = state.lightbox.alt || "";
+          }
+          if (cap) {
+            cap.textContent = state.lightbox.capHtml || state.lightbox.alt || "";
+          }
+          lb.hidden = false;
         }
-        lb.hidden = false;
       }
     }
 
@@ -719,7 +762,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         (deck.step ?? 0) === (prev.step ?? 0) &&
         deck.lang === prev.lang &&
         Boolean(deck.lightbox?.open) === Boolean(prev.lightbox?.open) &&
-        (deck.lightbox?.src || "") === (prev.lightbox?.src || "")
+        (deck.lightbox?.group || "") === (prev.lightbox?.group || "") &&
+        (deck.lightbox?.index ?? null) === (prev.lightbox?.index ?? null)
       ) {
         return;
       }
@@ -805,7 +849,9 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
           (normalized.step ?? 0) === (prev.step ?? 0) &&
           normalized.lang === prev.lang &&
           Boolean(normalized.lightbox?.open) === Boolean(prev.lightbox?.open) &&
-          (normalized.lightbox?.src || "") === (prev.lightbox?.src || "") &&
+          (normalized.lightbox?.group || "") === (prev.lightbox?.group || "") &&
+          (normalized.lightbox?.index ?? null) ===
+            (prev.lightbox?.index ?? null) &&
           Boolean(normalized.qview?.open) === Boolean(prev.qview?.open) &&
           (normalized.lastClick?.at ?? null) === (prev.lastClick?.at ?? null) &&
           !payload.force &&

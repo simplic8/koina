@@ -141,16 +141,63 @@ export function buildForumBridgeScript(
     return "both";
   }
 
+  /** Tag gallery thumbs so sync can address them without shipping base64 srcs. */
+  function tagThumbs() {
+    $$(".thumbs").forEach(function(g, gi) {
+      var group = g.getAttribute("data-group") || ("g" + gi);
+      if (!g.getAttribute("data-group")) g.setAttribute("data-group", group);
+      var thumbs = g.querySelectorAll(".thumb");
+      for (var i = 0; i < thumbs.length; i++) {
+        thumbs[i].setAttribute("data-koina-thumb", group + ":" + i);
+      }
+    });
+  }
+
+  function findThumbRef(src) {
+    if (!src) return null;
+    var groups = $$(".thumbs");
+    for (var g = 0; g < groups.length; g++) {
+      var group = groups[g].getAttribute("data-group") || ("g" + g);
+      var imgs = groups[g].querySelectorAll("img");
+      for (var i = 0; i < imgs.length; i++) {
+        if (imgs[i].getAttribute("src") === src) {
+          return { group: group, index: i };
+        }
+      }
+    }
+    return null;
+  }
+
+  function parseLbCount() {
+    var el = $("#lbCount");
+    if (!el) return null;
+    var m = String(el.textContent || "").match(/^(.+?)\s*·\s*(\d+)\s*\/\s*(\d+)/);
+    if (!m) return null;
+    return { group: m[1].trim(), index: Math.max(0, parseInt(m[2], 10) - 1) };
+  }
+
+  function wireSrc(src) {
+    if (!src) return "";
+    // Never put data: URLs on the wire — they blow past realtime payload limits
+    if (/^data:/i.test(src)) return "";
+    if (src.length > 2000) return "";
+    return src;
+  }
+
   function readLightbox() {
     var lb = lightboxRoot();
     if (!lb || lb.hidden) return { open: false };
     var img = $("#lbImg");
     var cap = $("#lbCap");
+    var src = img ? img.getAttribute("src") || "" : "";
+    var ref = findThumbRef(src) || parseLbCount();
     return {
       open: true,
-      src: img ? img.getAttribute("src") || "" : "",
+      group: ref ? ref.group : null,
+      index: ref && typeof ref.index === "number" ? ref.index : null,
+      src: wireSrc(src),
       alt: img ? img.getAttribute("alt") || "" : "",
-      capHtml: cap ? (cap.innerHTML || cap.textContent || "") : ""
+      capHtml: cap ? (cap.textContent || cap.innerHTML || "") : ""
     };
   }
 
@@ -200,8 +247,24 @@ export function buildForumBridgeScript(
   function clickTarget(t) {
     if (!t || !t.closest) return null;
     return t.closest(
-      "button, a, summary, [role='button'], [data-open], [data-lb], [data-lightbox], .shot-btn, .thumb, figure, img, [onclick]"
+      "button.thumb, .thumb, [data-koina-thumb], button, a, summary, [role='button'], [data-open], [data-lb], [data-lightbox], .shot-btn, figure, img, [onclick]"
     ) || t;
+  }
+
+  function thumbKeyFromEl(el) {
+    if (!el || !el.closest) return null;
+    var thumb = el.closest("[data-koina-thumb], .thumb");
+    if (!thumb) return null;
+    var key = thumb.getAttribute("data-koina-thumb");
+    if (key) return key;
+    var group = thumb.closest(".thumbs");
+    if (!group) return null;
+    var g = group.getAttribute("data-group") || "";
+    var thumbs = group.querySelectorAll(".thumb");
+    for (var i = 0; i < thumbs.length; i++) {
+      if (thumbs[i] === thumb) return g + ":" + i;
+    }
+    return null;
   }
 
   function shouldSyncClick(t) {
@@ -209,10 +272,10 @@ export function buildForumBridgeScript(
     if (t.closest(CHROME_SEL)) return false;
     if (t.closest("a[href^='http'], a[target='_blank']")) return false;
     // Stage background clicks only advance slides — synced via slideIndex/step
-    if (t.closest("#stage") && !t.closest(".thumb, .slide button, .slide a, img, [data-step]")) {
+    if (t.closest("#stage") && !t.closest(".thumb, [data-koina-thumb], .slide button, .slide a, #lb, #lightbox, button.lbbtn")) {
       return false;
     }
-    return Boolean(t.closest(".slide, #deck, #stage, #lightbox, #lb, #qview, #lbClose, .lightbox, .thumb"));
+    return Boolean(t.closest(".slide, #deck, #stage, #lightbox, #lb, #qview, #lbClose, .lightbox, .thumb, [data-koina-thumb]"));
   }
 
   function collectState() {
@@ -246,6 +309,26 @@ export function buildForumBridgeScript(
     if (window.__rc) window.__rc();
   }
 
+  function openThumb(group, index) {
+    if (typeof index !== "number" || index < 0) return false;
+    var root = null;
+    if (group) {
+      try {
+        root = document.querySelector('.thumbs[data-group="' + escapeIdent(group) + '"]');
+      } catch (e) { root = null; }
+    }
+    if (!root) {
+      var groups = $$(".thumbs");
+      root = groups[0] || null;
+    }
+    if (!root) return false;
+    var thumbs = root.querySelectorAll(".thumb");
+    var btn = thumbs[index];
+    if (!btn || typeof btn.click !== "function") return false;
+    try { btn.click(); } catch (e) { return false; }
+    return true;
+  }
+
   function applyLightbox(lb) {
     var box = lightboxRoot();
     if (!box) return;
@@ -253,15 +336,23 @@ export function buildForumBridgeScript(
       box.hidden = true;
       return;
     }
+    // Prefer opening the local thumb so gallery prev/next keeps working
+    if (typeof lb.index === "number" && openThumb(lb.group, lb.index)) {
+      return;
+    }
     var img = $("#lbImg");
     var cap = $("#lbCap");
-    if (img) {
-      img.src = lb.src || "";
+    var count = $("#lbCount");
+    if (img && lb.src && !/^data:/i.test(lb.src)) {
+      img.src = lb.src;
       img.alt = lb.alt || "";
     }
     if (cap) {
       if (lb.capHtml && /[<]/.test(lb.capHtml)) cap.innerHTML = lb.capHtml;
       else cap.textContent = lb.capHtml || lb.alt || "";
+    }
+    if (count && lb.group && typeof lb.index === "number") {
+      count.textContent = lb.group + " · " + (lb.index + 1);
     }
     box.hidden = false;
   }
@@ -309,13 +400,35 @@ export function buildForumBridgeScript(
   }
 
   function applyClick(click) {
-    if (!click || !click.path || typeof click.at !== "number") return;
+    if (!click || typeof click.at !== "number") return;
     if (window.__koinaLastClickAt === click.at) return;
     window.__koinaLastClickAt = click.at;
+    if (click.thumb) {
+      var parts = String(click.thumb).split(":");
+      var idx = parseInt(parts.pop() || "", 10);
+      var group = parts.join(":");
+      if (openThumb(group, idx)) return;
+    }
+    if (!click.path) return;
     var el = null;
     try { el = document.querySelector(click.path); } catch (e) { el = null; }
+    if (!el && click.path.indexOf("[data-koina-thumb=") >= 0) {
+      try {
+        var m = click.path.match(/data-koina-thumb=['"]([^'"]+)['"]/);
+        if (m) el = document.querySelector('[data-koina-thumb="' + m[1] + '"]');
+      } catch (e2) {}
+    }
     if (!el || typeof el.click !== "function") return;
     try { el.click(); } catch (e) {}
+  }
+
+  function applyArtifacts(state) {
+    if (typeof state.slideIndex === "number") {
+      applyStep(state.slideIndex, typeof state.step === "number" ? state.step : 0);
+    }
+    applyClick(state.lastClick);
+    applyLightbox(state.lightbox);
+    applyQview(state.qview);
   }
 
   function applyState(state) {
@@ -340,13 +453,14 @@ export function buildForumBridgeScript(
         }
       }
       if (state.lang) applyLang(state.lang);
-      if (typeof state.slideIndex === "number") {
-        applyStep(state.slideIndex, typeof state.step === "number" ? state.step : 0);
-      }
-      // Replay in-slide UI clicks (modals, expands) before snapshot overrides
-      applyClick(state.lastClick);
-      applyLightbox(state.lightbox);
-      applyQview(state.qview);
+      applyArtifacts(state);
+      // Beat any late deck render()/hashchange that resets build steps
+      requestAnimationFrame(function() {
+        window.__koinaApplying = true;
+        try { applyArtifacts(state); } finally {
+          setTimeout(function(){ window.__koinaApplying = false; }, 80);
+        }
+      });
       if (state.force || state.prompt) {
         try {
           var slides = $$(".slide");
@@ -548,6 +662,7 @@ export function buildForumBridgeScript(
     var slides = $$(".slide");
     // Kairos / Vision Japan decks use .slide.cur + opacity, not .on + display
     var usesCur = slides.some(function(s) { return s.classList.contains("cur"); });
+    tagThumbs();
 
     function paintCurSlides(i) {
       for (var s = 0; s < slides.length; s++) {
@@ -577,21 +692,11 @@ export function buildForumBridgeScript(
       i = Math.max(0, Math.min(slides.length - 1, i | 0));
 
       if (usesCur) {
-        // Drive the deck's private go via hashchange when possible
-        var want = "#s" + (i + 1);
-        if (fromRemote && location.hash !== want) {
-          try {
-            location.hash = want;
-          } catch (e) {
-            paintCurSlides(i);
-          }
-          // hashchange may no-op in some embeds — always paint as fallback
-          paintCurSlides(i);
-        } else {
-          paintCurSlides(i);
-          if (!fromRemote) {
-            try { history.replaceState(null, "", want); } catch (e) {}
-          }
+        // Never set location.hash on remote apply — hashchange resets private step to 0
+        // and wipes build-step / artifact sync. Paint classes only.
+        paintCurSlides(i);
+        if (!fromRemote) {
+          try { history.replaceState(null, "", "#s" + (i + 1)); } catch (e) {}
         }
       } else {
         // Classic decks: .on + display
@@ -1031,9 +1136,12 @@ export function buildForumBridgeScript(
         var t = e.target;
         if (shouldSyncClick(t)) {
           var el = clickTarget(t);
-          var path = el ? cssPath(el) : "";
-          if (path) {
-            lastClickPayload = { path: path, at: Date.now() };
+          var thumb = thumbKeyFromEl(el || t);
+          var path = el ? (el.getAttribute && el.getAttribute("data-koina-thumb")
+            ? '[data-koina-thumb="' + el.getAttribute("data-koina-thumb") + '"]'
+            : cssPath(el)) : "";
+          if (path || thumb) {
+            lastClickPayload = { path: path || undefined, thumb: thumb, at: Date.now() };
           }
         }
         setTimeout(function(){ emitState(); }, 40);
@@ -1062,8 +1170,15 @@ export function buildForumBridgeScript(
         } else if (lb.open !== (window.__koinaLastLbOpen === true)) {
           window.__koinaLastLbOpen = lb.open;
           emitState();
-        } else if (lb.open && lb.src !== window.__koinaLastLbSrc) {
-          window.__koinaLastLbSrc = lb.src || "";
+        } else if (
+          lb.open &&
+          (
+            (lb.group || "") !== (window.__koinaLastLbGroup || "") ||
+            (lb.index != null ? lb.index : -1) !== (window.__koinaLastLbIndex != null ? window.__koinaLastLbIndex : -1)
+          )
+        ) {
+          window.__koinaLastLbGroup = lb.group || "";
+          window.__koinaLastLbIndex = lb.index;
           emitState();
         }
       }, 200);

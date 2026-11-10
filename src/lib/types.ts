@@ -259,6 +259,11 @@ export type ForumPresenterState = {
   lang?: "en" | "ja" | "both";
   lightbox?: {
     open: boolean;
+    /** Thumb gallery group (data-group) — preferred over src for large images. */
+    group?: string | null;
+    /** Index within the group. */
+    index?: number | null;
+    /** Only for small http(s) urls — never data: payloads. */
     src?: string;
     alt?: string;
     capHtml?: string;
@@ -266,7 +271,9 @@ export type ForumPresenterState = {
   qview?: { open: boolean; index?: number | null } | null;
   /** Last in-slide click to replay on viewers (modals, expands, etc.). */
   lastClick?: {
-    path: string;
+    path?: string;
+    /** Stable thumb key "group:index" when opening photo artifacts. */
+    thumb?: string | null;
     at: number;
   } | null;
   ui?: Record<string, string | number | boolean | null>;
