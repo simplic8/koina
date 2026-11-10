@@ -247,6 +247,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         lang: normalized.lang,
         lightbox: normalized.lightbox ?? { open: false },
         qview: normalized.qview ?? { open: false, index: null },
+        lastClick: normalized.lastClick ?? null,
         syncToken: normalized.syncToken ?? Date.now(),
         bringToken: normalized.bringToken,
       };
@@ -325,12 +326,23 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         normalized.bringToken !== lastBringTokenRef.current;
       const slideChanged =
         normalized.slideIndex !== lastAppliedSlideRef.current;
+      const clickChanged =
+        (normalized.lastClick?.at ?? null) !==
+        (lastStateRef.current.lastClick?.at ?? null);
       const forced = Boolean(state.force || state.prompt || bringChanged);
       const stampChanged = Boolean(
         updatedAt && updatedAt !== lastUpdatedAtRef.current,
       );
 
-      if (!tokenChanged && !slideChanged && !forced && !stampChanged) return;
+      if (
+        !tokenChanged &&
+        !slideChanged &&
+        !clickChanged &&
+        !forced &&
+        !stampChanged
+      ) {
+        return;
+      }
 
       lastStateRef.current = normalized;
       lastAppliedSlideRef.current = normalized.slideIndex;
@@ -725,15 +737,15 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       if (data.type === "presenter-state" && mode === "present") {
         const payload = data.payload as ForumPresenterState;
         const normalized = withSlideIndex(payload, lastStateRef.current);
+        const prev = lastStateRef.current;
 
         // Skip no-op spam from the poller / heartbeat
         if (
-          normalized.slideIndex === lastStateRef.current.slideIndex &&
-          normalized.lang === lastStateRef.current.lang &&
-          Boolean(normalized.lightbox?.open) ===
-            Boolean(lastStateRef.current.lightbox?.open) &&
-          Boolean(normalized.qview?.open) ===
-            Boolean(lastStateRef.current.qview?.open) &&
+          normalized.slideIndex === prev.slideIndex &&
+          normalized.lang === prev.lang &&
+          Boolean(normalized.lightbox?.open) === Boolean(prev.lightbox?.open) &&
+          Boolean(normalized.qview?.open) === Boolean(prev.qview?.open) &&
+          (normalized.lastClick?.at ?? null) === (prev.lastClick?.at ?? null) &&
           !payload.force &&
           !payload.prompt
         ) {

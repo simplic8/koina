@@ -12,6 +12,8 @@ export function buildForumBridgeScript(
   var ORIGIN = "*";
   var forceGo = null;
   var pendingState = null;
+  var lastClickPayload = null;
+  var CHROME_SEL = "#bar, #prev, #next, #grid, #gridbtn, #pg, #koinaBring, #clock, .poll, #cloud, #nwCats, #nwClear, #nwInput, #spGrid, #spReset, [data-reset], input, textarea, select, label";
 
   function post(type, payload) {
     try {
@@ -135,12 +137,64 @@ export function buildForumBridgeScript(
     return { open: true, index: typeof window.__koinaOpenQ === "number" ? window.__koinaOpenQ : null };
   }
 
+  function escapeIdent(id) {
+    if (typeof CSS !== "undefined" && CSS.escape) return CSS.escape(id);
+    return String(id).replace(/([^\w-])/g, "\\\\$1");
+  }
+
+  /** Stable-enough selector so viewers can replay the presenter's click. */
+  function cssPath(el) {
+    if (!el || el.nodeType !== 1) return "";
+    if (el.id) return "#" + escapeIdent(el.id);
+    var parts = [];
+    var cur = el;
+    while (cur && cur.nodeType === 1 && cur !== document.documentElement) {
+      if (cur.id) {
+        parts.unshift("#" + escapeIdent(cur.id));
+        break;
+      }
+      var tag = cur.tagName.toLowerCase();
+      var parent = cur.parentElement;
+      if (!parent) {
+        parts.unshift(tag);
+        break;
+      }
+      var same = [];
+      for (var i = 0; i < parent.children.length; i++) {
+        if (parent.children[i].tagName === cur.tagName) same.push(parent.children[i]);
+      }
+      if (same.length > 1) {
+        parts.unshift(tag + ":nth-of-type(" + (same.indexOf(cur) + 1) + ")");
+      } else {
+        parts.unshift(tag);
+      }
+      cur = parent;
+      if (parts.length > 14) break;
+    }
+    return parts.join(" > ");
+  }
+
+  function clickTarget(t) {
+    if (!t || !t.closest) return null;
+    return t.closest(
+      "button, a, summary, [role='button'], [data-open], [data-lb], [data-lightbox], .shot-btn, .thumb, figure, img, [onclick]"
+    ) || t;
+  }
+
+  function shouldSyncClick(t) {
+    if (!t || !t.closest) return false;
+    if (t.closest(CHROME_SEL)) return false;
+    if (t.closest("a[href^='http'], a[target='_blank']")) return false;
+    return Boolean(t.closest(".slide, #deck, #lightbox, #qview, #lbClose, .lightbox"));
+  }
+
   function collectState() {
     return {
       slideIndex: currentSlideIndex(),
       lang: currentLang(),
       lightbox: readLightbox(),
       qview: readQview(),
+      lastClick: lastClickPayload,
       syncToken: Date.now()
     };
   }
@@ -195,6 +249,16 @@ export function buildForumBridgeScript(
     }
   }
 
+  function applyClick(click) {
+    if (!click || !click.path || typeof click.at !== "number") return;
+    if (window.__koinaLastClickAt === click.at) return;
+    window.__koinaLastClickAt = click.at;
+    var el = null;
+    try { el = document.querySelector(click.path); } catch (e) { el = null; }
+    if (!el || typeof el.click !== "function") return;
+    try { el.click(); } catch (e) {}
+  }
+
   function applyState(state) {
     if (!state) return;
     if (!forceGo) {
@@ -217,6 +281,8 @@ export function buildForumBridgeScript(
         }
       }
       if (state.lang) applyLang(state.lang);
+      // Replay in-slide UI clicks (modals, expands) before snapshot overrides
+      applyClick(state.lastClick);
       applyLightbox(state.lightbox);
       applyQview(state.qview);
       if (state.force || state.prompt) {
@@ -846,7 +912,16 @@ export function buildForumBridgeScript(
         document.head.appendChild(bringStyle);
       }
 
-      document.addEventListener("click", function() {
+      document.addEventListener("click", function(e) {
+        if (window.__koinaApplying) return;
+        var t = e.target;
+        if (shouldSyncClick(t)) {
+          var el = clickTarget(t);
+          var path = el ? cssPath(el) : "";
+          if (path) {
+            lastClickPayload = { path: path, at: Date.now() };
+          }
+        }
         setTimeout(function(){ emitState(); }, 40);
       }, true);
       document.addEventListener("keydown", function(e) {

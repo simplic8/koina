@@ -262,6 +262,11 @@ export type ForumPresenterState = {
     capHtml?: string;
   } | null;
   qview?: { open: boolean; index?: number | null } | null;
+  /** Last in-slide click to replay on viewers (modals, expands, etc.). */
+  lastClick?: {
+    path: string;
+    at: number;
+  } | null;
   ui?: Record<string, string | number | boolean | null>;
   /** Unique token so viewers re-apply even if slideIndex is unchanged. */
   syncToken?: number;
