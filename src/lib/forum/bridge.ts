@@ -468,26 +468,11 @@ export function buildForumBridgeScript(
       pendingState = state;
       return;
     }
-    var slideIndex = typeof state.slideIndex === "number" ? state.slideIndex : currentSlideIndex();
-    var step = typeof state.step === "number" ? state.step : 0;
-    var lbKey = state.lightbox && state.lightbox.open
-      ? String(state.lightbox.group || "") + ":" + String(state.lightbox.index)
-      : "closed";
-    var clickAt = state.lastClick && typeof state.lastClick.at === "number" ? state.lastClick.at : 0;
-    var applyKey = slideIndex + "|" + step + "|" + lbKey + "|" + clickAt + "|" + (state.lang || "");
-    // Identical apply — skip so CSS transitions are not restarted
-    if (window.__koinaApplyKey === applyKey && !state.prompt) {
-      return;
-    }
-    window.__koinaApplyKey = applyKey;
-
     window.__koinaApplying = true;
     try {
       if (typeof state.slideIndex === "number") {
-        // Skip re-navigation when already on this slide — avoids double CSS transitions
-        if (currentSlideIndex() !== state.slideIndex) {
-          forceGo(state.slideIndex, true);
-        }
+        // localGo/paintCurSlides no-op class changes when already on target
+        forceGo(state.slideIndex, true);
       }
       if (state.lang) applyLang(state.lang);
       applyArtifacts(state);
@@ -724,16 +709,14 @@ export function buildForumBridgeScript(
 
       if (usesCur) {
         // Never set location.hash on remote apply — hashchange resets private step to 0
-        // and wipes build-step / artifact sync. Paint classes only.
-        var already = slides[i] && slides[i].classList.contains("cur");
-        if (!already) paintCurSlides(i);
+        // and wipes build-step / artifact sync. Paint classes only (no-ops if already .cur).
+        paintCurSlides(i);
         if (!fromRemote) {
           try { history.replaceState(null, "", "#s" + (i + 1)); } catch (e) {}
         }
       } else {
-        // Classic decks: .on + display
-        var alreadyOn = slides[i] && slides[i].classList.contains("on");
-        if (!alreadyOn) {
+        // Classic decks: .on + display — only rewrite when target isn't already active
+        if (!(slides[i] && slides[i].classList.contains("on"))) {
           for (var s = 0; s < slides.length; s++) {
             var on = s === i;
             slides[s].classList.toggle("on", on);

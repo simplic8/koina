@@ -171,11 +171,6 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const persistChainRef = useRef(Promise.resolve());
   const persistTimerRef = useRef<number | null>(null);
   const persistPendingRef = useRef<ForumPresenterState | null>(null);
-  const broadcastRafRef = useRef<number | null>(null);
-  const broadcastPendingRef = useRef<{
-    state: ForumPresenterState;
-    event: string;
-  } | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [live, setLive] = useState(session.is_live);
@@ -198,11 +193,9 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const lastStateRef = useRef<ForumPresenterState>(
     session.presenter_state ?? {},
   );
-  const lastAppliedSlideRef = useRef<number | undefined>(
-    typeof session.presenter_state?.slideIndex === "number"
-      ? session.presenter_state.slideIndex
-      : undefined,
-  );
+  // Do not seed from session — iframe always starts at slide 0 until we push once
+  const lastAppliedSlideRef = useRef<number | undefined>(undefined);
+  const hasPushedRef = useRef(false);
   const lastSyncTokenRef = useRef<number | undefined>(
     session.presenter_state?.syncToken,
   );
@@ -285,7 +278,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         const pending = persistPendingRef.current;
         persistPendingRef.current = null;
         if (pending) flushPersist(pending);
-      }, 250);
+      }, 100);
     },
     [flushPersist, mode],
   );
@@ -297,33 +290,10 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         pendingBroadcastRef.current = state;
         return;
       }
-      // Bring-viewers must not be coalesced away by a later presenter-state
-      if (event === "bring-viewers") {
-        void channel.send({
-          type: "broadcast",
-          event,
-          payload: state,
-        });
-        return;
-      }
-      // Coalesce to one realtime message per frame (latest wins)
-      broadcastPendingRef.current = { state, event };
-      if (broadcastRafRef.current != null) return;
-      broadcastRafRef.current = window.requestAnimationFrame(() => {
-        broadcastRafRef.current = null;
-        const pending = broadcastPendingRef.current;
-        broadcastPendingRef.current = null;
-        if (!pending) return;
-        const ch = channelRef.current;
-        if (!ch || !subscribedRef.current) {
-          pendingBroadcastRef.current = pending.state;
-          return;
-        }
-        void ch.send({
-          type: "broadcast",
-          event: pending.event,
-          payload: pending.state,
-        });
+      void channel.send({
+        type: "broadcast",
+        event,
+        payload: state,
       });
     },
     [],
@@ -353,9 +323,6 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         return;
       }
 
-      const tokenChanged =
-        typeof normalized.syncToken === "number" &&
-        normalized.syncToken !== lastSyncTokenRef.current;
       const bringChanged =
         typeof normalized.bringToken === "number" &&
         normalized.bringToken !== lastBringTokenRef.current;
@@ -374,25 +341,27 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         (normalized.lightbox?.index ?? null) !==
           (lastStateRef.current.lightbox?.index ?? null);
       const forced = Boolean(state.force || state.prompt || bringChanged);
-      const visualChanged =
+      const tokenNewer =
+        typeof normalized.syncToken === "number" &&
+        (typeof lastSyncTokenRef.current !== "number" ||
+          normalized.syncToken > lastSyncTokenRef.current);
+      const needsPush =
+        !hasPushedRef.current ||
+        forced ||
         slideChanged ||
         stepChanged ||
         lightboxChanged ||
         clickChanged ||
-        forced;
+        tokenNewer;
 
-      // Same visuals (duplicate heartbeat / late persist) — refresh refs only
-      if (!visualChanged) {
-        if (tokenChanged && typeof normalized.syncToken === "number") {
-          lastSyncTokenRef.current = normalized.syncToken;
-          lastStateRef.current = normalized;
-        }
+      if (!needsPush) {
         if (updatedAt) lastUpdatedAtRef.current = updatedAt;
         return;
       }
 
       lastStateRef.current = normalized;
       lastAppliedSlideRef.current = normalized.slideIndex;
+      hasPushedRef.current = true;
       if (typeof normalized.syncToken === "number") {
         lastSyncTokenRef.current = normalized.syncToken;
       }
@@ -692,9 +661,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
     }
 
     void pull();
-    // HTTP fallback when realtime is slow/unavailable (keep slower than realtime
-    // so a lagging persist cannot thrash over a fresh broadcast)
-    const id = window.setInterval(pull, 750);
+    // HTTP fallback when realtime is slow/unavailable
+    const id = window.setInterval(pull, 400);
     return () => {
       cancelled = true;
       window.clearInterval(id);
