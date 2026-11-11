@@ -79,19 +79,27 @@ function readDeckStateFromIframe(
 
     let slideIndex = 0;
     const slides = Array.from(doc.querySelectorAll(".slide"));
-    const pg = doc.querySelector("#pg") as HTMLInputElement | null;
-    if (pg) {
-      const n = parseInt(pg.value, 10);
-      if (Number.isFinite(n) && n >= 1) slideIndex = n - 1;
+    // Prefer active slide class over #pg — some decks update .cur/.on without #pg
+    const onIdx = slides.findIndex(
+      (s) => s.classList.contains("cur") || s.classList.contains("on"),
+    );
+    if (onIdx >= 0) {
+      slideIndex = onIdx;
     } else {
-      const onIdx = slides.findIndex(
-        (s) => s.classList.contains("cur") || s.classList.contains("on"),
-      );
-      if (onIdx >= 0) {
-        slideIndex = onIdx;
+      const pg = doc.querySelector("#pg") as HTMLInputElement | null;
+      if (pg) {
+        const n = parseInt(pg.value, 10);
+        if (Number.isFinite(n) && n >= 1) slideIndex = n - 1;
       } else {
-        const hash = doc.defaultView?.location.hash.match(/^#s(\d+)$/);
-        if (hash) slideIndex = Math.max(0, parseInt(hash[1], 10) - 1);
+        const countText = doc.querySelector("#count")?.textContent || "";
+        const countMatch = countText.match(/(\d+)\s*\/\s*(\d+)/);
+        if (countMatch) {
+          const n = parseInt(countMatch[1], 10);
+          if (Number.isFinite(n) && n >= 1) slideIndex = n - 1;
+        } else {
+          const hash = doc.defaultView?.location.hash.match(/^#s(\d+)$/);
+          if (hash) slideIndex = Math.max(0, parseInt(hash[1], 10) - 1);
+        }
       }
     }
 
@@ -169,6 +177,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const pendingBroadcastRef = useRef<ForumPresenterState | null>(null);
   const frameReadyRef = useRef(false);
   const persistChainRef = useRef(Promise.resolve());
+  const persistLatestRef = useRef<ForumPresenterState | null>(null);
   const persistTimerRef = useRef<number | null>(null);
   const persistPendingRef = useRef<ForumPresenterState | null>(null);
   const [ready, setReady] = useState(false);
@@ -232,15 +241,21 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         bringToken: normalized.bringToken,
       };
 
-      // Drop queued older PUTs — only the latest state matters for late joiners
-      persistChainRef.current = Promise.resolve()
+      // Serialize PUTs and always write the latest body — parallel
+      // Promise.resolve().then() races let an older slide overwrite a newer one.
+      persistLatestRef.current = body;
+      persistChainRef.current = persistChainRef.current
+        .catch(() => undefined)
         .then(async () => {
+          const latest = persistLatestRef.current;
+          if (!latest) return;
+          persistLatestRef.current = null;
           try {
             const res = await fetch(`/api/forum/sessions/${session.id}/sync`, {
               method: "PUT",
               credentials: "include",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ presenter_state: body }),
+              body: JSON.stringify({ presenter_state: latest }),
               cache: "no-store",
             });
             if (!res.ok) {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import Script from "next/script";
 import { KoinaBar } from "@/components/KoinaBar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -53,14 +54,14 @@ export default async function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
+      <body className="flex min-h-full flex-col bg-base text-ink">
+        <Script
+          id="koina-theme-locale-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `${themeInitScript}${localeInitScript}`,
           }}
         />
-      </head>
-      <body className="flex min-h-full flex-col bg-base text-ink">
         <ThemeProvider>
           <LocaleProvider>
             <KoinaBar />

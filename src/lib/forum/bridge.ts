@@ -1,4 +1,11 @@
-/** Injected into uploaded deck HTML for presenter/viewer sync. */
+/**
+ * Injected into uploaded deck HTML for presenter/viewer sync.
+ *
+ * NOTE: the script body lives inside a JS template literal, so:
+ * - every backslash meant for the browser must be doubled (`\\d`, `\\s`, `\\/`)
+ * - do not name helpers `$` / `$$` — Turbopack collapses `$$` to `$` in the
+ *   emitted string, which breaks querySelectorAll and stops slides moving
+ */
 export function buildForumBridgeScript(
   mode: "present" | "view" | "browse",
   sessionId: string,
@@ -86,29 +93,39 @@ export function buildForumBridgeScript(
     });
   }
 
-  function $(sel) { return document.querySelector(sel); }
-  function $$(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+  function qs(sel) { return document.querySelector(sel); }
+  function qsa(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
 
   function isActiveSlide(el) {
     return el && (el.classList.contains("on") || el.classList.contains("cur"));
   }
 
   function lightboxRoot() {
-    return $("#lightbox") || $("#lb");
+    return qs("#lightbox") || qs("#lb");
   }
 
   function currentSlideIndex() {
-    // Prefer the deck's page input — private go() always updates #pg
-    var pg = $("#pg");
+    var slides = qsa(".slide");
+    // Prefer the visible/active slide class. Kairos-style private go() updates
+    // .cur without always updating #pg — trusting #pg first left presenters
+    // stuck reporting slide 0 forever so viewers never moved.
+    for (var i = 0; i < slides.length; i++) {
+      if (isActiveSlide(slides[i])) return i;
+    }
+    var pg = qs("#pg");
     if (pg) {
       var n = parseInt(pg.value, 10);
       if (n >= 1 && isFinite(n)) return n - 1;
     }
-    var slides = $$(".slide");
-    for (var i = 0; i < slides.length; i++) {
-      if (isActiveSlide(slides[i])) return i;
+    var count = qs("#count");
+    if (count) {
+      var cm = String(count.textContent || "").match(/(\\d+)\\s*\\/\\s*(\\d+)/);
+      if (cm) {
+        var cn = parseInt(cm[1], 10);
+        if (cn >= 1 && isFinite(cn)) return cn - 1;
+      }
     }
-    var hash = String(location.hash || "").match(/^#s(\d+)$/);
+    var hash = String(location.hash || "").match(/^#s(\\d+)$/);
     if (hash) {
       var h = parseInt(hash[1], 10);
       if (h >= 1 && isFinite(h)) return h - 1;
@@ -116,13 +133,13 @@ export function buildForumBridgeScript(
     // Visible slide fallback (inline styles / CSS)
     for (var j = 0; j < slides.length; j++) {
       var st = window.getComputedStyle(slides[j]);
-      if (st.display !== "none" && st.visibility !== "hidden" && st.opacity !== "0") return j;
+      if (st.display !== "none" && st.visibility !== "hidden" && Number(st.opacity) > 0) return j;
     }
     return 0;
   }
 
   function currentStep() {
-    var slides = $$(".slide");
+    var slides = qsa(".slide");
     var slide = slides[currentSlideIndex()];
     if (!slide) return 0;
     var nodes = slide.querySelectorAll("[data-step]");
@@ -144,7 +161,7 @@ export function buildForumBridgeScript(
 
   /** Tag gallery thumbs so sync can address them without shipping base64 srcs. */
   function tagThumbs() {
-    $$(".thumbs").forEach(function(g, gi) {
+    qsa(".thumbs").forEach(function(g, gi) {
       var group = g.getAttribute("data-group") || ("g" + gi);
       if (!g.getAttribute("data-group")) g.setAttribute("data-group", group);
       var thumbs = g.querySelectorAll(".thumb");
@@ -156,7 +173,7 @@ export function buildForumBridgeScript(
 
   function findThumbRef(src) {
     if (!src) return null;
-    var groups = $$(".thumbs");
+    var groups = qsa(".thumbs");
     for (var g = 0; g < groups.length; g++) {
       var group = groups[g].getAttribute("data-group") || ("g" + g);
       var imgs = groups[g].querySelectorAll("img");
@@ -170,9 +187,9 @@ export function buildForumBridgeScript(
   }
 
   function parseLbCount() {
-    var el = $("#lbCount");
+    var el = qs("#lbCount");
     if (!el) return null;
-    var m = String(el.textContent || "").match(/^(.+?)\s*·\s*(\d+)\s*\/\s*(\d+)/);
+    var m = String(el.textContent || "").match(/^(.+?)\\s*·\\s*(\\d+)\\s*\\/\\s*(\\d+)/);
     if (!m) return null;
     return { group: m[1].trim(), index: Math.max(0, parseInt(m[2], 10) - 1) };
   }
@@ -188,8 +205,8 @@ export function buildForumBridgeScript(
   function readLightbox() {
     var lb = lightboxRoot();
     if (!lb || lb.hidden) return { open: false };
-    var img = $("#lbImg");
-    var cap = $("#lbCap");
+    var img = qs("#lbImg");
+    var cap = qs("#lbCap");
     var src = img ? img.getAttribute("src") || "" : "";
     var ref = findThumbRef(src) || parseLbCount();
     return {
@@ -203,14 +220,14 @@ export function buildForumBridgeScript(
   }
 
   function readQview() {
-    var q = $("#qview");
+    var q = qs("#qview");
     if (!q || q.hidden) return { open: false, index: null };
     return { open: true, index: typeof window.__koinaOpenQ === "number" ? window.__koinaOpenQ : null };
   }
 
   function escapeIdent(id) {
     if (typeof CSS !== "undefined" && CSS.escape) return CSS.escape(id);
-    return String(id).replace(/([^\w-])/g, "\\\\$1");
+    return String(id).replace(/([^\\w-])/g, "\\\\$1");
   }
 
   /** Stable-enough selector so viewers can replay the presenter's click. */
@@ -318,7 +335,7 @@ export function buildForumBridgeScript(
     if (!lang) return;
     document.body.classList.remove("m-en", "m-ja", "m-both");
     document.body.classList.add("m-" + lang);
-    $$("#bar .seg button").forEach(function(b) {
+    qsa("#bar .seg button").forEach(function(b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-m") === lang ? "true" : "false");
     });
     if (window.__rc) window.__rc();
@@ -333,7 +350,7 @@ export function buildForumBridgeScript(
       } catch (e) { root = null; }
     }
     if (!root) {
-      var groups = $$(".thumbs");
+      var groups = qsa(".thumbs");
       root = groups[0] || null;
     }
     if (!root) return false;
@@ -365,9 +382,9 @@ export function buildForumBridgeScript(
     if (typeof lb.index === "number" && openThumb(lb.group, lb.index)) {
       return;
     }
-    var img = $("#lbImg");
-    var cap = $("#lbCap");
-    var count = $("#lbCount");
+    var img = qs("#lbImg");
+    var cap = qs("#lbCap");
+    var count = qs("#lbCount");
     if (img && lb.src && !/^data:/i.test(lb.src)) {
       img.src = lb.src;
       img.alt = lb.alt || "";
@@ -384,7 +401,7 @@ export function buildForumBridgeScript(
 
   function applyStep(slideIndex, step) {
     if (typeof step !== "number" || !isFinite(step)) return;
-    var slides = $$(".slide");
+    var slides = qsa(".slide");
     var slide = slides[slideIndex];
     if (!slide) return;
     var nodes = slide.querySelectorAll("[data-step]");
@@ -401,7 +418,7 @@ export function buildForumBridgeScript(
       }
     }
     if (!dirty && currentStep() === step) return;
-    var dots = $("#dots");
+    var dots = qs("#dots");
     if (dots) {
       var html = "";
       for (var d = 0; d < max; d++) {
@@ -409,7 +426,7 @@ export function buildForumBridgeScript(
       }
       dots.innerHTML = html;
     }
-    var progress = $("#progress");
+    var progress = qs("#progress");
     if (progress && slides.length) {
       progress.style.width =
         ((slideIndex + (max ? step / max : 1)) / slides.length * 100) + "%";
@@ -417,7 +434,7 @@ export function buildForumBridgeScript(
   }
 
   function applyQview(qv) {
-    var box = $("#qview");
+    var box = qs("#qview");
     if (!box) return;
     if (!qv || !qv.open) {
       box.hidden = true;
@@ -471,14 +488,19 @@ export function buildForumBridgeScript(
     window.__koinaApplying = true;
     try {
       if (typeof state.slideIndex === "number") {
-        // localGo/paintCurSlides no-op class changes when already on target
-        forceGo(state.slideIndex, true);
+        // Prefer the deck's real go() when available (private transforms /
+        // opacity), then always paint with localGo so .cur/.on stay truthful.
+        var idx = state.slideIndex;
+        if (typeof window.__koinaOriginalGo === "function") {
+          try { window.__koinaOriginalGo(idx); } catch (e) {}
+        }
+        forceGo(idx, true);
       }
       if (state.lang) applyLang(state.lang);
       applyArtifacts(state);
       if (state.prompt) {
         try {
-          var slides = $$(".slide");
+          var slides = qsa(".slide");
           var i = typeof state.slideIndex === "number" ? state.slideIndex : 0;
           if (slides[i]) {
             slides[i].scrollTop = 0;
@@ -517,8 +539,8 @@ export function buildForumBridgeScript(
   }
 
   function applyNetworksTallies(counts, meta) {
-    var cloud = $("#cloud");
-    var cats = $("#nwCats");
+    var cloud = qs("#cloud");
+    var cats = qs("#nwCats");
     meta = meta || {};
     window.__koinaApplyingNetworks = true;
     try {
@@ -583,13 +605,13 @@ export function buildForumBridgeScript(
   }
 
   function applySpacesTallies(counts, meta) {
-    var spG = $("#spGrid");
+    var spG = qs("#spGrid");
     if (!spG) return;
     meta = meta || {};
     window.__koinaApplyingSpaces = true;
     try {
       // Update existing cards
-      $$("#spGrid .sp").forEach(function(card) {
+      qsa("#spGrid .sp").forEach(function(card) {
         var nameEl = card.querySelector(".sp-name .e") || card.querySelector(".sp-name span");
         var name = (nameEl && nameEl.textContent) || "";
         card.querySelectorAll("button[data-k]").forEach(function(btn) {
@@ -606,7 +628,7 @@ export function buildForumBridgeScript(
         if (key.slice(-6) !== ":added" || !counts[key]) return;
         var name = (meta[key] && meta[key].name) || key.slice(0, -6);
         var exists = false;
-        $$("#spGrid .sp").forEach(function(card) {
+        qsa("#spGrid .sp").forEach(function(card) {
           var nameEl = card.querySelector(".sp-name .e") || card.querySelector(".sp-name span");
           if (nameEl && nameEl.textContent === name) exists = true;
         });
@@ -648,7 +670,7 @@ export function buildForumBridgeScript(
       applySpacesTallies(tallies.spaces || {}, meta.spaces || {});
 
       // Paint every known poll (zero missing keys so local deck counts cannot linger)
-      $$(".poll[data-poll]").forEach(function(p) {
+      qsa(".poll[data-poll]").forEach(function(p) {
         var key = p.getAttribute("data-poll");
         if (!key) return;
         applyPollTallies(key, tallies[key] || {});
@@ -667,16 +689,27 @@ export function buildForumBridgeScript(
   function waitForDeck(cb) {
     var n = 0;
     (function tick() {
-      if ($$(".slide").length || n > 100) return cb();
+      if (qsa(".slide").length || n > 100) return cb();
       n++;
       setTimeout(tick, 40);
     })();
   }
 
   waitForDeck(function() {
-    var slides = $$(".slide");
-    // Kairos / Vision Japan decks use .slide.cur + opacity, not .on + display
-    var usesCur = slides.some(function(s) { return s.classList.contains("cur"); });
+    var slides = qsa(".slide");
+    // Kairos / Vision Japan decks use .slide.cur + opacity, not .on + display.
+    // .cur is often added only after the deck's first go() — so also sniff CSS
+    // text, otherwise viewers paint display:none and slides never appear to move.
+    function detectUsesCur() {
+      if (slides.some(function(s) { return s.classList.contains("cur"); })) return true;
+      try {
+        var cssText = "";
+        qsa("style").forEach(function(st) { cssText += st.textContent || ""; });
+        if (/\\.slide\\.cur\\b|\\.cur\\.slide\\b/.test(cssText)) return true;
+      } catch (e) {}
+      return false;
+    }
+    var usesCur = detectUsesCur();
     tagThumbs();
 
     function paintCurSlides(i) {
@@ -695,17 +728,19 @@ export function buildForumBridgeScript(
           try { slides[s].inert = true; } catch (e) {}
         }
       }
-      var count = $("#count");
+      var count = qs("#count");
       if (count) count.textContent = (i + 1) + " / " + slides.length;
-      var ttl = $("#ttl");
+      var ttl = qs("#ttl");
       if (ttl) ttl.textContent = (slides[i] && slides[i].dataset.title) || "";
-      var notesText = $("#notesText");
+      var notesText = qs("#notesText");
       if (notesText) notesText.textContent = (slides[i] && slides[i].dataset.notes) || "";
     }
 
     function localGo(i, fromRemote) {
       if (!slides.length) return;
       i = Math.max(0, Math.min(slides.length - 1, i | 0));
+      // Re-check in case .cur appeared after boot
+      if (!usesCur) usesCur = detectUsesCur();
 
       if (usesCur) {
         // Never set location.hash on remote apply — hashchange resets private step to 0
@@ -715,16 +750,16 @@ export function buildForumBridgeScript(
           try { history.replaceState(null, "", "#s" + (i + 1)); } catch (e) {}
         }
       } else {
-        // Classic decks: .on + display — only rewrite when target isn't already active
-        if (!(slides[i] && slides[i].classList.contains("on"))) {
-          for (var s = 0; s < slides.length; s++) {
-            var on = s === i;
-            slides[s].classList.toggle("on", on);
-            if (on) {
-              slides[s].style.setProperty("display", "flex", "important");
-            } else {
-              slides[s].style.setProperty("display", "none", "important");
-            }
+        // Classic decks: always rewrite .on + display so stray active slides clear.
+        // Also toggle .cur for hybrid decks so opacity-based CSS still tracks.
+        for (var s = 0; s < slides.length; s++) {
+          var on = s === i;
+          slides[s].classList.toggle("on", on);
+          slides[s].classList.toggle("cur", on);
+          if (on) {
+            slides[s].style.setProperty("display", "flex", "important");
+          } else {
+            slides[s].style.setProperty("display", "none", "important");
           }
         }
         if (!fromRemote) {
@@ -733,10 +768,11 @@ export function buildForumBridgeScript(
       }
 
       if (slides[i]) slides[i].scrollTop = 0;
-      var pg = $("#pg");
-      var pgTotal = $("#pgTotal");
-      var prog = $("#prog");
-      var secname = $("#secname");
+      var pg = qs("#pg");
+      var pgTotal = qs("#pgTotal");
+      var prog = qs("#prog");
+      var secname = qs("#secname");
+      // Keep #pg in sync even for .cur decks so host DOM reads stay accurate
       if (pg) pg.value = String(i + 1);
       if (pgTotal) pgTotal.textContent = String(slides.length);
       if (prog) prog.style.width = ((i + 1) / slides.length * 100) + "%";
@@ -750,6 +786,7 @@ export function buildForumBridgeScript(
     // Always expose go for remote apply; wrap existing if present
     if (typeof window.go === "function") {
       var originalGo = window.go;
+      window.__koinaOriginalGo = originalGo;
       window.go = function(i) {
         if (MODE === "view" && !window.__koinaApplying) return;
         try { originalGo(i); } catch (e) { localGo(i, window.__koinaApplying); }
@@ -767,7 +804,7 @@ export function buildForumBridgeScript(
     flashStyle.textContent = ".slide.koina-sync-flash{outline:3px solid #c95a24;outline-offset:-3px}";
     document.head.appendChild(flashStyle);
 
-    $$("#bar .seg button").forEach(function(b) {
+    qsa("#bar .seg button").forEach(function(b) {
       b.addEventListener("click", function() {
         scheduleEmit();
       });
@@ -790,7 +827,7 @@ export function buildForumBridgeScript(
 
     // Presenter nav clicks (private go) — also emit after click
     ["#prev", "#next", "#grid"].forEach(function(sel) {
-      var el = $(sel);
+      var el = qs(sel);
       if (!el) return;
       el.addEventListener("click", function() {
         scheduleEmit();
@@ -849,9 +886,9 @@ export function buildForumBridgeScript(
     }, 400);
 
     // If the deck wipes interactive UIs, paint server state back immediately
-    var cloudEl = $("#cloud");
-    var catsEl = $("#nwCats");
-    var spGridEl = $("#spGrid");
+    var cloudEl = qs("#cloud");
+    var catsEl = qs("#nwCats");
+    var spGridEl = qs("#spGrid");
     var moTimer = null;
     var mo = new MutationObserver(function() {
       if (
@@ -868,7 +905,7 @@ export function buildForumBridgeScript(
     if (cloudEl) mo.observe(cloudEl, { childList: true, subtree: true });
     if (catsEl) mo.observe(catsEl, { childList: true, subtree: true, characterData: true });
     if (spGridEl) mo.observe(spGridEl, { childList: true, subtree: true, characterData: true });
-    $$(".poll").forEach(function(p) {
+    qsa(".poll").forEach(function(p) {
       mo.observe(p, { childList: true, subtree: true, characterData: true });
     });
 
@@ -887,41 +924,41 @@ export function buildForumBridgeScript(
 
     // Strip deck-local handlers that only update private in-memory counts.
     function disarmDeckNetworks() {
-      var form = $("#nwForm");
+      var form = qs("#nwForm");
       if (form && form.parentNode && !form.dataset.koinaWired) {
         var clone = form.cloneNode(true);
         clone.dataset.koinaWired = "1";
         form.parentNode.replaceChild(clone, form);
       }
-      var clearBtn = $("#nwClear");
+      var clearBtn = qs("#nwClear");
       if (clearBtn) {
         clearBtn.onclick = null;
         clearBtn.dataset.koinaWired = "1";
       }
-      $$("#nwCats button").forEach(function(b) {
+      qsa("#nwCats button").forEach(function(b) {
         b.onclick = null;
         b.oncontextmenu = null;
       });
     }
     function disarmDeckPolls() {
-      $$(".poll .opt").forEach(function(o) {
+      qsa(".poll .opt").forEach(function(o) {
         o.onclick = null;
         o.oncontextmenu = null;
       });
-      $$(".poll-foot [data-reset], [data-reset]").forEach(function(r) {
+      qsa(".poll-foot [data-reset], [data-reset]").forEach(function(r) {
         if (r.closest && r.closest(".poll-foot, .slide")) r.onclick = null;
       });
     }
     function disarmDeckSpaces() {
-      var form = $("#spForm");
+      var form = qs("#spForm");
       if (form && form.parentNode && !form.dataset.koinaWired) {
         var clone = form.cloneNode(true);
         clone.dataset.koinaWired = "1";
         form.parentNode.replaceChild(clone, form);
       }
-      var reset = $("#spReset");
+      var reset = qs("#spReset");
       if (reset) reset.onclick = null;
-      $$("#spGrid button[data-k]").forEach(function(b) {
+      qsa("#spGrid button[data-k]").forEach(function(b) {
         b.onclick = null;
         b.oncontextmenu = null;
       });
@@ -947,7 +984,7 @@ export function buildForumBridgeScript(
       if (form.id === "nwForm") {
         e.preventDefault();
         e.stopImmediatePropagation();
-        var inp = $("#nwInput");
+        var inp = qs("#nwInput");
         var raw = (inp && inp.value || "").trim();
         if (!raw) return;
         submitNetworkWords(raw);
@@ -957,7 +994,7 @@ export function buildForumBridgeScript(
       if (form.id === "spForm") {
         e.preventDefault();
         e.stopImmediatePropagation();
-        var spin = $("#spInput");
+        var spin = qs("#spInput");
         var v = (spin && spin.value || "").trim().slice(0, 40);
         if (!v) return;
         postActivity({
@@ -1006,7 +1043,7 @@ export function buildForumBridgeScript(
       if (catBtn) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        var cats = $("#nwCats");
+        var cats = qs("#nwCats");
         var buttons = cats ? Array.prototype.slice.call(cats.querySelectorAll("button")) : [];
         var i = buttons.indexOf(catBtn);
         if (i < 0) return;
@@ -1111,7 +1148,7 @@ export function buildForumBridgeScript(
 
     if (MODE === "present") {
       // Icon next to presenter clock (or end of #bar): bring all viewers to this slide
-      if (!$("#koinaBring")) {
+      if (!qs("#koinaBring")) {
         var bringBtn = document.createElement("button");
         bringBtn.id = "koinaBring";
         bringBtn.className = "nb";
@@ -1128,8 +1165,8 @@ export function buildForumBridgeScript(
           setTimeout(function(){ bringBtn.classList.remove("koina-bring-pulse"); }, 600);
           post("bring-viewers", collectState());
         });
-        var clock = $("#clock");
-        var bar = $("#bar");
+        var clock = qs("#clock");
+        var bar = qs("#bar");
         if (clock && clock.parentNode) {
           clock.parentNode.insertBefore(bringBtn, clock.nextSibling);
         } else if (bar) {
