@@ -123,7 +123,7 @@ export function HolodoriPageContent({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/games/holodori-hero.png"
-                  alt="Hololive Dreams promotional art"
+                  alt={t("holodori.heroAlt")}
                   className="h-full w-full object-cover"
                   decoding="async"
                 />

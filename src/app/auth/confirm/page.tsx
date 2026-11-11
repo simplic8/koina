@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LiveDot } from "@/components/ui/Badge";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -12,6 +13,7 @@ import { createClient } from "@/lib/supabase/client";
  * so email scanners cannot consume the one-time token on prefetch.
  */
 export default function AuthConfirmPage() {
+  const { t } = useLocale();
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [next, setNext] = useState("/onboarding");
@@ -32,17 +34,16 @@ export default function AuthConfirmPage() {
           : nextPath,
       );
     }
-    if (!confirmToken) {
-      setError(
-        "Invalid confirmation link. Request a new one from the confirm email page.",
-      );
-    }
     setReady(true);
   }, []);
 
+  // Derived so the message follows the locale (it resolves after first mount)
+  const shownError =
+    error ?? (ready && !token ? t("authConfirm.invalidLink") : null);
+
   async function onConfirm() {
     if (!token) {
-      setError("Invalid confirmation link.");
+      setError(t("authConfirm.invalidShort"));
       return;
     }
 
@@ -69,8 +70,9 @@ export default function AuthConfirmPage() {
           data.code === "token_invalid" || Boolean(data.signInPath),
         );
         throw new Error(
-          data.error ??
-            "Email link is invalid or has expired. Request a new confirmation email.",
+          data.code === "token_invalid"
+            ? t("authConfirm.expired")
+            : (data.error ?? t("authConfirm.expired")),
         );
       }
 
@@ -87,9 +89,7 @@ export default function AuthConfirmPage() {
           if (sessionError) {
             router.replace(
               "/login?message=" +
-                encodeURIComponent(
-                  "Email confirmed. Sign in to continue.",
-                ),
+                encodeURIComponent(t("authConfirm.confirmedSignIn")),
             );
             router.refresh();
             return;
@@ -97,7 +97,7 @@ export default function AuthConfirmPage() {
         } else {
           router.replace(
             "/login?message=" +
-              encodeURIComponent("Email confirmed. Sign in to continue."),
+              encodeURIComponent(t("authConfirm.confirmedSignIn")),
           );
           return;
         }
@@ -107,9 +107,7 @@ export default function AuthConfirmPage() {
       router.refresh();
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "Email link is invalid or has expired.",
+        err instanceof Error ? err.message : t("authConfirm.expiredShort"),
       );
     } finally {
       setConfirming(false);
@@ -121,21 +119,17 @@ export default function AuthConfirmPage() {
       <div className="mx-auto max-w-md px-6">
         <p className="mb-3.5 flex items-center gap-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold tracking-[0.14em] text-accent-600 uppercase">
           <LiveDot />
-          Confirm email
+          {t("authConfirm.eyebrow")}
         </p>
-        <h1 className="mb-2 text-3xl">Activate your account</h1>
-        <p className="mb-8 text-ink-70">
-          Click the button below to confirm your email. You&apos;ll be signed in
-          automatically when possible. This only runs when you press the button
-          — not when the email is opened.
-        </p>
+        <h1 className="mb-2 text-3xl">{t("authConfirm.title")}</h1>
+        <p className="mb-8 text-ink-70">{t("authConfirm.lead")}</p>
 
-        {error && (
+        {shownError && (
           <p className="mb-4 text-sm text-accent-600">
-            {error}{" "}
+            {shownError}{" "}
             {signInHint && (
               <Link href="/login" className="font-semibold underline">
-                Sign in
+                {t("confirm.signIn")}
               </Link>
             )}
           </p>
@@ -148,19 +142,21 @@ export default function AuthConfirmPage() {
             disabled={confirming}
             className="w-full"
           >
-            {confirming ? "Confirming…" : "Confirm email & continue"}
+            {confirming
+              ? t("authConfirm.confirming")
+              : t("authConfirm.button")}
           </Button>
         )}
 
         <p className="mt-6 text-sm text-ink-70">
-          Already confirmed?{" "}
+          {t("confirm.already")}{" "}
           <Link href="/login" className="font-semibold text-accent-600">
-            Sign in
+            {t("confirm.signIn")}
           </Link>
           {" · "}
-          Need a new link?{" "}
+          {t("authConfirm.needNew")}{" "}
           <Link href="/confirm-email" className="font-semibold text-accent-600">
-            Resend confirmation email
+            {t("confirm.resend")}
           </Link>
         </p>
       </div>

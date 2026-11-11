@@ -130,7 +130,9 @@ export function ProfileSettings({
     if (provider === "discord") setDiscordLinked(false);
     setLinkCount((n) => Math.max(1, n - 1));
     setLinkMessage(
-      `${provider === "google" ? "Google" : "Discord"} unlinked.`,
+      t("settings.unlinked", {
+        provider: provider === "google" ? "Google" : "Discord",
+      }),
     );
     setLinkBusy(null);
     router.refresh();
@@ -153,15 +155,15 @@ export function ProfileSettings({
         display_name?: string | null;
       };
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not update profile.");
+        throw new Error(data.error ?? t("settings.updateFailed"));
       }
       setUsername(data.username ?? username);
       setDisplayName(data.display_name ?? "");
-      setUsernameMsg("Profile name updated.");
+      setUsernameMsg(t("settings.nameUpdated"));
       router.refresh();
     } catch (err) {
       setUsernameError(
-        err instanceof Error ? err.message : "Could not update profile.",
+        err instanceof Error ? err.message : t("settings.updateFailed"),
       );
     } finally {
       setUsernameSaving(false);
@@ -180,7 +182,7 @@ export function ProfileSettings({
   async function uploadAvatar() {
     const file = fileRef.current?.files?.[0];
     if (!file) {
-      setAvatarError("Choose an image first.");
+      setAvatarError(t("settings.chooseImage"));
       return;
     }
     setAvatarSaving(true);
@@ -197,15 +199,15 @@ export function ProfileSettings({
         error?: string;
         avatar_url?: string;
       };
-      if (!response.ok) throw new Error(data.error ?? "Upload failed.");
+      if (!response.ok) throw new Error(data.error ?? t("settings.uploadFailed"));
       setAvatarUrl(data.avatar_url ?? null);
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
       if (fileRef.current) fileRef.current.value = "";
-      setAvatarMsg("Profile picture updated.");
+      setAvatarMsg(t("settings.avatarUpdated"));
       router.refresh();
     } catch (err) {
-      setAvatarError(err instanceof Error ? err.message : "Upload failed.");
+      setAvatarError(err instanceof Error ? err.message : t("settings.uploadFailed"));
     } finally {
       setAvatarSaving(false);
     }
@@ -218,16 +220,16 @@ export function ProfileSettings({
     try {
       const response = await fetch("/api/profile/avatar", { method: "DELETE" });
       const data = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(data.error ?? "Could not remove photo.");
+      if (!response.ok) throw new Error(data.error ?? t("settings.removePhotoFailed"));
       setAvatarUrl(null);
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
       if (fileRef.current) fileRef.current.value = "";
-      setAvatarMsg("Profile picture removed.");
+      setAvatarMsg(t("settings.avatarRemoved"));
       router.refresh();
     } catch (err) {
       setAvatarError(
-        err instanceof Error ? err.message : "Could not remove photo.",
+        err instanceof Error ? err.message : t("settings.removePhotoFailed"),
       );
     } finally {
       setAvatarSaving(false);
@@ -239,7 +241,7 @@ export function ProfileSettings({
     setPasswordError(null);
     setPasswordMsg(null);
     if (newPassword !== confirmPassword) {
-      setPasswordError("New passwords do not match.");
+      setPasswordError(t("settings.passwordMismatch"));
       return;
     }
     setPasswordSaving(true);
@@ -251,15 +253,15 @@ export function ProfileSettings({
       });
       const data = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not change password.");
+        throw new Error(data.error ?? t("settings.passwordFailed"));
       }
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setPasswordMsg("Password updated.");
+      setPasswordMsg(t("settings.passwordUpdated"));
     } catch (err) {
       setPasswordError(
-        err instanceof Error ? err.message : "Could not change password.",
+        err instanceof Error ? err.message : t("settings.passwordFailed"),
       );
     } finally {
       setPasswordSaving(false);
@@ -281,13 +283,13 @@ export function ProfileSettings({
       });
       const data = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not delete account.");
+        throw new Error(data.error ?? t("settings.deleteFailed"));
       }
       router.push("/");
       router.refresh();
     } catch (err) {
       setDeleteError(
-        err instanceof Error ? err.message : "Could not delete account.",
+        err instanceof Error ? err.message : t("settings.deleteFailed"),
       );
       setDeleting(false);
     }
@@ -304,9 +306,9 @@ export function ProfileSettings({
       </section>
 
       <section className="rounded-[8px] border border-ink-08 bg-surface p-6">
-        <h2 className="mb-1 text-xl">Profile picture</h2>
+        <h2 className="mb-1 text-xl">{t("settings.avatarTitle")}</h2>
         <p className="mb-5 text-sm text-ink-70">
-          JPEG, PNG, WebP, or GIF up to 2MB.
+          {t("settings.avatarHint")}
         </p>
         <div className="flex flex-wrap items-center gap-5">
           <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-ink-15 bg-base">
@@ -337,7 +339,7 @@ export function ProfileSettings({
                 onClick={uploadAvatar}
                 disabled={avatarSaving}
               >
-                {avatarSaving ? "Uploading…" : "Upload"}
+                {avatarSaving ? t("settings.uploading") : t("settings.upload")}
               </Button>
               {(avatarUrl || previewUrl) && (
                 <Button
@@ -347,7 +349,7 @@ export function ProfileSettings({
                   onClick={removeAvatar}
                   disabled={avatarSaving}
                 >
-                  Remove
+                  {t("settings.remove")}
                 </Button>
               )}
             </div>
@@ -360,20 +362,19 @@ export function ProfileSettings({
       </section>
 
       <section className="rounded-[8px] border border-ink-08 bg-surface p-6">
-        <h2 className="mb-1 text-xl">Name</h2>
+        <h2 className="mb-1 text-xl">{t("settings.nameTitle")}</h2>
         <p className="mb-5 text-sm text-ink-70">
-          Username is your unique handle (no spaces). Display name is how you
-          appear to others.
+          {t("settings.nameLead")}
         </p>
         <form onSubmit={saveProfileNames} className="flex flex-col gap-4">
           <label className="block text-sm font-medium">
-            Username
+            {t("auth.username")}
             <input
               required
               minLength={2}
               maxLength={32}
               pattern="[A-Za-z0-9_\-.]+"
-              title="Letters, numbers, hyphens, dots, or underscores — no spaces"
+              title={t("auth.usernameFormat")}
               value={username}
               onChange={(e) =>
                 setUsername(e.target.value.replace(/\s+/g, ""))
@@ -383,23 +384,23 @@ export function ProfileSettings({
               spellCheck={false}
             />
             <span className="mt-1 block text-xs font-normal text-ink-40">
-              No spaces. Letters, numbers, hyphens, dots, underscores.
+              {t("settings.usernameHint")}
             </span>
           </label>
           <label className="block text-sm font-medium">
-            Display name
+            {t("settings.displayName")}
             <input
               maxLength={48}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               className={inputClass}
-              placeholder="Optional — spaces allowed"
+              placeholder={t("settings.displayNamePlaceholder")}
               autoComplete="nickname"
             />
           </label>
           {email && (
             <p className="text-sm text-ink-40">
-              Signed in as <span className="text-ink-70">{email}</span>
+              {t("settings.signedInAs")} <span className="text-ink-70">{email}</span>
             </p>
           )}
           {usernameError && (
@@ -410,24 +411,23 @@ export function ProfileSettings({
           )}
           <div>
             <Button type="submit" disabled={usernameSaving}>
-              {usernameSaving ? "Saving…" : "Save"}
+              {usernameSaving ? t("profile.saving") : t("settings.save")}
             </Button>
           </div>
         </form>
       </section>
 
       <section className="rounded-[8px] border border-ink-08 bg-surface p-6">
-        <h2 className="mb-1 text-xl">Linked accounts</h2>
+        <h2 className="mb-1 text-xl">{t("settings.linkedTitle")}</h2>
         <p className="mb-5 text-sm text-ink-70">
-          Connect Google or Discord to sign in faster. Discord also lets chat
-          posts show as you in #web.
+          {t("settings.linkedLead")}
         </p>
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-[6px] border border-ink-08 px-4 py-3">
             <div>
               <p className="text-sm font-semibold">Google</p>
               <p className="text-xs text-ink-40">
-                {googleLinked ? "Linked" : "Not linked"}
+                {googleLinked ? t("settings.linked") : t("settings.notLinked")}
               </p>
             </div>
             {googleLinked ? (
@@ -438,7 +438,7 @@ export function ProfileSettings({
                 disabled={linkBusy !== null || linkCount <= 1}
                 onClick={() => onUnlink("google")}
               >
-                {linkBusy === "google" ? "Unlinking…" : "Unlink"}
+                {linkBusy === "google" ? t("settings.unlinking") : t("settings.unlink")}
               </Button>
             ) : (
               <Button
@@ -447,7 +447,7 @@ export function ProfileSettings({
                 disabled={linkBusy !== null}
                 onClick={() => onLink("google")}
               >
-                {linkBusy === "google" ? "Redirecting…" : "Link Google"}
+                {linkBusy === "google" ? t("settings.redirecting") : t("settings.linkGoogle")}
               </Button>
             )}
           </div>
@@ -455,7 +455,7 @@ export function ProfileSettings({
             <div>
               <p className="text-sm font-semibold">Discord</p>
               <p className="text-xs text-ink-40">
-                {discordLinked ? "Linked" : "Not linked"}
+                {discordLinked ? t("settings.linked") : t("settings.notLinked")}
               </p>
             </div>
             {discordLinked ? (
@@ -466,7 +466,7 @@ export function ProfileSettings({
                 disabled={linkBusy !== null || linkCount <= 1}
                 onClick={() => onUnlink("discord")}
               >
-                {linkBusy === "discord" ? "Unlinking…" : "Unlink"}
+                {linkBusy === "discord" ? t("settings.unlinking") : t("settings.unlink")}
               </Button>
             ) : (
               <Button
@@ -476,14 +476,14 @@ export function ProfileSettings({
                 disabled={linkBusy !== null}
                 onClick={() => onLink("discord")}
               >
-                {linkBusy === "discord" ? "Redirecting…" : "Link Discord"}
+                {linkBusy === "discord" ? t("settings.redirecting") : t("settings.linkDiscord")}
               </Button>
             )}
           </div>
         </div>
         {linkCount <= 1 && (googleLinked || discordLinked) && (
           <p className="mt-3 text-xs text-ink-40">
-            Keep at least one sign-in method linked.
+            {t("settings.keepOne")}
           </p>
         )}
         {linkError && (
@@ -495,15 +495,15 @@ export function ProfileSettings({
       </section>
 
       <section className="rounded-[8px] border border-ink-08 bg-surface p-6">
-        <h2 className="mb-1 text-xl">Password</h2>
+        <h2 className="mb-1 text-xl">{t("settings.passwordTitle")}</h2>
         {hasEmailIdentity ? (
           <>
             <p className="mb-5 text-sm text-ink-70">
-              Change the password you use to sign in with email.
+              {t("settings.passwordLead")}
             </p>
             <form onSubmit={changePassword} className="flex flex-col gap-4">
               <label className="block text-sm font-medium">
-                Current password
+                {t("settings.currentPassword")}
                 <input
                   type="password"
                   required
@@ -515,7 +515,7 @@ export function ProfileSettings({
                 />
               </label>
               <label className="block text-sm font-medium">
-                New password
+                {t("settings.newPassword")}
                 <input
                   type="password"
                   required
@@ -527,7 +527,7 @@ export function ProfileSettings({
                 />
               </label>
               <label className="block text-sm font-medium">
-                Confirm new password
+                {t("settings.confirmPassword")}
                 <input
                   type="password"
                   required
@@ -546,29 +546,27 @@ export function ProfileSettings({
               )}
               <div>
                 <Button type="submit" disabled={passwordSaving}>
-                  {passwordSaving ? "Updating…" : "Update password"}
+                  {passwordSaving ? t("settings.updatingPassword") : t("settings.updatePassword")}
                 </Button>
               </div>
             </form>
           </>
         ) : (
           <p className="text-sm text-ink-70">
-            This account signs in with Google or Discord, so there&apos;s no
-            email password to change here.
+            {t("settings.oauthNoPassword")}
           </p>
         )}
       </section>
 
       <section className="rounded-[8px] border border-[#e11d48]/30 bg-surface p-6">
-        <h2 className="mb-1 text-xl text-[#e11d48]">Delete account</h2>
+        <h2 className="mb-1 text-xl text-[#e11d48]">{t("settings.deleteTitle")}</h2>
         <p className="mb-5 text-sm text-ink-70">
-          Permanently delete your account and profile data. This cannot be
-          undone.
+          {t("settings.deleteLead")}
         </p>
         <form onSubmit={deleteAccount} className="flex flex-col gap-4">
           {hasEmailIdentity && (
             <label className="block text-sm font-medium">
-              Password
+              {t("auth.password")}
               <input
                 type="password"
                 required
@@ -581,7 +579,7 @@ export function ProfileSettings({
             </label>
           )}
           <label className="block text-sm font-medium">
-            Type DELETE to confirm
+            {t("settings.deleteTypePrompt")}
             <input
               required
               value={deleteConfirm}
@@ -596,7 +594,7 @@ export function ProfileSettings({
           )}
           <div>
             <Button type="submit" variant="dark" disabled={deleting}>
-              {deleting ? "Deleting…" : "Delete my account"}
+              {deleting ? t("settings.deleting") : t("settings.deleteButton")}
             </Button>
           </div>
         </form>

@@ -1,12 +1,14 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import type { MessageKey } from "@/lib/i18n/messages";
 import { useTheme, type Theme } from "./ThemeProvider";
 
-const labels: Record<Theme, string> = {
-  light: "Light",
-  dark: "Dark",
-  system: "System",
+const labelKeys: Record<Theme, MessageKey> = {
+  light: "theme.light",
+  dark: "theme.dark",
+  system: "theme.system",
 };
 
 function SunIcon() {
@@ -66,15 +68,17 @@ const icons: Record<Theme, () => ReactNode> = {
 
 export function ThemeToggle() {
   const { theme, cycleTheme } = useTheme();
+  const { t } = useLocale();
   const Icon = icons[theme];
+  const mode = t(labelKeys[theme]);
 
   return (
     <button
       type="button"
       onClick={cycleTheme}
       className="inline-flex h-9 w-9 items-center justify-center rounded-[6px] border border-ink-15 text-ink-70 transition-colors hover:border-ink hover:text-ink"
-      aria-label={`Theme: ${labels[theme]}. Click to change.`}
-      title={`Theme: ${labels[theme]}`}
+      aria-label={t("theme.change", { mode })}
+      title={t("theme.label", { mode })}
     >
       <Icon />
     </button>

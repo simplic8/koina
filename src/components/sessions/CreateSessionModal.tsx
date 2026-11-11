@@ -52,7 +52,7 @@ export function CreateSessionModal({
   titleSuggestions,
   openOnMount = false,
   defaultGameSlug,
-  triggerLabel = "Create session",
+  triggerLabel,
   triggerClassName,
   editingSession = null,
   open,
@@ -64,6 +64,7 @@ export function CreateSessionModal({
   const router = useRouter();
   const { locale: uiLocale, t } = useLocale();
   const isEditing = Boolean(editingSession);
+  const triggerText = triggerLabel ?? t("createSession.submit");
   const [gameId, setGameId] = useState(() =>
     resolveGameId(games, defaultGameSlug),
   );
@@ -186,11 +187,11 @@ export function CreateSessionModal({
 
     const date = new Date(startsAt);
     if (!startsAt || Number.isNaN(date.getTime())) {
-      setError("Choose a valid date and time.");
+      setError(t("createSession.errDate"));
       return;
     }
     if (date.getTime() <= Date.now()) {
-      setError("The session must be scheduled in the future.");
+      setError(t("createSession.errFuture"));
       return;
     }
 
@@ -202,8 +203,8 @@ export function CreateSessionModal({
     ) {
       setError(
         minCapacity > 2
-          ? `Capacity must be between ${minCapacity} and 500.`
-          : "Capacity must be a whole number between 2 and 500.",
+          ? t("createSession.errCapacityRange", { min: minCapacity })
+          : t("createSession.errCapacityWhole"),
       );
       return;
     }
@@ -236,8 +237,8 @@ export function CreateSessionModal({
         throw new Error(
           data.error ??
             (isEditing
-              ? "Could not update the session."
-              : "Could not create the session."),
+              ? t("createSession.errUpdate")
+              : t("createSession.errCreate")),
         );
       }
 
@@ -252,8 +253,8 @@ export function CreateSessionModal({
         err instanceof Error
           ? err.message
           : isEditing
-            ? "Could not update the session."
-            : "Could not create the session.",
+            ? t("createSession.errUpdate")
+            : t("createSession.errCreate"),
       );
     } finally {
       setSubmitting(false);
@@ -270,11 +271,11 @@ export function CreateSessionModal({
             disabled={!games.length}
             className={triggerClassName}
           >
-            {triggerLabel}
+            {triggerText}
           </button>
         ) : (
           <Button onClick={openModal} disabled={!games.length}>
-            {triggerLabel}
+            {triggerText}
           </Button>
         )
       ) : null}
@@ -290,12 +291,12 @@ export function CreateSessionModal({
           <div className="mb-6 flex items-start justify-between gap-4">
             <div>
               <h2 id="create-session-title" className="text-2xl">
-                {isEditing ? t("sessions.editTitle") : "Schedule a session"}
+                {isEditing ? t("sessions.editTitle") : t("createSession.title")}
               </h2>
               <p className="mt-1 text-sm text-ink-70">
                 {isEditing
                   ? t("sessions.editLead")
-                  : "Set up the next community game night. Tag the language of the title — we keep your original wording."}
+                  : t("createSession.lead")}
               </p>
             </div>
             <button
@@ -303,7 +304,7 @@ export function CreateSessionModal({
               onClick={closeModal}
               disabled={submitting}
               className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[6px] border border-ink-15 bg-transparent text-xl text-ink-70 hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="Close"
+              aria-label={t("sessions.close")}
             >
               ×
             </button>
@@ -311,7 +312,7 @@ export function CreateSessionModal({
 
           <div className="flex flex-col gap-4">
             <label className="block text-sm font-medium">
-              Game
+              {t("common.game")}
               <select
                 required
                 value={gameId}
@@ -327,7 +328,7 @@ export function CreateSessionModal({
             </label>
 
             <label className="block text-sm font-medium">
-              Title language
+              {t("createSession.titleLanguage")}
               <select
                 required
                 value={sessionLocale}
@@ -347,7 +348,7 @@ export function CreateSessionModal({
             <div>
               <div className="flex items-center justify-between gap-3">
                 <label htmlFor="session-title" className="text-sm font-medium">
-                  Session title
+                  {t("sessions.sessionTitle")}
                 </label>
                 <button
                   type="button"
@@ -355,7 +356,7 @@ export function CreateSessionModal({
                   disabled={!titleSuggestions.length}
                   className="cursor-pointer border-0 bg-transparent p-0 text-xs font-semibold text-accent-600 hover:text-accent-700 disabled:cursor-not-allowed disabled:text-ink-40"
                 >
-                  ✦ Suggest random title
+                  {t("createSession.suggest")}
                 </button>
               </div>
               <input
@@ -364,7 +365,7 @@ export function CreateSessionModal({
                 maxLength={120}
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder="Friday night speedrun"
+                placeholder={t("createSession.titlePlaceholder")}
                 className="mt-1.5 w-full rounded-[6px] border border-ink-15 px-3.5 py-2.5 text-sm outline-none focus:border-ink"
               />
             </div>
@@ -375,14 +376,14 @@ export function CreateSessionModal({
                   htmlFor="session-starts-at"
                   className="text-sm font-medium"
                 >
-                  Date and time
+                  {t("createSession.dateTime")}
                 </label>
                 <button
                   type="button"
                   onClick={setToNow}
                   className="cursor-pointer border-0 bg-transparent p-0 text-xs font-semibold text-accent-600 hover:text-accent-700"
                 >
-                  Schedule now
+                  {t("createSession.scheduleNow")}
                 </button>
               </div>
               <input
@@ -394,13 +395,12 @@ export function CreateSessionModal({
                 className="mt-1.5 w-full rounded-[6px] border border-ink-15 px-3.5 py-2.5 text-sm outline-none focus:border-ink"
               />
               <span className="mt-1 block text-xs font-normal text-ink-40">
-                Uses your local time zone. “Schedule now” starts five minutes
-                from now.
+                {t("createSession.timeHint")}
               </span>
             </div>
 
             <label className="block text-sm font-medium">
-              Capacity
+              {t("createSession.capacity")}
               <input
                 required
                 type="number"
@@ -412,7 +412,7 @@ export function CreateSessionModal({
               />
               {minCapacity > 2 ? (
                 <span className="mt-1 block text-xs font-normal text-ink-40">
-                  At least {minCapacity} (current signups).
+                  {t("createSession.capacityMin", { min: minCapacity })}
                 </span>
               ) : null}
             </label>
@@ -431,16 +431,16 @@ export function CreateSessionModal({
               onClick={closeModal}
               disabled={submitting}
             >
-              Cancel
+              {t("createSession.cancel")}
             </Button>
             <Button type="submit" disabled={submitting || !games.length}>
               {submitting
                 ? isEditing
                   ? t("sessions.savingEdit")
-                  : "Creating…"
+                  : t("createSession.creating")
                 : isEditing
                   ? t("sessions.saveEdit")
-                  : "Create session"}
+                  : t("createSession.submit")}
             </Button>
           </div>
         </form>

@@ -49,21 +49,20 @@ export default function LoginPage() {
         const confirmedEmail = (data.email ?? email).trim().toLowerCase();
         router.push(
           `/confirm-email?email=${encodeURIComponent(confirmedEmail)}&message=${encodeURIComponent(
-            data.message ??
-              "Confirm your email before signing in. We can resend the link below.",
+            t("auth.confirmBeforeSignIn"),
           )}`,
         );
         return;
       }
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not sign in.");
+        throw new Error(data.error ?? t("auth.signInFailed"));
       }
 
       router.push("/");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not sign in.");
+      setError(err instanceof Error ? err.message : t("auth.signInFailed"));
       setLoading(false);
     }
   }

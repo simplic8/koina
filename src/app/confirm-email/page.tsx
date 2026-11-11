@@ -11,6 +11,7 @@ export default function ConfirmEmailPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const [resending, setResending] = useState(false);
 
   useEffect(() => {
@@ -23,20 +24,22 @@ export default function ConfirmEmailPage() {
     if (fromMessage) {
       setMessage(fromMessage);
     } else if (fromQuery && !fromError) {
-      setMessage(
-        `We sent a confirmation link to ${fromQuery}. Click it to activate your account before signing in.`,
-      );
+      setSentTo(fromQuery);
     }
   }, []);
+
+  // Derived so the default notice follows the locale (it resolves after mount)
+  const shownMessage = message ?? (sentTo ? t("confirm.sentTo", { email: sentTo }) : null);
 
   async function onResend(event: FormEvent) {
     event.preventDefault();
     setError(null);
     setMessage(null);
+    setSentTo(null);
 
     const trimmed = email.trim().toLowerCase();
     if (!trimmed || !trimmed.includes("@")) {
-      setError("Enter the email you used to register.");
+      setError(t("confirm.enterEmail"));
       return;
     }
 
@@ -53,17 +56,12 @@ export default function ConfirmEmailPage() {
         alreadyConfirmed?: boolean;
       };
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not resend confirmation email.");
+        throw new Error(data.error ?? t("confirm.resendFailed"));
       }
-      setMessage(
-        data.message ??
-          "If that email needs confirmation, a new link is on the way.",
-      );
+      setMessage(data.message ?? t("confirm.resendDefault"));
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "Could not resend confirmation email.",
+        err instanceof Error ? err.message : t("confirm.resendFailed"),
       );
     } finally {
       setResending(false);
@@ -93,7 +91,7 @@ export default function ConfirmEmailPage() {
             />
           </label>
           {error && <p className="text-sm text-accent-600">{error}</p>}
-          {message && <p className="text-sm text-ink-70">{message}</p>}
+          {shownMessage && <p className="text-sm text-ink-70">{shownMessage}</p>}
           <Button type="submit" disabled={resending}>
             {resending ? t("confirm.sending") : t("confirm.resend")}
           </Button>

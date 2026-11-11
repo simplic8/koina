@@ -8,6 +8,7 @@ import {
   type FormEvent,
   type MouseEvent,
 } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type FormState = {
   firstName: string;
@@ -32,6 +33,7 @@ const initialForm: FormState = {
 };
 
 export function VibeCodeRegisterModal() {
+  const { t } = useLocale();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const formId = useId();
   const [form, setForm] = useState<FormState>(initialForm);
@@ -76,9 +78,7 @@ export function VibeCodeRegisterModal() {
     setError(null);
 
     if (!form.consentVibeCode) {
-      setError(
-        "Please consent to be contacted about Vibe Code so we can follow up.",
-      );
+      setError(t("vibe.consentRequired"));
       return;
     }
 
@@ -105,16 +105,13 @@ export function VibeCodeRegisterModal() {
       };
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not submit registration.");
+        throw new Error(data.error ?? t("vibe.submitFailed"));
       }
 
-      setSuccess(
-        data.message ??
-          "Registration received. Check your email for a confirmation — we'll get back to you soon.",
-      );
+      setSuccess(t("vibe.submitSuccess"));
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not submit registration.",
+        err instanceof Error ? err.message : t("vibe.submitFailed"),
       );
     } finally {
       setSubmitting(false);
@@ -124,11 +121,11 @@ export function VibeCodeRegisterModal() {
   return (
     <>
       <div className="vibe-reg">
-        <p className="vibe-label vibe-label-flush">Register</p>
+        <p className="vibe-label vibe-label-flush">{t("vibe.register")}</p>
         <button type="button" className="vibe-reg-btn" onClick={openModal}>
           Vibe Code
         </button>
-        <p className="vibe-free">Limited seats · All tools free</p>
+        <p className="vibe-free">{t("vibe.freeNote")}</p>
       </div>
 
       <dialog
@@ -140,9 +137,9 @@ export function VibeCodeRegisterModal() {
         <div className="vibe-modal-panel">
           <div className="vibe-modal-head">
             <div>
-              <p className="vibe-modal-eyebrow">Workshop signup</p>
+              <p className="vibe-modal-eyebrow">{t("vibe.modalEyebrow")}</p>
               <h2 id={`${formId}-title`} className="vibe-modal-title">
-                Register for Vibe Code
+                {t("vibe.modalTitle")}
               </h2>
             </div>
             <button
@@ -150,7 +147,7 @@ export function VibeCodeRegisterModal() {
               className="vibe-modal-close"
               onClick={closeModal}
               disabled={submitting}
-              aria-label="Close registration form"
+              aria-label={t("vibe.closeForm")}
             >
               ×
             </button>
@@ -158,21 +155,23 @@ export function VibeCodeRegisterModal() {
 
           {success ? (
             <div className="vibe-modal-success" role="status">
-              <p className="vibe-modal-success-title">You&apos;re on the list</p>
+              <p className="vibe-modal-success-title">
+                {t("vibe.successTitle")}
+              </p>
               <p>{success}</p>
               <button
                 type="button"
                 className="vibe-modal-submit"
                 onClick={closeModal}
               >
-                Close
+                {t("sessions.close")}
               </button>
             </div>
           ) : (
             <form className="vibe-modal-form" onSubmit={onSubmit}>
               <div className="vibe-modal-grid">
                 <label className="vibe-modal-field">
-                  First name
+                  {t("vibe.firstName")}
                   <input
                     required
                     maxLength={80}
@@ -182,7 +181,7 @@ export function VibeCodeRegisterModal() {
                   />
                 </label>
                 <label className="vibe-modal-field">
-                  Last name
+                  {t("vibe.lastName")}
                   <input
                     required
                     maxLength={80}
@@ -194,7 +193,7 @@ export function VibeCodeRegisterModal() {
               </div>
 
               <label className="vibe-modal-field">
-                Email address
+                {t("vibe.emailAddress")}
                 <input
                   type="email"
                   required
@@ -207,8 +206,10 @@ export function VibeCodeRegisterModal() {
 
               <div className="vibe-modal-grid">
                 <label className="vibe-modal-field">
-                  WhatsApp number
-                  <span className="vibe-modal-optional">Optional</span>
+                  {t("vibe.whatsapp")}
+                  <span className="vibe-modal-optional">
+                    {t("vibe.optional")}
+                  </span>
                   <input
                     type="tel"
                     maxLength={40}
@@ -219,8 +220,10 @@ export function VibeCodeRegisterModal() {
                   />
                 </label>
                 <label className="vibe-modal-field">
-                  Telegram handle
-                  <span className="vibe-modal-optional">Optional</span>
+                  {t("vibe.telegram")}
+                  <span className="vibe-modal-optional">
+                    {t("vibe.optional")}
+                  </span>
                   <input
                     maxLength={120}
                     placeholder="@username"
@@ -231,8 +234,10 @@ export function VibeCodeRegisterModal() {
               </div>
 
               <label className="vibe-modal-field">
-                Discord handle
-                <span className="vibe-modal-optional">Optional</span>
+                {t("vibe.discord")}
+                <span className="vibe-modal-optional">
+                  {t("vibe.optional")}
+                </span>
                 <input
                   maxLength={120}
                   placeholder="username"
@@ -251,10 +256,7 @@ export function VibeCodeRegisterModal() {
                       updateField("consentVibeCode", e.target.checked)
                     }
                   />
-                  <span>
-                    I agree to be contacted about <strong>Vibe Code</strong>{" "}
-                    (required)
-                  </span>
+                  <span>{t("vibe.consentVibe")}</span>
                 </label>
                 <label className="vibe-modal-check">
                   <input
@@ -264,10 +266,7 @@ export function VibeCodeRegisterModal() {
                       updateField("consentKoina", e.target.checked)
                     }
                   />
-                  <span>
-                    Keep me in the loop about other <strong>KOINA</strong>{" "}
-                    activities (optional)
-                  </span>
+                  <span>{t("vibe.consentKoina")}</span>
                 </label>
               </div>
 
@@ -278,7 +277,7 @@ export function VibeCodeRegisterModal() {
                 className="vibe-modal-submit"
                 disabled={submitting}
               >
-                {submitting ? "Submitting…" : "Submit registration"}
+                {submitting ? t("vibe.submitting") : t("vibe.submit")}
               </button>
             </form>
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type Props = {
   sessionId: string;
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export function ForumLiveStatus({ sessionId, initialLive }: Props) {
+  const { t } = useLocale();
   const [live, setLive] = useState(initialLive);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export function ForumLiveStatus({ sessionId, initialLive }: Props) {
 
   return (
     <span className="font-semibold text-ink">
-      {live ? "Live" : "Not marked live yet"}
+      {live ? t("forum.live") : t("forum.notLive")}
     </span>
   );
 }

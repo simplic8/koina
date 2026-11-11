@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { T } from "@/components/i18n/T";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — KOINA",
@@ -10,12 +11,14 @@ export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-[720px] px-6 py-16">
       <p className="mb-3 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold tracking-[0.14em] text-accent-600 uppercase">
-        Legal
+        <T k="footer.legal" />
       </p>
       <h1 className="mb-3 text-[clamp(28px,4vw,40px)] leading-[1.1]">
-        Privacy Policy
+        <T k="legal.privacyTitle" />
       </h1>
-      <p className="mb-10 text-sm text-ink-40">Last updated: August 12, 2026</p>
+      <p className="mb-10 text-sm text-ink-40">
+        <T k="legal.lastUpdated" />
+      </p>
 
       <div className="space-y-8 text-[15px] leading-7 text-ink-70">
         <section>
@@ -116,11 +119,10 @@ export default function PrivacyPage() {
       </div>
 
       <p className="mt-12 text-sm text-ink-40">
-        See also our{" "}
+        <T k="legal.seeAlso" />{" "}
         <Link href="/terms" className="text-accent-600 no-underline hover:underline">
-          Terms of Use
+          <T k="legal.termsTitle" />
         </Link>
-        .
       </p>
     </div>
   );

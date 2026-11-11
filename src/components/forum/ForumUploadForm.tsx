@@ -3,9 +3,11 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export function ForumUploadForm() {
   const router = useRouter();
+  const { t } = useLocale();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -15,7 +17,7 @@ export function ForumUploadForm() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (!file) {
-      setError("Choose an HTML file.");
+      setError(t("forum.chooseFile"));
       return;
     }
     setBusy(true);
@@ -33,11 +35,11 @@ export function ForumUploadForm() {
         error?: string;
         session?: { id: string };
       };
-      if (!res.ok) throw new Error(data.error || "Upload failed.");
+      if (!res.ok) throw new Error(data.error || t("forum.uploadFailed"));
       router.push(`/forum/${data.session!.id}`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed.");
+      setError(err instanceof Error ? err.message : t("forum.uploadFailed"));
       setBusy(false);
     }
   }
@@ -48,14 +50,11 @@ export function ForumUploadForm() {
       className="flex flex-col gap-4 rounded-[8px] border border-ink-15 bg-surface p-5"
     >
       <div>
-        <h2 className="text-lg font-semibold">Upload a deck</h2>
-        <p className="mt-1 text-sm text-ink-70">
-          HTML slide decks (like your workshop file). Admins can present; anyone
-          with the link can view and join activities.
-        </p>
+        <h2 className="text-lg font-semibold">{t("forum.uploadTitle")}</h2>
+        <p className="mt-1 text-sm text-ink-70">{t("forum.uploadLead")}</p>
       </div>
       <label className="block text-sm font-medium">
-        Title
+        {t("forum.fieldTitle")}
         <input
           required
           value={title}
@@ -64,7 +63,7 @@ export function ForumUploadForm() {
         />
       </label>
       <label className="block text-sm font-medium">
-        Description
+        {t("forum.fieldDescription")}
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -73,7 +72,7 @@ export function ForumUploadForm() {
         />
       </label>
       <label className="block text-sm font-medium">
-        HTML file
+        {t("forum.fieldFile")}
         <input
           required
           type="file"
@@ -84,7 +83,7 @@ export function ForumUploadForm() {
       </label>
       {error ? <p className="text-sm text-accent-600">{error}</p> : null}
       <Button type="submit" disabled={busy}>
-        {busy ? "Uploading…" : "Create forum session"}
+        {busy ? t("forum.uploading") : t("forum.create")}
       </Button>
     </form>
   );

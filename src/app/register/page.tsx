@@ -38,18 +38,18 @@ export default function RegisterPage() {
       };
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not create your account.");
+        throw new Error(data.error ?? t("auth.registerFailed"));
       }
 
       const confirmedEmail = (data.email ?? email).trim().toLowerCase();
       router.push(
         `/confirm-email?email=${encodeURIComponent(confirmedEmail)}&message=${encodeURIComponent(
-          "We sent a confirmation link from noreply@koina.space. Click it before signing in.",
+          t("auth.confirmationSent"),
         )}`,
       );
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not create your account.",
+        err instanceof Error ? err.message : t("auth.registerFailed"),
       );
       setLoading(false);
     }
@@ -88,7 +88,7 @@ export default function RegisterPage() {
               minLength={2}
               maxLength={32}
               pattern="[A-Za-z0-9_\-.]+"
-              title="Letters, numbers, hyphens, dots, or underscores — no spaces"
+              title={t("auth.usernameFormat")}
               value={username}
               onChange={(e) =>
                 setUsername(e.target.value.replace(/\s+/g, ""))

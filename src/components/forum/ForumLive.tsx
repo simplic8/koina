@@ -10,6 +10,8 @@ import {
 } from "@/lib/forum/activity-dom";
 import { createClient } from "@/lib/supabase/client";
 import type { ForumPresenterState, ForumSession } from "@/lib/types";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import type { MessageKey } from "@/lib/i18n/messages";
 
 type Props = {
   session: ForumSession;
@@ -17,10 +19,19 @@ type Props = {
   isAdmin: boolean;
 };
 
-function modeLabel(mode: Props["mode"]) {
-  if (mode === "present") return "Presenter";
-  if (mode === "browse") return "Browse";
-  return "Viewer";
+/** Message key (+ optional slide number) so status text re-translates on locale change. */
+type StatusMsg = { key: MessageKey; n?: number };
+/** Either a translatable fallback key or a server-provided message. */
+type ErrorMsg = { key: MessageKey } | { text: string };
+
+function errorFrom(text: string | null | undefined, key: MessageKey): ErrorMsg {
+  return text != null ? { text } : { key };
+}
+
+function modeLabelKey(mode: Props["mode"]): MessageKey {
+  if (mode === "present") return "forum.presenterLabel";
+  if (mode === "browse") return "forum.browseLabel";
+  return "forum.modeViewer";
 }
 
 function participantKey() {
@@ -169,6 +180,7 @@ function readDeckStateFromIframe(
 
 export function ForumLive({ session, mode, isAdmin }: Props) {
   const router = useRouter();
+  const { t } = useLocale();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const channelRef = useRef<ReturnType<
     NonNullable<ReturnType<typeof createClient>>["channel"]
@@ -181,17 +193,17 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   const persistTimerRef = useRef<number | null>(null);
   const persistPendingRef = useRef<ForumPresenterState | null>(null);
   const [ready, setReady] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorMsg | null>(null);
   const [live, setLive] = useState(session.is_live);
-  const [status, setStatus] = useState(
-    mode === "browse" ? "Browsing on your own" : "Connecting…",
-  );
-  const [slideLabel, setSlideLabel] = useState<string>(() =>
+  const [status, setStatus] = useState<StatusMsg>({
+    key: mode === "browse" ? "forum.statusBrowsing" : "forum.statusConnecting",
+  });
+  const [slideNumber, setSlideNumber] = useState<number | null>(() =>
     typeof session.presenter_state?.slideIndex === "number"
-      ? `Slide ${session.presenter_state.slideIndex + 1}`
-      : "",
+      ? session.presenter_state.slideIndex + 1
+      : null,
   );
-  const [promptNote, setPromptNote] = useState<string | null>(null);
+  const [promptNote, setPromptNote] = useState<StatusMsg | null>(null);
   const [viewerCount, setViewerCount] = useState(0);
   const [presenterCount, setPresenterCount] = useState(0);
   const presenceFromDbRef = useRef(false);
@@ -260,13 +272,13 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
             });
             if (!res.ok) {
               const data = (await res.json()) as { error?: string };
-              setError(data.error ?? "Could not sync slide to server.");
+              setError(errorFrom(data.error, "forum.errSync"));
               return;
             }
             setLive(true);
             setError(null);
           } catch {
-            setError("Could not sync slide to server.");
+            setError({ key: "forum.errSync" });
           }
         });
     },
@@ -384,7 +396,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         lastBringTokenRef.current = normalized.bringToken;
       }
       if (updatedAt) lastUpdatedAtRef.current = updatedAt;
-      setSlideLabel(`Slide ${normalized.slideIndex + 1}`);
+      setSlideNumber(normalized.slideIndex + 1);
 
       pushToFrame({
         ...normalized,
@@ -394,10 +406,10 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       });
 
       if (state.prompt || bringChanged) {
-        setPromptNote("Presenter moved everyone to their slide");
+        setPromptNote({ key: "forum.noteMoved" });
         window.setTimeout(() => setPromptNote(null), 2500);
       }
-      setStatus(`Synced · slide ${normalized.slideIndex + 1}`);
+      setStatus({ key: "forum.statusSynced", n: normalized.slideIndex + 1 });
     },
     [pushToFrame],
   );
@@ -415,8 +427,8 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       };
       lastStateRef.current = next;
       if (typeof next.slideIndex === "number") {
-        setSlideLabel(`Slide ${next.slideIndex + 1}`);
-        setStatus(`Broadcasting · slide ${next.slideIndex + 1}`);
+        setSlideNumber(next.slideIndex + 1);
+        setStatus({ key: "forum.statusBroadcasting", n: next.slideIndex + 1 });
       }
       sendBroadcast(next);
       if (opts?.bring) {
@@ -472,15 +484,18 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
   // Realtime (best-effort) + flush queued broadcasts
   useEffect(() => {
     if (mode === "browse") {
-      setStatus("Browsing on your own");
+      setStatus({ key: "forum.statusBrowsing" });
       return;
     }
 
     const supabase = createClient();
     if (!supabase) {
-      setStatus(
-        mode === "present" ? "Presenting (server sync)" : "Watching (server sync)",
-      );
+      setStatus({
+        key:
+          mode === "present"
+            ? "forum.statusPresentingServer"
+            : "forum.statusWatchingServer",
+      });
       return;
     }
 
@@ -550,7 +565,12 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       .subscribe((statusName) => {
         if (statusName === "SUBSCRIBED") {
           subscribedRef.current = true;
-          setStatus(mode === "present" ? "Presenting live" : "Watching live");
+          setStatus({
+            key:
+              mode === "present"
+                ? "forum.statusPresentingLive"
+                : "forum.statusWatchingLive",
+          });
           void channel.track({
             mode,
             at: Date.now(),
@@ -564,11 +584,12 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
           statusName === "TIMED_OUT"
         ) {
           subscribedRef.current = false;
-          setStatus(
-            mode === "present"
-              ? "Presenting (server sync)"
-              : "Watching (server sync)",
-          );
+          setStatus({
+            key:
+              mode === "present"
+                ? "forum.statusPresentingServer"
+                : "forum.statusWatchingServer",
+          });
         }
       });
 
@@ -781,7 +802,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
           },
           { bring: true },
         );
-        setPromptNote("Viewers prompted to jump to your slide");
+        setPromptNote({ key: "forum.noteViewersPrompted" });
         window.setTimeout(() => setPromptNote(null), 2500);
         return;
       }
@@ -828,7 +849,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
 
       if (data.type === "activity-error") {
         const payload = data.payload as { error?: string };
-        setError(payload?.error ?? "Could not save response.");
+        setError(errorFrom(payload?.error, "forum.errSave"));
         return;
       }
 
@@ -853,7 +874,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
             error?: string;
           };
           if (!res.ok) {
-            setError(json.error ?? "Could not save response.");
+            setError(errorFrom(json.error, "forum.errSave"));
             return;
           }
           if (json.tallies) {
@@ -937,7 +958,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         session?: { is_live?: boolean };
       };
       if (!res.ok) {
-        setError(data.error ?? "Could not update live status.");
+        setError(errorFrom(data.error, "forum.errLive"));
         return;
       }
       setLive(
@@ -947,7 +968,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       );
       setError(null);
     } catch {
-      setError("Could not update live status.");
+      setError({ key: "forum.errLive" });
     }
   }
 
@@ -964,9 +985,10 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
       prompt: true,
     };
     broadcastState(payload, { bring: true });
-    setPromptNote(
-      `Viewers prompted to slide ${(payload.slideIndex ?? 0) + 1}`,
-    );
+    setPromptNote({
+      key: "forum.noteViewersPromptedSlide",
+      n: (payload.slideIndex ?? 0) + 1,
+    });
     window.setTimeout(() => setPromptNote(null), 2500);
     // Also poke the bridge in case DOM read failed
     if (!deck && frameReadyRef.current) {
@@ -996,7 +1018,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
         }
         broadcastTallies(payload);
       },
-      onError: (message) => setError(message),
+      onError: (message) => setError({ text: message }),
     });
 
     void loadTallies();
@@ -1024,42 +1046,51 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
 
   const src = `/api/forum/sessions/${session.id}/html?mode=${mode}`;
 
+  const tMsg = (msg: StatusMsg) =>
+    t(msg.key, msg.n != null ? { n: msg.n } : undefined);
+  const promptText = promptNote ? tMsg(promptNote) : null;
+  const statusLine = [
+    t(modeLabelKey(mode)),
+    tMsg(status),
+    mode !== "browse" && slideNumber != null
+      ? t("forum.slide", { n: slideNumber })
+      : "",
+    ready ? "" : t("forum.loadingDeck"),
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const errorText = error
+    ? "text" in error
+      ? error.text
+      : t(error.key)
+    : null;
+  const viewerText = (count: number) =>
+    t(count === 1 ? "forum.viewerOne" : "forum.viewerMany", { count });
+  const presenterSuffix =
+    presenterCount > 0
+      ? ` · ${t("forum.presentingCount", { count: presenterCount })}`
+      : "";
+
   return (
     <div className="fixed inset-0 z-[200] flex flex-col bg-[#0a0d18] text-[#edeff7]">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-2.5 text-sm">
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold">{session.title}</p>
           <p
-            className={`truncate text-xs ${promptNote ? "text-[#f5a524]" : "text-white/55"}`}
-            title={
-              promptNote ||
-              [
-                modeLabel(mode),
-                status,
-                mode === "browse" ? "" : slideLabel,
-                ready ? "" : "loading deck…",
-              ]
-                .filter(Boolean)
-                .join(" · ")
-            }
+            className={`truncate text-xs ${promptText ? "text-[#f5a524]" : "text-white/55"}`}
+            title={promptText || statusLine}
           >
-            {promptNote
-              ? promptNote
-              : `${modeLabel(mode)} · ${status}${
-                  mode !== "browse" && slideLabel ? ` · ${slideLabel}` : ""
-                }${ready ? "" : " · loading deck…"}`}
+            {promptText ? promptText : statusLine}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {mode === "present" ? (
             <span
               className="rounded border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80"
-              title="People connected in the last 30 seconds"
+              title={t("forum.connectedHint")}
             >
-              {viewerCount} {viewerCount === 1 ? "viewer" : "viewers"}
-              {presenterCount > 0
-                ? ` · ${presenterCount} presenting`
-                : ""}
+              {viewerText(viewerCount)}
+              {presenterSuffix}
             </span>
           ) : (
             <>
@@ -1067,17 +1098,13 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
                 className="rounded border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80"
                 title={
                   mode === "view"
-                    ? "People connected in the last 30 seconds"
-                    : "You are not following the presenter"
+                    ? t("forum.connectedHint")
+                    : t("forum.notFollowingHint")
                 }
               >
                 {mode === "view"
-                  ? `${viewerCount} ${viewerCount === 1 ? "viewer" : "viewers"}${
-                      presenterCount > 0
-                        ? ` · ${presenterCount} presenting`
-                        : ""
-                    }`
-                  : "Not synced"}
+                  ? `${viewerText(viewerCount)}${presenterSuffix}`
+                  : t("forum.notSynced")}
               </span>
               <button
                 type="button"
@@ -1085,13 +1112,13 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
                 aria-checked={mode === "view"}
                 aria-label={
                   mode === "view"
-                    ? "Sync with presenter is on"
-                    : "Sync with presenter is off"
+                    ? t("forum.syncOnAria")
+                    : t("forum.syncOffAria")
                 }
                 title={
                   mode === "view"
-                    ? "Following the presenter — click to browse freely"
-                    : "Browsing freely — click to follow the presenter"
+                    ? t("forum.syncOnTitle")
+                    : t("forum.syncOffTitle")
                 }
                 onClick={() => {
                   router.replace(
@@ -1118,7 +1145,7 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
                     }`}
                   />
                 </span>
-                Sync {mode === "view" ? "on" : "off"}
+                {mode === "view" ? t("forum.syncOn") : t("forum.syncOff")}
               </button>
             </>
           )}
@@ -1126,11 +1153,11 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
             <button
               type="button"
               onClick={bringViewers}
-              title="Bring viewers to this slide"
-              aria-label="Bring viewers to this slide"
+              title={t("forum.bringViewersHint")}
+              aria-label={t("forum.bringViewersHint")}
               className="rounded border border-[#f5a524]/50 px-3 py-1.5 text-xs font-semibold text-[#f5a524] hover:border-[#f5a524] hover:bg-[#f5a524]/10"
             >
-              ◎ Bring viewers
+              {t("forum.bringViewers")}
             </button>
           ) : null}
           {mode === "present" && isAdmin ? (
@@ -1139,19 +1166,21 @@ export function ForumLive({ session, mode, isAdmin }: Props) {
               onClick={() => void toggleLive()}
               className="rounded border border-white/20 px-3 py-1.5 text-xs font-semibold hover:border-white/40"
             >
-              {live ? "Live" : "Mark live"}
+              {live ? t("forum.live") : t("forum.markLive")}
             </button>
           ) : null}
           <Link
             href={`/forum/${session.id}`}
             className="rounded border border-white/20 px-3 py-1.5 text-xs font-semibold no-underline text-inherit hover:border-white/40"
           >
-            Exit
+            {t("forum.exit")}
           </Link>
         </div>
       </header>
-      {error ? (
-        <p className="bg-red-900/40 px-4 py-2 text-sm text-red-100">{error}</p>
+      {errorText ? (
+        <p className="bg-red-900/40 px-4 py-2 text-sm text-red-100">
+          {errorText}
+        </p>
       ) : null}
       <iframe
         ref={iframeRef}

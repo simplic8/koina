@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { T } from "@/components/i18n/T";
 import { ForumLiveStatus } from "@/components/forum/ForumLiveStatus";
 import { isAdminProfile } from "@/lib/auth/is-admin";
 import { getCurrentProfile } from "@/lib/data";
@@ -47,48 +48,55 @@ export default async function ForumSessionPage({ params }: Props) {
     <section className="py-12">
       <div className="mx-auto max-w-[720px] px-6">
         <p className="mb-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold tracking-[0.14em] text-accent-600 uppercase">
-          Forum session
+          <T k="forum.sessionEyebrow" />
         </p>
         <h1 className="mb-2 text-3xl">{session.title}</h1>
         {session.description ? (
           <p className="mb-6 text-ink-70">{session.description}</p>
         ) : (
           <p className="mb-6 text-ink-70">
-            Join as a viewer to follow the presenter, or browse the deck on your
-            own without syncing.
+            <T k="forum.sessionLead" />
           </p>
         )}
 
         <div className="flex flex-wrap gap-3">
-          <Button href={`/forum/${session.id}/view`}>Join as viewer</Button>
+          <Button href={`/forum/${session.id}/view`}>
+            <T k="forum.joinViewer" />
+          </Button>
           <Button href={`/forum/${session.id}/browse`} variant="outline">
-            Browse only
+            <T k="forum.browseOnly" />
           </Button>
           {isAdmin ? (
             <Button href={`/forum/${session.id}/present`} variant="dark">
-              Present
+              <T k="forum.present" />
             </Button>
           ) : null}
           <Button href="/forum" variant="outline">
-            All sessions
+            <T k="forum.allSessions" />
           </Button>
         </div>
 
         <ul className="mt-10 space-y-2 text-sm text-ink-70">
           <li>
-            <strong className="text-ink">Presenter</strong> controls slides,
-            language, and image lightboxes for everyone.
+            <strong className="text-ink">
+              <T k="forum.presenterLabel" />
+            </strong>{" "}
+            <T k="forum.presenterHelp" />
           </li>
           <li>
-            <strong className="text-ink">Viewers</strong> stay on the presenter’s
-            slide and can answer polls / activities — saved to Supabase.
+            <strong className="text-ink">
+              <T k="forum.viewersLabel" />
+            </strong>{" "}
+            <T k="forum.viewersHelp" />
           </li>
           <li>
-            <strong className="text-ink">Browse</strong> lets you navigate the
-            deck freely without joining the live sync or viewer count.
+            <strong className="text-ink">
+              <T k="forum.browseLabel" />
+            </strong>{" "}
+            <T k="forum.browseHelp" />
           </li>
           <li>
-            Status:{" "}
+            <T k="forum.status" />{" "}
             <ForumLiveStatus
               sessionId={session.id}
               initialLive={Boolean(session.is_live)}
@@ -98,7 +106,7 @@ export default async function ForumSessionPage({ params }: Props) {
 
         {isAdmin ? (
           <p className="mt-8 text-sm">
-            Share viewer link:{" "}
+            <T k="forum.shareViewer" />{" "}
             <Link
               href={`/forum/${session.id}/view`}
               className="font-semibold text-accent-600"

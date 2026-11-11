@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { T } from "@/components/i18n/T";
 import { ForumUploadForm } from "@/components/forum/ForumUploadForm";
 import { ForumSessionList } from "@/components/forum/ForumSessionList";
 import { getCurrentProfile } from "@/lib/data";
@@ -47,13 +48,13 @@ export default async function ForumPage() {
     <section className="py-12">
       <div className="mx-auto max-w-[900px] px-6">
         <p className="mb-2 font-[family-name:var(--font-ibm-plex-mono)] text-xs font-semibold tracking-[0.14em] text-accent-600 uppercase">
-          Live rooms
+          <T k="forum.eyebrow" />
         </p>
-        <h1 className="mb-2 text-3xl">Forum</h1>
+        <h1 className="mb-2 text-3xl">
+          <T k="nav.forum" />
+        </h1>
         <p className="mb-10 max-w-2xl text-ink-70">
-          Join a live HTML deck. The presenter drives slides and lightboxes;
-          everyone can take part in polls and activities — responses are saved
-          to KOINA.
+          <T k="forum.lead" />
         </p>
 
         {isAdmin ? (
@@ -62,7 +63,9 @@ export default async function ForumPage() {
           </div>
         ) : null}
 
-        <h2 className="mb-4 text-xl font-semibold">Sessions</h2>
+        <h2 className="mb-4 text-xl font-semibold">
+          <T k="sessions.pageTitle" />
+        </h2>
         <ForumSessionList sessions={sessions} isAdmin={isAdmin} />
       </div>
     </section>

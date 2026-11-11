@@ -1,4 +1,7 @@
+"use client";
+
 import { KoinaMark } from "./BrandMark";
+import { useLocale } from "./i18n/LocaleProvider";
 
 const ECOSYSTEM = [
   { name: "JustVibing", href: "https://justvibing.fun" },
@@ -7,6 +10,8 @@ const ECOSYSTEM = [
 ] as const;
 
 export function KoinaBar() {
+  const { t } = useLocale();
+
   return (
     <div className="bg-inverse">
       <div className="mx-auto flex h-[34px] max-w-[1180px] items-center gap-2.5 px-6 font-[family-name:var(--font-ibm-plex-mono)] text-[11px] tracking-[0.03em] text-on-inverse-subtle">
@@ -21,7 +26,7 @@ export function KoinaBar() {
         <span className="text-on-inverse-faint">/</span>
         <span className="text-on-inverse-muted">κοινά</span>
         <span className="ml-auto hidden text-on-inverse-faint sm:inline">
-          Ecosystem —{" "}
+          {t("footer.ecosystem")} —{" "}
           {ECOSYSTEM.map((item, i) => (
             <span key={item.name}>
               {i > 0 ? " · " : null}

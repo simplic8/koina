@@ -1,5 +1,12 @@
 import type { LocaleCode } from "./locales";
 import { pageOverrides } from "./page-overrides";
+import { jaOverrides } from "./locale-overrides/ja";
+import { koOverrides } from "./locale-overrides/ko";
+import { filOverrides } from "./locale-overrides/fil";
+import { msOverrides } from "./locale-overrides/ms";
+import { idOverrides } from "./locale-overrides/id";
+import { zhCNOverrides } from "./locale-overrides/zh-CN";
+import { zhTWOverrides } from "./locale-overrides/zh-TW";
 
 export type MessageKey =
   | "nav.games"
@@ -366,7 +373,207 @@ export type MessageKey =
   | "holodori.available"
   | "holodori.jumpIn"
   | "holodori.jumpInLead"
-  | "holodori.disclaimer";
+  | "holodori.disclaimer"
+  | "holodori.heroAlt"
+  | "theme.light"
+  | "theme.dark"
+  | "theme.system"
+  | "theme.label"
+  | "theme.change"
+  | "hero.q2a"
+  | "hero.q2b"
+  | "hero.q3a"
+  | "hero.q3b"
+  | "ticker.1"
+  | "ticker.2"
+  | "ticker.3"
+  | "ticker.4"
+  | "ticker.5"
+  | "ticker.6"
+  | "ticker.7"
+  | "auth.signInFailed"
+  | "auth.registerFailed"
+  | "auth.confirmBeforeSignIn"
+  | "auth.confirmationSent"
+  | "auth.usernameFormat"
+  | "confirm.sentTo"
+  | "confirm.enterEmail"
+  | "confirm.resendFailed"
+  | "confirm.resendDefault"
+  | "authConfirm.eyebrow"
+  | "authConfirm.title"
+  | "authConfirm.lead"
+  | "authConfirm.button"
+  | "authConfirm.confirming"
+  | "authConfirm.invalidLink"
+  | "authConfirm.invalidShort"
+  | "authConfirm.expired"
+  | "authConfirm.expiredShort"
+  | "authConfirm.confirmedSignIn"
+  | "authConfirm.needNew"
+  | "legal.termsTitle"
+  | "legal.privacyTitle"
+  | "legal.lastUpdated"
+  | "legal.seeAlso"
+  | "forum.eyebrow"
+  | "forum.lead"
+  | "forum.emptyAdmin"
+  | "forum.emptyPublic"
+  | "forum.hidden"
+  | "forum.live"
+  | "forum.ready"
+  | "forum.open"
+  | "forum.show"
+  | "forum.hide"
+  | "forum.deleting"
+  | "forum.deleteConfirm"
+  | "forum.visibilityError"
+  | "forum.deleteError"
+  | "forum.uploadTitle"
+  | "forum.uploadLead"
+  | "forum.fieldTitle"
+  | "forum.fieldDescription"
+  | "forum.fieldFile"
+  | "forum.chooseFile"
+  | "forum.uploadFailed"
+  | "forum.uploading"
+  | "forum.create"
+  | "forum.sessionEyebrow"
+  | "forum.sessionLead"
+  | "forum.joinViewer"
+  | "forum.browseOnly"
+  | "forum.present"
+  | "forum.allSessions"
+  | "forum.presenterLabel"
+  | "forum.presenterHelp"
+  | "forum.viewersLabel"
+  | "forum.viewersHelp"
+  | "forum.browseLabel"
+  | "forum.browseHelp"
+  | "forum.status"
+  | "forum.notLive"
+  | "forum.shareViewer"
+  | "forum.modeViewer"
+  | "forum.statusBrowsing"
+  | "forum.statusConnecting"
+  | "forum.slide"
+  | "forum.statusSynced"
+  | "forum.statusBroadcasting"
+  | "forum.statusPresentingServer"
+  | "forum.statusWatchingServer"
+  | "forum.statusPresentingLive"
+  | "forum.statusWatchingLive"
+  | "forum.loadingDeck"
+  | "forum.noteMoved"
+  | "forum.noteViewersPrompted"
+  | "forum.noteViewersPromptedSlide"
+  | "forum.errSync"
+  | "forum.errSave"
+  | "forum.errLive"
+  | "forum.viewerOne"
+  | "forum.viewerMany"
+  | "forum.presentingCount"
+  | "forum.connectedHint"
+  | "forum.notFollowingHint"
+  | "forum.notSynced"
+  | "forum.syncOnAria"
+  | "forum.syncOffAria"
+  | "forum.syncOnTitle"
+  | "forum.syncOffTitle"
+  | "forum.syncOn"
+  | "forum.syncOff"
+  | "forum.bringViewers"
+  | "forum.bringViewersHint"
+  | "forum.markLive"
+  | "forum.exit"
+  | "vibe.hackBanner"
+  | "vibe.hackBannerLink"
+  | "vibe.register"
+  | "vibe.freeNote"
+  | "vibe.modalEyebrow"
+  | "vibe.modalTitle"
+  | "vibe.closeForm"
+  | "vibe.successTitle"
+  | "vibe.firstName"
+  | "vibe.lastName"
+  | "vibe.emailAddress"
+  | "vibe.whatsapp"
+  | "vibe.telegram"
+  | "vibe.discord"
+  | "vibe.optional"
+  | "vibe.consentVibe"
+  | "vibe.consentKoina"
+  | "vibe.consentRequired"
+  | "vibe.submit"
+  | "vibe.submitting"
+  | "vibe.submitFailed"
+  | "vibe.submitSuccess"
+  | "settings.avatarTitle"
+  | "settings.avatarHint"
+  | "settings.upload"
+  | "settings.uploading"
+  | "settings.remove"
+  | "settings.chooseImage"
+  | "settings.uploadFailed"
+  | "settings.avatarUpdated"
+  | "settings.avatarRemoved"
+  | "settings.removePhotoFailed"
+  | "settings.nameTitle"
+  | "settings.nameLead"
+  | "settings.usernameHint"
+  | "settings.displayName"
+  | "settings.displayNamePlaceholder"
+  | "settings.signedInAs"
+  | "settings.save"
+  | "settings.nameUpdated"
+  | "settings.updateFailed"
+  | "settings.linkedTitle"
+  | "settings.linkedLead"
+  | "settings.linked"
+  | "settings.notLinked"
+  | "settings.unlink"
+  | "settings.unlinking"
+  | "settings.redirecting"
+  | "settings.linkGoogle"
+  | "settings.linkDiscord"
+  | "settings.keepOne"
+  | "settings.unlinked"
+  | "settings.passwordTitle"
+  | "settings.passwordLead"
+  | "settings.currentPassword"
+  | "settings.newPassword"
+  | "settings.confirmPassword"
+  | "settings.passwordMismatch"
+  | "settings.updatePassword"
+  | "settings.updatingPassword"
+  | "settings.passwordUpdated"
+  | "settings.passwordFailed"
+  | "settings.oauthNoPassword"
+  | "settings.deleteTitle"
+  | "settings.deleteLead"
+  | "settings.deleteTypePrompt"
+  | "settings.deleteButton"
+  | "settings.deleting"
+  | "settings.deleteFailed"
+  | "createSession.submit"
+  | "createSession.title"
+  | "createSession.lead"
+  | "createSession.titleLanguage"
+  | "createSession.suggest"
+  | "createSession.titlePlaceholder"
+  | "createSession.dateTime"
+  | "createSession.scheduleNow"
+  | "createSession.timeHint"
+  | "createSession.capacity"
+  | "createSession.capacityMin"
+  | "createSession.errDate"
+  | "createSession.errFuture"
+  | "createSession.errCapacityRange"
+  | "createSession.errCapacityWhole"
+  | "createSession.errUpdate"
+  | "createSession.errCreate"
+  | "createSession.cancel"
+  | "createSession.creating";
 
 type Dictionary = Record<MessageKey, string>;
 
@@ -786,6 +993,232 @@ const en: Dictionary = {
     "Free-to-play on mobile and PC, with over 150 songs at launch and a growing cast of holomems. Learn more and download from the official site.",
   "holodori.disclaimer":
     "Hololive Dreams / Holodori is an official COVER Corp. experience. JustVibing is a community hub and is not affiliated with COVER Corp.",
+  "holodori.heroAlt": "Hololive Dreams promotional art",
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.system": "System",
+  "theme.label": "Theme: {mode}",
+  "theme.change": "Theme: {mode}. Click to change.",
+  "hero.q2a": "Belong. Explore.",
+  "hero.q2b": "Grow together.",
+  "hero.q3a": "Presence before",
+  "hero.q3b": "proclamation.",
+  "ticker.1": "● KOINA — shared spaces · shared interests · shared purpose",
+  "ticker.2": "▲ JustVibing — play together in the commons",
+  "ticker.3": "● Oshikatsu — fan space for belonging",
+  "ticker.4": "▼ Barriers down · belonging up",
+  "ticker.5": "● NUMA — immersive presence, coming soon",
+  "ticker.6": "▲ κοινά — fellowship through shared participation",
+  "ticker.7": "● Inspired by The Digital Collective and the Holy Spirit",
+  "auth.signInFailed": "Could not sign in.",
+  "auth.registerFailed": "Could not create your account.",
+  "auth.confirmBeforeSignIn":
+    "Confirm your email before signing in. We can resend the link below.",
+  "auth.confirmationSent":
+    "We sent a confirmation link from noreply@koina.space. Click it before signing in.",
+  "auth.usernameFormat":
+    "Letters, numbers, hyphens, dots, or underscores — no spaces",
+  "confirm.sentTo":
+    "We sent a confirmation link to {email}. Click it to activate your account before signing in.",
+  "confirm.enterEmail": "Enter the email you used to register.",
+  "confirm.resendFailed": "Could not resend confirmation email.",
+  "confirm.resendDefault":
+    "If that email needs confirmation, a new link is on the way.",
+  "authConfirm.eyebrow": "Confirm email",
+  "authConfirm.title": "Activate your account",
+  "authConfirm.lead":
+    "Click the button below to confirm your email. You’ll be signed in automatically when possible. This only runs when you press the button — not when the email is opened.",
+  "authConfirm.button": "Confirm email & continue",
+  "authConfirm.confirming": "Confirming…",
+  "authConfirm.invalidLink":
+    "Invalid confirmation link. Request a new one from the confirm email page.",
+  "authConfirm.invalidShort": "Invalid confirmation link.",
+  "authConfirm.expired":
+    "Email link is invalid or has expired. Request a new confirmation email.",
+  "authConfirm.expiredShort": "Email link is invalid or has expired.",
+  "authConfirm.confirmedSignIn": "Email confirmed. Sign in to continue.",
+  "authConfirm.needNew": "Need a new link?",
+  "legal.termsTitle": "Terms of Use",
+  "legal.privacyTitle": "Privacy Policy",
+  "legal.lastUpdated": "Last updated: August 12, 2026",
+  "legal.seeAlso": "See also:",
+  "forum.eyebrow": "Live rooms",
+  "forum.lead":
+    "Join a live HTML deck. The presenter drives slides and lightboxes; everyone can take part in polls and activities — responses are saved to KOINA.",
+  "forum.emptyAdmin": "No sessions yet. Upload an HTML deck above.",
+  "forum.emptyPublic": "No forum sessions yet. Check back when a host goes live.",
+  "forum.hidden": "Hidden",
+  "forum.live": "Live",
+  "forum.ready": "Ready",
+  "forum.open": "Open",
+  "forum.show": "Show",
+  "forum.hide": "Hide",
+  "forum.deleting": "Deleting…",
+  "forum.deleteConfirm":
+    "Delete “{title}”? This removes the deck and all activity responses.",
+  "forum.visibilityError": "Could not update visibility.",
+  "forum.deleteError": "Could not delete session.",
+  "forum.uploadTitle": "Upload a deck",
+  "forum.uploadLead":
+    "HTML slide decks (like your workshop file). Admins can present; anyone with the link can view and join activities.",
+  "forum.fieldTitle": "Title",
+  "forum.fieldDescription": "Description",
+  "forum.fieldFile": "HTML file",
+  "forum.chooseFile": "Choose an HTML file.",
+  "forum.uploadFailed": "Upload failed.",
+  "forum.uploading": "Uploading…",
+  "forum.create": "Create forum session",
+  "forum.sessionEyebrow": "Forum session",
+  "forum.sessionLead":
+    "Join as a viewer to follow the presenter, or browse the deck on your own without syncing.",
+  "forum.joinViewer": "Join as viewer",
+  "forum.browseOnly": "Browse only",
+  "forum.present": "Present",
+  "forum.allSessions": "All sessions",
+  "forum.presenterLabel": "Presenter",
+  "forum.presenterHelp":
+    "controls slides, language, and image lightboxes for everyone.",
+  "forum.viewersLabel": "Viewers",
+  "forum.viewersHelp":
+    "stay on the presenter’s slide and can answer polls / activities — saved to KOINA.",
+  "forum.browseLabel": "Browse",
+  "forum.browseHelp":
+    "lets you navigate the deck freely without joining the live sync or viewer count.",
+  "forum.status": "Status:",
+  "forum.notLive": "Not marked live yet",
+  "forum.shareViewer": "Share viewer link:",
+  "forum.modeViewer": "Viewer",
+  "forum.statusBrowsing": "Browsing on your own",
+  "forum.statusConnecting": "Connecting…",
+  "forum.slide": "Slide {n}",
+  "forum.statusSynced": "Synced · slide {n}",
+  "forum.statusBroadcasting": "Broadcasting · slide {n}",
+  "forum.statusPresentingServer": "Presenting (server sync)",
+  "forum.statusWatchingServer": "Watching (server sync)",
+  "forum.statusPresentingLive": "Presenting live",
+  "forum.statusWatchingLive": "Watching live",
+  "forum.loadingDeck": "loading deck…",
+  "forum.noteMoved": "Presenter moved everyone to their slide",
+  "forum.noteViewersPrompted": "Viewers prompted to jump to your slide",
+  "forum.noteViewersPromptedSlide": "Viewers prompted to slide {n}",
+  "forum.errSync": "Could not sync slide to server.",
+  "forum.errSave": "Could not save response.",
+  "forum.errLive": "Could not update live status.",
+  "forum.viewerOne": "{count} viewer",
+  "forum.viewerMany": "{count} viewers",
+  "forum.presentingCount": "{count} presenting",
+  "forum.connectedHint": "People connected in the last 30 seconds",
+  "forum.notFollowingHint": "You are not following the presenter",
+  "forum.notSynced": "Not synced",
+  "forum.syncOnAria": "Sync with presenter is on",
+  "forum.syncOffAria": "Sync with presenter is off",
+  "forum.syncOnTitle": "Following the presenter — click to browse freely",
+  "forum.syncOffTitle": "Browsing freely — click to follow the presenter",
+  "forum.syncOn": "Sync on",
+  "forum.syncOff": "Sync off",
+  "forum.bringViewers": "◎ Bring viewers",
+  "forum.bringViewersHint": "Bring viewers to this slide",
+  "forum.markLive": "Mark live",
+  "forum.exit": "Exit",
+  "vibe.hackBanner": "Looking for the full vibe-code workshop/tutorial?",
+  "vibe.hackBannerLink": "Check it out here",
+  "vibe.register": "Register",
+  "vibe.freeNote": "Limited seats · All tools free",
+  "vibe.modalEyebrow": "Workshop signup",
+  "vibe.modalTitle": "Register for Vibe Code",
+  "vibe.closeForm": "Close registration form",
+  "vibe.successTitle": "You’re on the list",
+  "vibe.firstName": "First name",
+  "vibe.lastName": "Last name",
+  "vibe.emailAddress": "Email address",
+  "vibe.whatsapp": "WhatsApp number",
+  "vibe.telegram": "Telegram handle",
+  "vibe.discord": "Discord handle",
+  "vibe.optional": "Optional",
+  "vibe.consentVibe": "I agree to be contacted about Vibe Code (required)",
+  "vibe.consentKoina":
+    "Keep me in the loop about other KOINA activities (optional)",
+  "vibe.consentRequired":
+    "Please consent to be contacted about Vibe Code so we can follow up.",
+  "vibe.submit": "Submit registration",
+  "vibe.submitting": "Submitting…",
+  "vibe.submitFailed": "Could not submit registration.",
+  "vibe.submitSuccess":
+    "Registration received. Check your email for a confirmation — we’ll get back to you soon.",
+  "settings.avatarTitle": "Profile picture",
+  "settings.avatarHint": "JPEG, PNG, WebP, or GIF up to 2MB.",
+  "settings.upload": "Upload",
+  "settings.uploading": "Uploading…",
+  "settings.remove": "Remove",
+  "settings.chooseImage": "Choose an image first.",
+  "settings.uploadFailed": "Upload failed.",
+  "settings.avatarUpdated": "Profile picture updated.",
+  "settings.avatarRemoved": "Profile picture removed.",
+  "settings.removePhotoFailed": "Could not remove photo.",
+  "settings.nameTitle": "Name",
+  "settings.nameLead":
+    "Username is your unique handle (no spaces). Display name is how you appear to others.",
+  "settings.usernameHint":
+    "No spaces. Letters, numbers, hyphens, dots, underscores.",
+  "settings.displayName": "Display name",
+  "settings.displayNamePlaceholder": "Optional — spaces allowed",
+  "settings.signedInAs": "Signed in as",
+  "settings.save": "Save",
+  "settings.nameUpdated": "Profile name updated.",
+  "settings.updateFailed": "Could not update profile.",
+  "settings.linkedTitle": "Linked accounts",
+  "settings.linkedLead":
+    "Connect Google or Discord to sign in faster. Discord also lets chat posts show as you in #web.",
+  "settings.linked": "Linked",
+  "settings.notLinked": "Not linked",
+  "settings.unlink": "Unlink",
+  "settings.unlinking": "Unlinking…",
+  "settings.redirecting": "Redirecting…",
+  "settings.linkGoogle": "Link Google",
+  "settings.linkDiscord": "Link Discord",
+  "settings.keepOne": "Keep at least one sign-in method linked.",
+  "settings.unlinked": "{provider} unlinked.",
+  "settings.passwordTitle": "Password",
+  "settings.passwordLead": "Change the password you use to sign in with email.",
+  "settings.currentPassword": "Current password",
+  "settings.newPassword": "New password",
+  "settings.confirmPassword": "Confirm new password",
+  "settings.passwordMismatch": "New passwords do not match.",
+  "settings.updatePassword": "Update password",
+  "settings.updatingPassword": "Updating…",
+  "settings.passwordUpdated": "Password updated.",
+  "settings.passwordFailed": "Could not change password.",
+  "settings.oauthNoPassword":
+    "This account signs in with Google or Discord, so there’s no email password to change here.",
+  "settings.deleteTitle": "Delete account",
+  "settings.deleteLead":
+    "Permanently delete your account and profile data. This cannot be undone.",
+  "settings.deleteTypePrompt": "Type DELETE to confirm",
+  "settings.deleteButton": "Delete my account",
+  "settings.deleting": "Deleting…",
+  "settings.deleteFailed": "Could not delete account.",
+  "createSession.submit": "Create session",
+  "createSession.title": "Schedule a session",
+  "createSession.lead":
+    "Set up the next community game night. Tag the language of the title — we keep your original wording.",
+  "createSession.titleLanguage": "Title language",
+  "createSession.suggest": "✦ Suggest random title",
+  "createSession.titlePlaceholder": "Friday night speedrun",
+  "createSession.dateTime": "Date and time",
+  "createSession.scheduleNow": "Schedule now",
+  "createSession.timeHint":
+    "Uses your local time zone. “Schedule now” starts five minutes from now.",
+  "createSession.capacity": "Capacity",
+  "createSession.capacityMin": "At least {min} (current signups).",
+  "createSession.errDate": "Choose a valid date and time.",
+  "createSession.errFuture": "The session must be scheduled in the future.",
+  "createSession.errCapacityRange": "Capacity must be between {min} and 500.",
+  "createSession.errCapacityWhole":
+    "Capacity must be a whole number between 2 and 500.",
+  "createSession.errUpdate": "Could not update the session.",
+  "createSession.errCreate": "Could not create the session.",
+  "createSession.cancel": "Cancel",
+  "createSession.creating": "Creating…",
 };
 
 const ja: Dictionary = {
@@ -802,16 +1235,11 @@ const ja: Dictionary = {
   "nav.new": "新着",
   "nav.menu": "メニューを開く",
   "nav.language": "言語",
-  "hero.live": "ベータテスト中",
-  "hero.leadPrefix": "共通の場をつくる",
-  "hero.leadSuffix": "ゲームを通じて",
-  "hero.byline": "⚡Koinaより",
   "hero.ctaSessions": "セッションに参加",
   "hero.ctaSchedule": "セッションを予定する",
   "hero.ctaGames": "ゲームを見る",
   "hero.liveBoard": "ライブ",
   "hero.scoreboard": "スコアボード",
-  "footer.tagline": "一緒に遊んで、友達をつくり、コミュニティを築こう。",
   "footer.product": "プロダクト",
   "footer.community": "コミュニティ",
   "footer.ecosystem": "エコシステム",
@@ -822,15 +1250,10 @@ const ja: Dictionary = {
   "footer.terms": "利用規約",
   "footer.privacy": "プライバシー",
   "footer.builtWith": "Next.js & Supabaseで構築",
-  "footer.disclaimer":
-    "JustVibingはKOINAエコシステムの一部です。Roblox Corporationとは無関係です。",
   "auth.welcomeBack": "おかえりなさい",
   "auth.signInTitle": "ログイン",
   "auth.signInLead": "メール、Google、またはDiscordで参加。",
-  "auth.joinSquad": "スクワッドに参加",
   "auth.registerTitle": "登録",
-  "auth.registerLead":
-    "アカウントを作成してRSVP、チャット、ランキングに参加しよう。",
   "auth.email": "メール",
   "auth.password": "パスワード",
   "auth.username": "ユーザー名",
@@ -843,9 +1266,9 @@ const ja: Dictionary = {
   "auth.signInCta": "ログイン",
   "auth.createAccountCta": "アカウント作成",
   "profile.language": "言語",
-  "profile.languageHint": "この端末でのJustVibingの表示言語を選べます。",
   "common.player": "プレイヤー",
   ...(pageOverrides.ja as Partial<Dictionary>),
+  ...jaOverrides,
 };
 
 const ko: Dictionary = {
@@ -862,16 +1285,11 @@ const ko: Dictionary = {
   "nav.new": "신규",
   "nav.menu": "메뉴 열기",
   "nav.language": "언어",
-  "hero.live": "베타 테스트 중",
-  "hero.leadPrefix": "함께하는 공간 만들기",
-  "hero.leadSuffix": "게임을 통해",
-  "hero.byline": "⚡제공: Koina",
   "hero.ctaSessions": "세션 참가",
   "hero.ctaSchedule": "세션 예약",
   "hero.ctaGames": "게임 둘러보기",
   "hero.liveBoard": "라이브",
   "hero.scoreboard": "스코어보드",
-  "footer.tagline": "함께 플레이하고, 친구를 만들고, 커뮤니티를 키우세요.",
   "footer.product": "제품",
   "footer.community": "커뮤니티",
   "footer.ecosystem": "생태계",
@@ -882,15 +1300,10 @@ const ko: Dictionary = {
   "footer.terms": "이용약관",
   "footer.privacy": "개인정보",
   "footer.builtWith": "Next.js & Supabase로 제작",
-  "footer.disclaimer":
-    "JustVibing은 KOINA 생태계의 일부입니다. Roblox Corporation과 무관합니다.",
   "auth.welcomeBack": "다시 오신 것을 환영합니다",
   "auth.signInTitle": "로그인",
   "auth.signInLead": "이메일, Google 또는 Discord로 합류하세요.",
-  "auth.joinSquad": "스쿼드에 합류",
   "auth.registerTitle": "가입",
-  "auth.registerLead":
-    "계정을 만들어 RSVP, 채팅, 리더보드에 참여하세요.",
   "auth.email": "이메일",
   "auth.password": "비밀번호",
   "auth.username": "사용자 이름",
@@ -903,9 +1316,9 @@ const ko: Dictionary = {
   "auth.signInCta": "로그인",
   "auth.createAccountCta": "계정 만들기",
   "profile.language": "언어",
-  "profile.languageHint": "이 기기에서 JustVibing 표시 언어를 선택하세요.",
   "common.player": "플레이어",
   ...(pageOverrides.ko as Partial<Dictionary>),
+  ...koOverrides,
 };
 
 const fil: Dictionary = {
@@ -922,16 +1335,11 @@ const fil: Dictionary = {
   "nav.new": "Bago",
   "nav.menu": "Buksan ang menu",
   "nav.language": "Wika",
-  "hero.live": "Nasa Beta Testing",
-  "hero.leadPrefix": "Gumagawa ng shared spaces",
-  "hero.leadSuffix": "sa pamamagitan ng gaming",
-  "hero.byline": "⚡ni Koina",
   "hero.ctaSessions": "Sumali sa session",
   "hero.ctaSchedule": "Mag-schedule ng session",
   "hero.ctaGames": "Tingnan ang mga laro",
   "hero.liveBoard": "Live",
   "hero.scoreboard": "Scoreboard",
-  "footer.tagline": "Maglaro nang sama-sama. Gumawa ng kaibigan. Bumuo ng community.",
   "footer.product": "Produkto",
   "footer.community": "Community",
   "footer.ecosystem": "Ecosystem",
@@ -942,15 +1350,10 @@ const fil: Dictionary = {
   "footer.terms": "Mga Tuntunin",
   "footer.privacy": "Privacy",
   "footer.builtWith": "Ginawa gamit ang Next.js & Supabase",
-  "footer.disclaimer":
-    "JustVibing, bahagi ng KOINA ecosystem. Hindi affiliated sa Roblox Corporation.",
   "auth.welcomeBack": "Maligayang pagbabalik",
   "auth.signInTitle": "Mag-sign in",
   "auth.signInLead": "Sumali gamit ang email, Google, o Discord.",
-  "auth.joinSquad": "Sumali sa squad",
   "auth.registerTitle": "Magrehistro",
-  "auth.registerLead":
-    "Gumawa ng account para makapag-RSVP, makipag-chat, at umakyat sa board.",
   "auth.email": "Email",
   "auth.password": "Password",
   "auth.username": "Username",
@@ -963,10 +1366,9 @@ const fil: Dictionary = {
   "auth.signInCta": "Mag-sign in",
   "auth.createAccountCta": "Gumawa ng account",
   "profile.language": "Wika",
-  "profile.languageHint":
-    "Piliin kung paano ipapakita ang JustVibing sa device na ito.",
   "common.player": "Player",
   ...(pageOverrides.fil as Partial<Dictionary>),
+  ...filOverrides,
 };
 
 const ms: Dictionary = {
@@ -983,16 +1385,11 @@ const ms: Dictionary = {
   "nav.new": "Baharu",
   "nav.menu": "Buka menu",
   "nav.language": "Bahasa",
-  "hero.live": "Dalam Ujian Beta",
-  "hero.leadPrefix": "Mewujudkan ruang bersama",
-  "hero.leadSuffix": "melalui permainan",
-  "hero.byline": "⚡oleh Koina",
   "hero.ctaSessions": "Sertai sesi",
   "hero.ctaSchedule": "Jadualkan sesi",
   "hero.ctaGames": "Lihat permainan",
   "hero.liveBoard": "Langsung",
   "hero.scoreboard": "Papan skor",
-  "footer.tagline": "Main bersama. Buat kawan. Bina komuniti.",
   "footer.product": "Produk",
   "footer.community": "Komuniti",
   "footer.ecosystem": "Ekosistem",
@@ -1003,15 +1400,10 @@ const ms: Dictionary = {
   "footer.terms": "Terma",
   "footer.privacy": "Privasi",
   "footer.builtWith": "Dibina dengan Next.js & Supabase",
-  "footer.disclaimer":
-    "JustVibing, sebahagian daripada ekosistem KOINA. Tidak berafiliasi dengan Roblox Corporation.",
   "auth.welcomeBack": "Selamat kembali",
   "auth.signInTitle": "Log masuk",
   "auth.signInLead": "Sertai dengan e-mel, Google, atau Discord.",
-  "auth.joinSquad": "Sertai skuad",
   "auth.registerTitle": "Daftar",
-  "auth.registerLead":
-    "Cipta akaun untuk RSVP, bersembang, dan naik papan skor.",
   "auth.email": "E-mel",
   "auth.password": "Kata laluan",
   "auth.username": "Nama pengguna",
@@ -1024,10 +1416,9 @@ const ms: Dictionary = {
   "auth.signInCta": "Log masuk",
   "auth.createAccountCta": "Cipta akaun",
   "profile.language": "Bahasa",
-  "profile.languageHint":
-    "Pilih bagaimana JustVibing dipaparkan pada peranti ini.",
   "common.player": "Pemain",
   ...(pageOverrides.ms as Partial<Dictionary>),
+  ...msOverrides,
 };
 
 const id: Dictionary = {
@@ -1044,16 +1435,11 @@ const id: Dictionary = {
   "nav.new": "Baru",
   "nav.menu": "Buka menu",
   "nav.language": "Bahasa",
-  "hero.live": "Sedang Uji Beta",
-  "hero.leadPrefix": "Membangun ruang bersama",
-  "hero.leadSuffix": "melalui game",
-  "hero.byline": "⚡oleh Koina",
   "hero.ctaSessions": "Gabung sesi",
   "hero.ctaSchedule": "Jadwalkan sesi",
   "hero.ctaGames": "Jelajahi game",
   "hero.liveBoard": "Live",
   "hero.scoreboard": "Papan skor",
-  "footer.tagline": "Main bareng. Buat teman. Bangun komunitas.",
   "footer.product": "Produk",
   "footer.community": "Komunitas",
   "footer.ecosystem": "Ekosistem",
@@ -1064,15 +1450,10 @@ const id: Dictionary = {
   "footer.terms": "Ketentuan",
   "footer.privacy": "Privasi",
   "footer.builtWith": "Dibangun dengan Next.js & Supabase",
-  "footer.disclaimer":
-    "JustVibing, bagian dari ekosistem KOINA. Tidak berafiliasi dengan Roblox Corporation.",
   "auth.welcomeBack": "Selamat datang kembali",
   "auth.signInTitle": "Masuk",
   "auth.signInLead": "Gabung dengan email, Google, atau Discord.",
-  "auth.joinSquad": "Gabung skuad",
   "auth.registerTitle": "Daftar",
-  "auth.registerLead":
-    "Buat akun untuk RSVP, chat, dan naik di papan skor.",
   "auth.email": "Email",
   "auth.password": "Kata sandi",
   "auth.username": "Nama pengguna",
@@ -1085,10 +1466,9 @@ const id: Dictionary = {
   "auth.signInCta": "Masuk",
   "auth.createAccountCta": "Buat akun",
   "profile.language": "Bahasa",
-  "profile.languageHint":
-    "Pilih bagaimana JustVibing ditampilkan di perangkat ini.",
   "common.player": "Pemain",
   ...(pageOverrides.id as Partial<Dictionary>),
+  ...idOverrides,
 };
 
 const zhCN: Dictionary = {
@@ -1105,16 +1485,11 @@ const zhCN: Dictionary = {
   "nav.new": "新",
   "nav.menu": "打开菜单",
   "nav.language": "语言",
-  "hero.live": "内测中",
-  "hero.leadPrefix": "共建共享空间",
-  "hero.leadSuffix": "通过游戏",
-  "hero.byline": "⚡由 Koina",
   "hero.ctaSessions": "加入场次",
   "hero.ctaSchedule": "安排场次",
   "hero.ctaGames": "浏览游戏",
   "hero.liveBoard": "直播",
   "hero.scoreboard": "计分板",
-  "footer.tagline": "一起玩，交朋友，建设社区。",
   "footer.product": "产品",
   "footer.community": "社区",
   "footer.ecosystem": "生态",
@@ -1125,14 +1500,10 @@ const zhCN: Dictionary = {
   "footer.terms": "条款",
   "footer.privacy": "隐私",
   "footer.builtWith": "基于 Next.js 与 Supabase 构建",
-  "footer.disclaimer":
-    "JustVibing 属于 KOINA 生态，与 Roblox Corporation 无关。",
   "auth.welcomeBack": "欢迎回来",
   "auth.signInTitle": "登录",
   "auth.signInLead": "使用邮箱、Google 或 Discord 加入。",
-  "auth.joinSquad": "加入小队",
   "auth.registerTitle": "注册",
-  "auth.registerLead": "创建账号以报名、聊天并登上排行榜。",
   "auth.email": "邮箱",
   "auth.password": "密码",
   "auth.username": "用户名",
@@ -1145,9 +1516,9 @@ const zhCN: Dictionary = {
   "auth.signInCta": "登录",
   "auth.createAccountCta": "创建账号",
   "profile.language": "语言",
-  "profile.languageHint": "选择此设备上 JustVibing 的显示语言。",
   "common.player": "玩家",
   ...(pageOverrides["zh-CN"] as Partial<Dictionary>),
+  ...zhCNOverrides,
 };
 
 const zhTW: Dictionary = {
@@ -1164,16 +1535,11 @@ const zhTW: Dictionary = {
   "nav.new": "新",
   "nav.menu": "開啟選單",
   "nav.language": "語言",
-  "hero.live": "內測中",
-  "hero.leadPrefix": "共建共享空間",
-  "hero.leadSuffix": "透過遊戲",
-  "hero.byline": "⚡由 Koina",
   "hero.ctaSessions": "加入場次",
   "hero.ctaSchedule": "安排場次",
   "hero.ctaGames": "瀏覽遊戲",
   "hero.liveBoard": "即時",
   "hero.scoreboard": "計分板",
-  "footer.tagline": "一起玩、交朋友、建立社群。",
   "footer.product": "產品",
   "footer.community": "社群",
   "footer.ecosystem": "生態系",
@@ -1184,14 +1550,10 @@ const zhTW: Dictionary = {
   "footer.terms": "條款",
   "footer.privacy": "隱私權",
   "footer.builtWith": "以 Next.js 與 Supabase 打造",
-  "footer.disclaimer":
-    "JustVibing 屬於 KOINA 生態系，與 Roblox Corporation 無關。",
   "auth.welcomeBack": "歡迎回來",
   "auth.signInTitle": "登入",
   "auth.signInLead": "使用電子郵件、Google 或 Discord 加入。",
-  "auth.joinSquad": "加入小隊",
   "auth.registerTitle": "註冊",
-  "auth.registerLead": "建立帳號以報名、聊天並登上排行榜。",
   "auth.email": "電子郵件",
   "auth.password": "密碼",
   "auth.username": "使用者名稱",
@@ -1204,9 +1566,9 @@ const zhTW: Dictionary = {
   "auth.signInCta": "登入",
   "auth.createAccountCta": "建立帳號",
   "profile.language": "語言",
-  "profile.languageHint": "選擇此裝置上 JustVibing 的顯示語言。",
   "common.player": "玩家",
   ...(pageOverrides["zh-TW"] as Partial<Dictionary>),
+  ...zhTWOverrides,
 };
 
 export const dictionaries: Record<LocaleCode, Dictionary> = {

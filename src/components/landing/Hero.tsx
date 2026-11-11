@@ -6,7 +6,15 @@ import { Button } from "../ui/Button";
 import { BrandMark } from "../BrandMark";
 import { Ticker } from "./Ticker";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translate, type MessageKey } from "@/lib/i18n/messages";
 import type { HeroQuote } from "@/lib/types";
+
+/** Built-in rotating quotes (also the DB seed) — translated when text matches. */
+const KNOWN_QUOTES: [MessageKey, MessageKey][] = [
+  ["hero.defaultFirst", "hero.defaultSecond"],
+  ["hero.q2a", "hero.q2b"],
+  ["hero.q3a", "hero.q3b"],
+];
 
 const HERO_LINE_MS = 4_000;
 const HERO_LINE_STAGGER_MS = 180;
@@ -18,8 +26,19 @@ export function Hero({ quotes }: { quotes: HeroQuote[] }) {
   const quote = quotes.length
     ? quotes[quoteTick % quotes.length]
     : undefined;
-  const firstLine = quote?.first_line ?? t("hero.defaultFirst");
-  const secondLine = quote?.second_line ?? t("hero.defaultSecond");
+  const knownQuote = quote
+    ? KNOWN_QUOTES.find(
+        ([first, second]) =>
+          translate("en", first) === quote.first_line.trim() &&
+          translate("en", second) === quote.second_line.trim(),
+      )
+    : undefined;
+  const firstLine = knownQuote
+    ? t(knownQuote[0])
+    : (quote?.first_line ?? t("hero.defaultFirst"));
+  const secondLine = knownQuote
+    ? t(knownQuote[1])
+    : (quote?.second_line ?? t("hero.defaultSecond"));
 
   useEffect(() => {
     const id = window.setTimeout(() => {

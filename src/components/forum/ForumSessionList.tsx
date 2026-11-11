@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type SessionRow = {
   id: string;
@@ -22,6 +23,7 @@ type Props = {
 
 export function ForumSessionList({ sessions, isAdmin }: Props) {
   const router = useRouter();
+  const { t } = useLocale();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"hide" | "delete" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -88,7 +90,7 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
         session?: { is_hidden?: boolean };
       };
       if (!res.ok) {
-        throw new Error(data.error || "Could not update visibility.");
+        throw new Error(data.error || t("forum.visibilityError"));
       }
       setRows((prev) =>
         prev.map((item) =>
@@ -106,7 +108,7 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
       router.refresh();
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not update visibility.",
+        err instanceof Error ? err.message : t("forum.visibilityError"),
       );
     } finally {
       setBusyId(null);
@@ -117,7 +119,7 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
   async function onDelete(session: SessionRow) {
     if (!isAdmin || busyId) return;
     const ok = window.confirm(
-      `Delete “${session.title}”? This removes the deck and all activity responses.`,
+      t("forum.deleteConfirm", { title: session.title }),
     );
     if (!ok) return;
 
@@ -130,11 +132,11 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
         credentials: "include",
       });
       const data = (await res.json()) as { error?: string };
-      if (!res.ok) throw new Error(data.error || "Could not delete session.");
+      if (!res.ok) throw new Error(data.error || t("forum.deleteError"));
       setRows((prev) => prev.filter((item) => item.id !== session.id));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not delete session.");
+      setError(err instanceof Error ? err.message : t("forum.deleteError"));
     } finally {
       setBusyId(null);
       setBusyAction(null);
@@ -144,9 +146,7 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
   if (!rows.length) {
     return (
       <p className="text-sm text-ink-70">
-        {isAdmin
-          ? "No sessions yet. Upload an HTML deck above."
-          : "No forum sessions yet. Check back when a host goes live."}
+        {isAdmin ? t("forum.emptyAdmin") : t("forum.emptyPublic")}
       </p>
     );
   }
@@ -182,8 +182,8 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
                   </p>
                 ) : null}
                 <p className="mt-2 font-[family-name:var(--font-ibm-plex-mono)] text-[11px] tracking-[0.06em] text-ink-40 uppercase">
-                  {session.is_hidden ? "Hidden · " : ""}
-                  {session.is_live ? "Live" : "Ready"} ·{" "}
+                  {session.is_hidden ? `${t("forum.hidden")} · ` : ""}
+                  {session.is_live ? t("forum.live") : t("forum.ready")} ·{" "}
                   {new Date(session.created_at).toLocaleString()}
                 </p>
               </div>
@@ -192,7 +192,7 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
                   href={`/forum/${session.id}`}
                   className="rounded-[6px] border border-ink px-3.5 py-2 text-sm font-semibold no-underline hover:border-accent-500 hover:text-accent-500"
                 >
-                  Open
+                  {t("forum.open")}
                 </Link>
                 {isAdmin ? (
                   <>
@@ -203,10 +203,10 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
                       className="cursor-pointer rounded-[6px] border border-ink-15 px-3.5 py-2 text-sm font-semibold text-ink hover:border-accent-500 hover:text-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {busyId === session.id && busyAction === "hide"
-                        ? "Saving…"
+                        ? t("profile.saving")
                         : session.is_hidden
-                          ? "Show"
-                          : "Hide"}
+                          ? t("forum.show")
+                          : t("forum.hide")}
                     </button>
                     <button
                       type="button"
@@ -215,8 +215,8 @@ export function ForumSessionList({ sessions, isAdmin }: Props) {
                       className="cursor-pointer rounded-[6px] border border-accent-500/40 px-3.5 py-2 text-sm font-semibold text-accent-600 hover:border-accent-500 hover:bg-accent-100 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {busyId === session.id && busyAction === "delete"
-                        ? "Deleting…"
-                        : "Delete"}
+                        ? t("forum.deleting")
+                        : t("sessions.delete")}
                     </button>
                   </>
                 ) : null}
