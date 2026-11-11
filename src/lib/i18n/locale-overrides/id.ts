@@ -475,4 +475,294 @@ export const idOverrides: Partial<Record<MessageKey, string>> = {
   "createSession.errCreate": "Tidak dapat membuat sesi.",
   "createSession.cancel": "Batal",
   "createSession.creating": "Membuat…",
+  "hack.builtFor":
+    "Dibuat untuk",
+  "hack.eyebrow":
+    "KOINA.SPACE · Workshop 60 menit · Lembar panduan Anda",
+  "hack.title1":
+    "Satu jam.",
+  "hack.title2":
+    "Satu app <em>live</em>.",
+  "hack.standfirst":
+    "Satu prompt, satu app sungguhan — login, postingan, upvote, dan tampilan admin — live di internet sebelum jam ini berakhir. Waktunya ketat, jadi <b>selesaikan pra-persiapan sebelum Anda duduk.</b>",
+  "hack.jump":
+    "Pra-persiapan & tautan setup",
+  "hack.tl.brief":
+    "brief",
+  "hack.tl.build":
+    "bangun",
+  "hack.tl.run":
+    "jalankan",
+  "hack.tl.share":
+    "bagikan",
+  "hack.build.band":
+    "Apa yang kita bangun, dan dua prompt yang membangunnya",
+  "hack.build.whatTitle":
+    "Apa yang kita bangun hari ini",
+  "hack.build.what1":
+    "Semua orang membangun app yang sama, sehingga satu jam ini tetap di jalurnya: sebuah <b>dinding doa</b> tempat orang login, memposting permohonan, mengupvote yang sudah didoakan, berkomentar, dan melaporkan hal yang tidak pantas — dengan tampilan admin untuk menindaklanjuti laporan tersebut.",
+  "hack.build.what2":
+    "Perhatikan cara Prompt 1 ditulis. Prompt itu menyebutkan <b>siapa yang login, apa yang bisa mereka lakukan, dan apa yang dilihat admin.</b> Tingkat detail itulah yang menghasilkan app yang berfungsi, bukan yang samar — dan itu kebiasaan yang perlu ditiru saat Anda menulis sendiri.",
+  "hack.build.what3":
+    "<b>Ide Anda sendiri menyusul lain kali.</b> Tulis dalam bentuk yang sama: untuk siapa, apa yang bisa mereka lakukan, apa yang disimpan.",
+  "hack.build.howTitle":
+    "Cara menggunakan dua prompt ini",
+  "hack.build.how1":
+    "<b>Prompt 1</b> membangun seluruh app. Tempel, lalu biarkan saat bekerja — banyak hal yang diinstal.",
+  "hack.build.how2":
+    "<b>Prompt 2</b> menaruhnya di internet, setelah app berjalan di mesin Anda sendiri.",
+  "hack.build.how3":
+    "Di antara keduanya, Anda mengerjakan bagian yang tidak bisa dilakukan AI: menjalankan file <code>.sql</code> di Supabase dan menempel key asli Anda. Langkah di bawah menjelaskan kapan.",
+  "hack.promptsEnglish":
+    "Prompt di bawah tetap dalam bahasa Inggris — salin dan tempel ke alat AI Anda persis seperti tertulis.",
+  "hack.copy":
+    "Salin",
+  "hack.copied":
+    "Tersalin",
+  "hack.copyFail":
+    "Pilih & salin",
+  "hack.p1.label":
+    "Prompt 1 · Langkah 2 — bangun semuanya",
+  "hack.p1.note":
+    "<b>Dua hal yang dilakukan saat proses membangun.</b> AI menulis <code>.env.local</code> dengan <i>nama</i> key tetapi tidak tahu key asli Anda — tempel sendiri dari Supabase → Project Settings → API, lalu restart server. Dan setelah file <code>.sql</code> selesai, buka, salin seluruhnya ke Supabase → SQL Editor → Run. App tidak akan berfungsi sampai keduanya selesai.",
+  "hack.p2.label":
+    "Prompt 2 · Langkah 5 — push dan deploy",
+  "hack.p2.note":
+    "<b>AI akan berhenti dan bertanya</b> — untuk login ke GitHub atau Vercel, menamai repo, menyetujui perintah. Jawab satu per satu dan biarkan berlanjut. Jika AI tidak bisa menyelesaikan bagian Vercel sendiri, lakukan langkah itu di browser — ada di cheat sheet di bawah.",
+  "hack.run.band":
+    "Langkah demi langkah",
+  "hack.run.colStep":
+    "Langkah",
+  "hack.run.colDo":
+    "Yang Anda lakukan",
+  "hack.run.colWatch":
+    "Yang terjadi · yang perlu diperhatikan",
+  "hack.run.step":
+    "Langkah {n}",
+  "hack.run.s1.title":
+    "Baca brief",
+  "hack.run.s1.body":
+    "Semua orang membangun app yang sama, jadi tidak ada yang men-debug ide unik di bawah tekanan waktu. Baca Prompt 1 dan perhatikan <b>seberapa spesifik</b> isinya — siapa yang login, apa yang bisa mereka lakukan, apa yang dilihat admin. Detail itulah yang menghasilkan app yang berfungsi, bukan yang samar.",
+  "hack.run.s1.check":
+    "Anda bisa menjelaskan apa fungsi app-nya. Cursor terbuka, terminal terlihat, key Supabase siap.",
+  "hack.run.s2.title":
+    "Bangun — Prompt 1",
+  "hack.run.s2.body":
+    "<b>Next.js membangun semua yang dilihat dan disentuh orang</b> — halaman, form, tombol — dan AI menulis semuanya. Tempel Prompt 1 dan biarkan saat menginstal dan menulis; mengganggunya membuat app hanya jadi setengah.",
+  "hack.run.s2.check":
+    "Checkpoint 1 — selesai, dan proyek Anda memiliki file <code>.sql</code> dan <code>.env.local</code>.",
+  "hack.run.s3.title":
+    "Jalankan",
+  "hack.run.s3.body":
+    "Kode yang dihasilkan hanyalah file sampai diinstal dan dijalankan. <code>npm install</code> mengambil yang dibutuhkan — biasanya AI sudah melakukannya — dan <code>npm run dev</code> menjalankannya.",
+  "hack.run.s3.check":
+    "Checkpoint 2 — halaman termuat di localhost:3000, meskipun login belum berfungsi.",
+  "hack.run.s4.title":
+    "Hubungkan Supabase",
+  "hack.run.s4.body":
+    "<b>Supabase menyimpan database Anda dan menangani login</b> — tetapi butuh dua hal yang hanya bisa Anda berikan. <b>1.</b> <b>Project URL</b> dan <b>anon key</b> Anda ditempel ke <code>.env.local</code>, agar app bisa menemukan database Anda. <b>2.</b> File <code>.sql</code> dari AI (sering di <code>/supabase</code>) disalin ke Supabase → SQL Editor → Run, yang membuat tabel. Restart server setelahnya.",
+  "hack.run.s4.check":
+    "Checkpoint 3 — Anda sudah mendaftar, memposting, dan bisa melihat baris Anda di Table Editor Supabase.",
+  "hack.run.s5.title":
+    "Push ke GitHub — Prompt 2",
+  "hack.run.s5.body":
+    "<b>GitHub adalah satu salinan pusat kode Anda,</b> sekaligus riwayat versi — kesalahan menjadi sesuatu yang bisa dikembalikan, bukan yang hilang. AI mengotomatiskannya lewat alat command line GitHub, tetapi <b>hanya Anda yang bisa login</b>, jadi jawab pertanyaannya saat muncul.",
+  "hack.run.s5.check":
+    "Checkpoint 4 — kode Anda terlihat di repo di github.com.",
+  "hack.run.s6.title":
+    "Deploy di Vercel",
+  "hack.run.s6.body":
+    "<b>Vercel menyajikan kode GitHub Anda dari server web sungguhan,</b> sehingga punya alamat yang bisa dibuka siapa saja — dan di-deploy ulang di setiap push mulai sekarang. Pola yang sama: AI yang menjalankan, Anda yang login. <b>Tambahkan key Anda di sini juga</b> di Environment Variables, lalu deploy ulang; <code>.env.local</code> tidak pernah keluar dari laptop Anda.",
+  "hack.run.s6.check":
+    "Checkpoint 5 — URL live Anda ada di chat dan orang lain sudah memposting di sana.",
+  "hack.run.s7.title":
+    "Bagikan & tutup",
+  "hack.run.s7.body":
+    "Beberapa URL ditampilkan di layar bersama, seisi ruangan memposting dan mengupvote di dinding orang lain, dan Anda menyaksikan baris masuk ke Supabase secara langsung. Anda telah menaruh sesuatu di internet yang mengumpulkan informasi nyata dari orang nyata — itulah seluruh alurnya.",
+  "hack.run.s7.check":
+    "Kirim URL Anda ke satu orang di luar ruangan sebelum menutup laptop.",
+  "hack.concepts.band":
+    "Konsep kunci — apa yang dilakukan setiap bagian",
+  "hack.concepts.intro":
+    "Empat alat, satu pola: <b>AI menulis dan mengotomatiskan; Anda menginstal, menempel, dan login.</b> Setiap bagian di bawah punya bagian yang dikerjakan untuk Anda dan bagian yang hanya bisa Anda kerjakan.",
+  "hack.concepts.yourPart":
+    "Bagian Anda",
+  "hack.concepts.nextjs.role":
+    "App yang dilihat dan digunakan orang",
+  "hack.concepts.nextjs.body":
+    "Next.js dan pustaka komponennya menangani seluruh antarmuka pengguna — halaman, form, tombol, apa yang terjadi saat seseorang mengklik. Setelah Claude atau Cursor menghasilkan kode, tidak ada yang perlu didesain atau dirangkai secara manual.",
+  "hack.concepts.nextjs.yours":
+    "Instal dengan <code>npm install</code> — biasanya AI sudah melakukannya untuk Anda — lalu jalankan <code>npm run dev</code> untuk melihatnya di browser.",
+  "hack.concepts.supabase.role":
+    "Database dan login",
+  "hack.concepts.supabase.body":
+    "Supabase menyediakan fungsi siap pakai yang dipanggil app Anda: login pengguna, menyimpan postingan, membacanya kembali. Supabase juga menghosting database, jadi tidak ada yang tersimpan di laptop Anda.",
+  "hack.concepts.supabase.yours":
+    "Dua hal. Tempel <b>Project URL</b> dan <b>API key</b> (yang anon) ke <code>.env.local</code> agar app bisa menemukan database Anda. Lalu buka file <code>.sql</code> yang dihasilkan AI — biasanya di folder <code>/supabase</code> — dan salin, tempel, serta jalankan sendiri di Supabase. <b>AI tidak bisa menjalankannya untuk Anda.</b>",
+  "hack.concepts.github.role":
+    "Tempat kode disimpan",
+  "hack.concepts.github.body":
+    "Semua kode Anda di-commit ke GitHub sebagai satu salinan pusat. Itulah yang memberi Anda version control — setiap perubahan tercatat, sehingga kesalahan bisa dikembalikan tanpa kehilangan pekerjaan.",
+  "hack.concepts.github.yours":
+    "Login dulu. AI kemudian bisa mengotomatiskan sisanya lewat alat command line GitHub (CLI), tetapi tidak bisa login sebagai Anda.",
+  "hack.concepts.vercel.role":
+    "Yang menaruhnya di internet",
+  "hack.concepts.vercel.body":
+    "Vercel mengambil kode dari repositori GitHub Anda dan menyajikannya dari server web sungguhan, sehingga app Anda punya alamat yang bisa dibuka siapa saja. Setelah setup awal, setiap push ke GitHub otomatis di-deploy ulang.",
+  "hack.concepts.vercel.yours":
+    "Login dulu, di sini juga. AI bisa menjalankan Vercel CLI setelah Anda login — dan ingat key Anda perlu ditambahkan terpisah di Vercel, karena <code>.env.local</code> tidak pernah keluar dari laptop Anda.",
+  "hack.cheat.band":
+    "Cheat sheet Anda — pra-persiapan, key, dan deployment",
+  "hack.pre.title":
+    "Sebelum Anda datang — semuanya",
+  "hack.pre.lead":
+    "Semua tautan ada di lampiran di bagian akhir.",
+  "hack.pre.1":
+    "<b>Node.js terinstal</b> — versi LTS dari nodejs.org",
+  "hack.pre.2":
+    "<b>Cursor terinstal</b> dan sudah login minimal sekali",
+  "hack.pre.3":
+    "<b>Akun GitHub</b>, sudah login di laptop ini",
+  "hack.pre.4":
+    "<b>Akun Vercel</b> — daftar <b>dengan GitHub</b>",
+  "hack.pre.5":
+    "<b>Proyek Supabase sudah dibuat</b> — proyeknya sendiri, bukan hanya akunnya. Butuh beberapa menit untuk aktif, jadi jangan tunda sampai hari-H.",
+  "hack.pre.6":
+    "<b>Key disalin ke file catatan:</b> Project Settings → API → <b>Project URL</b> dan key <b>anon public</b>",
+  "hack.keys.title":
+    "Kelola dan Lindungi Key Anda — di dua tempat",
+  "hack.keys.1":
+    "<b>Di laptop Anda:</b> buat file bernama <code>.env.local</code> di folder proyek dengan dua baris — <code>NEXT_PUBLIC_SUPABASE_URL=</code> dan <code>NEXT_PUBLIC_SUPABASE_ANON_KEY=</code> — lalu <b>restart server</b>. Key hanya dimuat saat server mulai.",
+  "hack.keys.2":
+    "<b>Di Vercel:</b> dua baris yang sama dimasukkan di Settings → Environment Variables sebelum deploy. <code>.env.local</code> tidak pernah keluar dari laptop Anda, jadi Vercel tidak bisa melihatnya.",
+  "hack.keys.3":
+    "<b>Anon key memang untuk publik</b> — aman di browser. Key <i>service_role</i> di halaman Supabase yang sama tidak aman. Jangan sentuh hari ini.",
+  "hack.vercel.title":
+    "Jika AI tidak bisa mengerjakan bagian Vercel",
+  "hack.vercel.lead":
+    "Prompt 2 akan mencoba. Jika macet atau meminta Anda, kerjakan sendiri — hanya lima klik.",
+  "hack.vercel.1":
+    "Buka <b>vercel.com</b> → Add New → Project",
+  "hack.vercel.2":
+    "Pilih repo yang baru saja di-push → <b>Import</b>",
+  "hack.vercel.3":
+    "<b>Tambahkan dua key Anda</b> di Environment Variables, sebelum deploy",
+  "hack.vercel.4":
+    "Klik <b>Deploy</b> dan saksikan proses build (sekitar satu menit)",
+  "hack.vercel.5":
+    "Buka tautannya, daftar, posting sesuatu. <b>Itulah app Anda, live, dengan akun sungguhan dan data sungguhan.</b>",
+  "hack.vercel.6":
+    "Setiap push ke GitHub otomatis di-deploy ulang mulai sekarang",
+  "hack.vercel.liveUrl":
+    "URL live saya",
+  "hack.bonus.title":
+    "Bonus — buat tampilannya terlihat disengaja",
+  "hack.bonus.lead":
+    "Hanya setelah situs Anda live. Instal dari folder proyek Anda, lalu muat ulang Cursor.",
+  "hack.skill.install":
+    "Instal",
+  "hack.skill.run":
+    "Jalankan",
+  "hack.skill.emil":
+    "Poles UI dan penilaian animasi dari design engineer yang pernah bekerja di Vercel dan Linear. Memperbaiki pilihan timing dan jarak kecil yang sering salah dibuat agen sendiri.",
+  "hack.skill.impeccable":
+    "Memberi Anda dan agen kosakata desain yang sama. <code>init</code> menanyakan untuk siapa situs ini dan mencatatnya; <code>polish</code> lalu merapikan apa yang sudah Anda bangun.",
+  "hack.skill.taste":
+    "Aturan anti-slop untuk landing page. Agen membaca brief Anda dan memilih arah, bukan memakai template yang sama setiap kali.",
+  "hack.bonus.oneAtATime":
+    "<b>Satu per satu, lalu lihat.</b> Jalankan satu skill, cek browser, push. Tiga sekaligus dan Anda tidak akan tahu mana yang melakukan apa — dan push selalu bisa dibatalkan.",
+  "hack.bonus.seeLive":
+    "Lihat live:",
+  "hack.bonus.seeLiveTail":
+    "— dinding doa jadi dari screenshot ini.",
+  "hack.ba.before":
+    "Sebelum",
+  "hack.ba.beforeSub":
+    "langsung dari Prompt 1",
+  "hack.ba.after":
+    "Sesudah /taste",
+  "hack.ba.afterSub":
+    "satu perintah kemudian",
+  "hack.ba.beforeLabel":
+    "Sebelum /taste — langsung dari Prompt 1",
+  "hack.ba.afterLabel":
+    "Sesudah /taste — satu perintah kemudian",
+  "hack.ba.beforeAlt":
+    "Dinding doa sebelum menjalankan skill taste: tata letak polos, logo emoji, kontrol urutan di kiri, tanpa ajakan bertindak.",
+  "hack.ba.afterAlt":
+    "Dinding doa yang sama setelah menjalankan skill taste: logo merpati kustom, tombol Share a prayer request yang menonjol, baris statistik, dan kontrol urutan dipindah ke kanan.",
+  "hack.ba.clickHint":
+    "Klik salah satu gambar untuk melihat ukuran penuh.",
+  "hack.lb.label":
+    "Screenshot, ukuran penuh",
+  "hack.lb.close":
+    "Tutup",
+  "hack.warn.title":
+    "Yang sudah Anda lakukan, dan selanjutnya",
+  "hack.warn.p1":
+    "Anda mendeskripsikan sebuah app dalam satu paragraf dan menaruh versi yang berfungsi di internet — dengan akun, database, dan moderasi — dalam waktu kurang dari satu jam. Itulah seluruh alurnya. Semua setelah ini hanyalah pengulangan.",
+  "hack.warn.p2":
+    "<b>Satu catatan jujur:</b> app yang dibuat secepat ini belum diperiksa. Sebelum mengundang orang sungguhan memposting permohonan doa sungguhan, seseorang harus memeriksa siapa yang bisa membaca dan mengedit apa — aturan keamanan di file <code>.sql</code> itu adalah yang pertama dicek. <b>Anggap versi hari ini sebagai demo yang berfungsi, bukan tempat aman untuk kata-kata orang lain.</b>",
+  "hack.warn.p3":
+    "<b>Selanjutnya:</b> versi empat minggu membahas dengan serius soal login, email, domain Anda sendiri, dan cara memastikan hal-hal privat tetap privat.",
+  "hack.app.band":
+    "Lampiran — semua yang perlu diinstal dan didaftarkan",
+  "hack.app.intro":
+    "Lakukan semua ini <b>sebelum</b> sesi. Dua atau tiga unduhan, tiga akun, sekitar dua puluh menit — tetapi proyek Supabase butuh beberapa menit untuk aktif, jadi jangan tunda sampai pagi hari-H.",
+  "hack.app.install.title":
+    "Instal di laptop Anda",
+  "hack.app.install.role":
+    "Node.js, ditambah satu alat coding AI",
+  "hack.app.node.what":
+    "Node.js — versi LTS",
+  "hack.app.node.hint":
+    "Tidak ada yang berfungsi tanpa ini. Ambil yang bertanda <b>LTS</b>, bukan Current, dan terima semua pengaturan default di installer. Untuk memeriksa, buka terminal dan ketik <code>node --version</code> — jika muncul angka, berarti selesai.",
+  "hack.app.claude.what":
+    "Claude — aplikasi desktop",
+  "hack.app.claude.hint":
+    "Aplikasi desktop memungkinkan Anda menggunakan Claude Code tanpa terminal. <b>Memerlukan paket Claude berbayar</b> — Pro ke atas; paket gratis tidak termasuk Claude Code. Jika Anda sudah berlangganan Claude, gunakan ini. Jika belum, gunakan Cursor di bawah. Lebih suka terminal? <code>curl -fsSL https://claude.ai/install.sh | bash</code> di Mac atau Linux, atau <code>irm https://claude.ai/install.ps1 | iex</code> di Windows PowerShell.",
+  "hack.app.cursor.what":
+    "Cursor — editor kode AI",
+  "hack.app.cursor.hint":
+    "Punya <b>paket gratis yang cukup untuk hari ini</b>, jadi ambil ini jika Anda belum berlangganan Claude. Unduh, instal, dan <b>login minimal sekali</b> sebelum sesi.",
+  "hack.app.either.what":
+    "Anda hanya butuh salah satu",
+  "hack.app.either.hint":
+    "Claude atau Cursor — keduanya menjalankan prompt yang sama dan bekerja dengan cara yang sama. Kami akan demo di Cursor; jika Anda memakai Claude, semuanya tetap berlaku.",
+  "hack.app.github.role":
+    "Tempat kode Anda disimpan",
+  "hack.app.github.create.what":
+    "Buat akun",
+  "hack.app.github.create.hint":
+    "Gratis. Gunakan email yang bisa Anda cek selama sesi — GitHub mengirim kode verifikasi. <b>Tetap login di laptop yang Anda bawa.</b>",
+  "hack.app.github.login.what":
+    "Sudah punya akun?",
+  "hack.app.github.login.hint":
+    "Cukup pastikan Anda bisa login. Lupa password itu lambat diperbaiki saat satu ruangan menunggu.",
+  "hack.app.vercel.role":
+    "Yang menaruhnya di internet",
+  "hack.app.vercel.signup.what":
+    "Daftar — dengan GitHub",
+  "hack.app.vercel.signup.hint":
+    "Pilih <b>Continue with GitHub</b>, bukan email. Ini langsung menautkan kedua akun, sehingga Vercel bisa melihat repositori Anda nanti. Ambil paket <b>Hobby</b> gratis — tanpa kartu.",
+  "hack.app.supabase.role":
+    "Database dan login Anda",
+  "hack.app.supabase.signup.what":
+    "Daftar",
+  "hack.app.supabase.signup.hint":
+    "Continue with GitHub paling cepat. Paket gratis, tanpa kartu.",
+  "hack.app.supabase.project.what":
+    "Lalu buat proyek — bukan hanya akun",
+  "hack.app.supabase.project.hint":
+    "Beri nama apa saja. <b>Simpan password database yang diminta.</b> Pilih region terdekat — Singapore jika Anda di sini. Setelah itu butuh beberapa menit untuk aktif, itulah sebabnya ini tidak bisa menunggu sampai sesi.",
+  "hack.app.supabase.keys.what":
+    "Salin dua key Anda ke file catatan",
+  "hack.app.supabase.keys.hint":
+    "Anda butuh <b>Project URL</b> dan key <b>anon public</b>. Abaikan <code>service_role</code> — itu melewati semua aturan keamanan dan bukan untuk hari ini.",
+  "hack.app.supabase.email.what":
+    "Matikan konfirmasi email (opsional)",
+  "hack.app.supabase.email.hint":
+    "Matikan <b>Confirm email</b>. Jika dibiarkan aktif, Anda akan menunggu email konfirmasi hanya untuk login ke app Anda sendiri. Aktifkan kembali sebelum orang sungguhan memakainya.",
+  "hack.footer.handout":
+    "handout peserta",
 };

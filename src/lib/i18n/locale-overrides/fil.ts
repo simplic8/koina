@@ -483,4 +483,294 @@ export const filOverrides: Partial<Record<MessageKey, string>> = {
   "createSession.errCreate": "Hindi magawa ang session.",
   "createSession.cancel": "Kanselahin",
   "createSession.creating": "Ginagawa…",
+  "hack.builtFor":
+    "Para sa",
+  "hack.eyebrow":
+    "KOINA.SPACE · 60-minutong workshop · Ang iyong run sheet",
+  "hack.title1":
+    "Isang oras.",
+  "hack.title2":
+    "Isang <em>live</em> na app.",
+  "hack.standfirst":
+    "Isang prompt, isang tunay na app — may login, mga post, upvote, at admin view — live sa internet pagsapit ng katapusan ng oras. Siksik ang oras, kaya <b>tapusin ang pre-work bago ka umupo.</b>",
+  "hack.jump":
+    "Pre-work at mga link sa setup",
+  "hack.tl.brief":
+    "brief",
+  "hack.tl.build":
+    "buuin",
+  "hack.tl.run":
+    "patakbuhin",
+  "hack.tl.share":
+    "ibahagi",
+  "hack.build.band":
+    "Ang bubuuin natin, at ang dalawang prompt na bubuo nito",
+  "hack.build.whatTitle":
+    "Ang bubuuin natin ngayon",
+  "hack.build.what1":
+    "Pare-pareho ang app na bubuuin ng lahat, kaya nasa tamang landas ang oras: isang <b>prayer wall</b> kung saan nagla-log in ang mga tao, nagpo-post ng kahilingan, nag-a-upvote sa mga ipinagdasal nila, nagko-comment, at nag-uulat ng anumang hindi tama — may admin view para aksyunan ang mga ulat.",
+  "hack.build.what2":
+    "Tingnan kung paano isinulat ang Prompt 1. Binabanggit nito <b>kung sino ang nagla-log in, ano ang magagawa nila, at ano ang nakikita ng admin.</b> Dahil sa detalyeng iyon kaya gumagana ang app at hindi malabo — at ito ang gawi na dapat gayahin kapag isinulat mo ang sarili mo.",
+  "hack.build.what3":
+    "<b>Sa susunod ang sarili mong ideya.</b> Isulat ito sa parehong hugis: para kanino, ano ang magagawa nila, ano ang itatabi.",
+  "hack.build.howTitle":
+    "Paano gamitin ang dalawang prompt na ito",
+  "hack.build.how1":
+    "Binubuo ng <b>Prompt 1</b> ang buong app. I-paste ito, at huwag galawin habang gumagana — maraming ini-install.",
+  "hack.build.how2":
+    "Inilalagay ng <b>Prompt 2</b> ang app sa internet, kapag tumatakbo na ito sa sarili mong makina.",
+  "hack.build.how3":
+    "Sa pagitan ng dalawa, ikaw ang gagawa ng hindi kaya ng AI: patakbuhin ang <code>.sql</code> file sa Supabase at i-paste ang tunay mong mga key. Sinasabi ng mga hakbang sa ibaba kung kailan.",
+  "hack.promptsEnglish":
+    "Nananatiling Ingles ang mga prompt sa ibaba — kopyahin at i-paste ang mga ito sa AI tool mo nang eksakto kung paano nakasulat.",
+  "hack.copy":
+    "Kopyahin",
+  "hack.copied":
+    "Nakopya",
+  "hack.copyFail":
+    "Piliin at kopyahin",
+  "hack.p1.label":
+    "Prompt 1 · Hakbang 2 — buuin ang lahat",
+  "hack.p1.note":
+    "<b>Dalawang gagawin habang binubuo.</b> Isinusulat nito ang <code>.env.local</code> na may mga <i>pangalan</i> ng key pero hindi nito alam ang tunay mong mga key — i-paste mo mismo mula sa Supabase → Project Settings → API, saka i-restart ang server. At kapag natapos ang <code>.sql</code> file, buksan ito at kopyahin lahat sa Supabase → SQL Editor → Run. Hindi gagana ang app hangga't hindi pa tapos ang dalawa.",
+  "hack.p2.label":
+    "Prompt 2 · Hakbang 5 — i-push at i-deploy",
+  "hack.p2.note":
+    "<b>Titigil ito at magtatanong</b> — para mag-sign in sa GitHub o Vercel, pangalanan ang repo, aprubahan ang isang command. Sagutin ang bawat isa at hayaan itong magpatuloy. Kung hindi nito matapos ang Vercel part, gawin ang mga hakbang sa browser — nasa cheat sheet sa ibaba.",
+  "hack.run.band":
+    "Hakbang-hakbang",
+  "hack.run.colStep":
+    "Hakbang",
+  "hack.run.colDo":
+    "Ang gagawin mo",
+  "hack.run.colWatch":
+    "Ang mangyayari · ang dapat bantayan",
+  "hack.run.step":
+    "Hakbang {n}",
+  "hack.run.s1.title":
+    "Basahin ang brief",
+  "hack.run.s1.body":
+    "Pare-pareho ang app na bubuuin ng lahat, kaya walang magde-debug ng sariling ideya sa ilalim ng pressure ng oras. Basahin ang Prompt 1 at pansinin <b>kung gaano ito kaspesipiko</b> — sino ang nagla-log in, ano ang magagawa nila, ano ang nakikita ng admin. Dahil sa detalyeng iyon kaya gumagana ang app at hindi malabo.",
+  "hack.run.s1.check":
+    "Masasabi mo kung ano ang ginagawa ng app. Bukas ang Cursor, kita ang terminal, nasa kamay ang mga Supabase key.",
+  "hack.run.s2.title":
+    "Buuin — Prompt 1",
+  "hack.run.s2.body":
+    "<b>Binubuo ng Next.js ang lahat ng nakikita at nahahawakan ng tao</b> — mga page, form, button — at isinusulat lahat ng AI. I-paste ang Prompt 1 at huwag galawin habang nag-i-install at nagsusulat; ang pag-abala rito ang dahilan kung bakit kalahati lang ang app.",
+  "hack.run.s2.check":
+    "Checkpoint 1 — natapos ito, at may <code>.sql</code> file at <code>.env.local</code> ang proyekto mo.",
+  "hack.run.s3.title":
+    "Patakbuhin",
+  "hack.run.s3.body":
+    "Mga file lang ang nabuong code hangga't hindi ito na-install at sinimulan. Kinukuha ng <code>npm install</code> ang kailangan — kadalasan nagawa na ito ng AI — at sinisimulan ito ng <code>npm run dev</code>.",
+  "hack.run.s3.check":
+    "Checkpoint 2 — may page na nagbubukas sa localhost:3000, kahit hindi pa gumagana ang pag-log in.",
+  "hack.run.s4.title":
+    "Ikonekta ang Supabase",
+  "hack.run.s4.body":
+    "<b>Hawak ng Supabase ang database mo at hinahawakan ang mga login</b> — pero may dalawang bagay na ikaw lang ang makapagbibigay. <b>1.</b> Ang <b>Project URL</b> at <b>anon key</b> mo, i-paste sa <code>.env.local</code> para mahanap ng app ang database. <b>2.</b> Ang <code>.sql</code> file ng AI (madalas nasa <code>/supabase</code>) na kokopyahin sa Supabase → SQL Editor → Run, na gagawa ng mga table. I-restart ang server pagkatapos.",
+  "hack.run.s4.check":
+    "Checkpoint 3 — nag-sign up ka, nag-post, at nakikita mo ang row mo sa Table Editor ng Supabase.",
+  "hack.run.s5.title":
+    "I-push sa GitHub — Prompt 2",
+  "hack.run.s5.body":
+    "<b>Ang GitHub ang nag-iisang sentral na kopya ng code mo,</b> at ang kasaysayan ng bersyon — ang pagkakamali ay nagiging bagay na maibabalik, hindi nawawala. Ina-automate ito ng AI sa command line tool ng GitHub, pero <b>ikaw lang ang makapag-sign in</b>, kaya sagutin ang mga tanong nito pagdating.",
+  "hack.run.s5.check":
+    "Checkpoint 4 — nakikita ang code mo sa isang repo sa github.com.",
+  "hack.run.s6.title":
+    "I-deploy sa Vercel",
+  "hack.run.s6.body":
+    "<b>Inihahain ng Vercel ang GitHub code mo mula sa tunay na web server,</b> kaya may address na mabubuksan ng sinuman — at magre-redeploy sa bawat push mula ngayon. Parehong pattern: ang AI ang magpapatakbo, ikaw ang mag-sign in. <b>Idagdag din dito ang mga key mo</b> sa Environment Variables, saka mag-redeploy; hindi umalis sa laptop mo ang <code>.env.local</code>.",
+  "hack.run.s6.check":
+    "Checkpoint 5 — nasa chat ang live URL mo at may ibang nag-post dito.",
+  "hack.run.s7.title":
+    "Ibahagi at magtapos",
+  "hack.run.s7.body":
+    "Ilang URL ang ipapakita sa shared screen, magpo-post at mag-a-upvote ang buong silid sa wall ng iba, at mapapanood mo nang live ang pagdating ng mga row sa Supabase. Naglagay ka sa internet ng bagay na nangongolekta ng tunay na impormasyon mula sa tunay na mga tao — iyon ang buong loop.",
+  "hack.run.s7.check":
+    "Ipadala ang URL mo sa isang tao sa labas ng silid bago mo isara ang laptop.",
+  "hack.concepts.band":
+    "Mga pangunahing konsepto — ano ang ginagawa ng bawat piraso",
+  "hack.concepts.intro":
+    "Apat na tool, isang pattern: <b>ang AI ang nagsusulat at nag-a-automate; ikaw ang nag-i-install, nagpi-paste, at nag-sign in.</b> Bawat piraso sa ibaba ay may bahaging ginagawa para sa iyo at bahaging ikaw lang ang makagagawa.",
+  "hack.concepts.yourPart":
+    "Ang bahagi mo",
+  "hack.concepts.nextjs.role":
+    "Ang app na nakikita at ginagamit ng tao",
+  "hack.concepts.nextjs.body":
+    "Hinahawakan ng Next.js at ng mga component library nito ang buong user interface — ang mga page, form, button, at ang nangyayari kapag may nag-click. Kapag nabuo na ng Claude o Cursor ang code, wala nang idi-disenyo o ikokonekta nang mano-mano.",
+  "hack.concepts.nextjs.yours":
+    "I-install gamit ang <code>npm install</code> — kadalasan nagawa na ito ng AI — saka patakbuhin ang <code>npm run dev</code> para makita sa browser mo.",
+  "hack.concepts.supabase.role":
+    "Ang database at mga login",
+  "hack.concepts.supabase.body":
+    "Nagbibigay ang Supabase ng mga handang function na tinatawag ng app mo: pag-sign in ng tao, pag-save ng post, pagbasa ulit nito. Ito rin ang nagho-host ng database, kaya walang nakatira sa laptop mo.",
+  "hack.concepts.supabase.yours":
+    "Dalawang bagay. I-paste ang <b>Project URL</b> at <b>API key</b> (ang anon) sa <code>.env.local</code> para mahanap ng app ang database mo. Pagkatapos buksan ang <code>.sql</code> file na ginawa ng AI — kadalasan nasa folder na <code>/supabase</code> — at kopyahin, i-paste, at patakbuhin ito mismo sa Supabase. <b>Hindi ito kayang patakbuhin ng AI para sa iyo.</b>",
+  "hack.concepts.github.role":
+    "Kung saan nakatira ang code",
+  "hack.concepts.github.body":
+    "Ang lahat ng code mo ay naka-commit sa GitHub bilang nag-iisang sentral na kopya. Iyon ang nagbibigay ng version control — naitatala ang bawat pagbabago, kaya ang pagkakamali ay maibabalik at hindi nawawalan ng trabaho.",
+  "hack.concepts.github.yours":
+    "Mag-sign in muna. Maa-automate na ng AI ang natitira gamit ang GitHub command line tool (ang CLI), pero hindi ito makakapag-log in bilang ikaw.",
+  "hack.concepts.vercel.role":
+    "Ang naglalagay nito sa internet",
+  "hack.concepts.vercel.body":
+    "Kinukuha ng Vercel ang code mula sa GitHub repository mo at inihahain mula sa tunay na web server, kaya may address ang app mo na mabubuksan ng sinuman. Pagkatapos ng unang setup, awtomatikong magre-redeploy ang bawat push sa GitHub.",
+  "hack.concepts.vercel.yours":
+    "Mag-sign in muna, dito rin. Mapapatakbo ng AI ang Vercel CLI kapag nagawa mo na — at tandaan na kailangang idagdag nang hiwalay ang mga key mo sa Vercel, dahil hindi umaalis sa laptop mo ang <code>.env.local</code>.",
+  "hack.cheat.band":
+    "Ang cheat sheet mo — pre-work, mga key, at deployment",
+  "hack.pre.title":
+    "Bago ka dumating — lahat ng ito",
+  "hack.pre.lead":
+    "Nasa appendix sa dulo ang bawat link.",
+  "hack.pre.1":
+    "<b>Naka-install ang Node.js</b> — ang LTS version mula sa nodejs.org",
+  "hack.pre.2":
+    "<b>Naka-install ang Cursor</b> at naka-sign in kahit isang beses",
+  "hack.pre.3":
+    "<b>GitHub account</b>, naka-sign in sa laptop na ito",
+  "hack.pre.4":
+    "<b>Vercel account</b> — mag-sign up <b>gamit ang GitHub</b>",
+  "hack.pre.5":
+    "<b>Nagawa na ang Supabase project</b> — ang mismong proyekto, hindi lang ang account. Ilang minuto bago ito mag-start, kaya huwag ipagpabukas hanggang sa araw mismo.",
+  "hack.pre.6":
+    "<b>Nakopya ang mga key sa notes file:</b> Project Settings → API → ang <b>Project URL</b> at ang <b>anon public</b> key",
+  "hack.keys.title":
+    "Pamahalaan at Protektahan ang mga Key Mo — sa dalawang lugar",
+  "hack.keys.1":
+    "<b>Sa laptop mo:</b> gumawa ng file na <code>.env.local</code> sa project folder na may dalawang linya — <code>NEXT_PUBLIC_SUPABASE_URL=</code> at <code>NEXT_PUBLIC_SUPABASE_ANON_KEY=</code> — saka <b>i-restart ang server</b>. Naglo-load lang ang mga key kapag nag-start ito.",
+  "hack.keys.2":
+    "<b>Sa Vercel:</b> ang parehong dalawang linya ay ilalagay sa Settings → Environment Variables bago mag-deploy. Hindi umaalis sa laptop mo ang <code>.env.local</code>, kaya hindi ito nakikita ng Vercel.",
+  "hack.keys.3":
+    "Ang <b>anon key ay para sa publiko</b> — ligtas ito sa browser. Hindi ligtas ang <i>service_role</i> key sa parehong Supabase page. Huwag itong galawin ngayon.",
+  "hack.vercel.title":
+    "Kung hindi nito magawa ang Vercel part",
+  "hack.vercel.lead":
+    "Susubukan ito ng Prompt 2. Kung ma-stuck ito o hilingin sa iyo, gawin mo mismo — limang click lang.",
+  "hack.vercel.1":
+    "Pumunta sa <b>vercel.com</b> → Add New → Project",
+  "hack.vercel.2":
+    "Piliin ang repo na kaka-push lang → <b>Import</b>",
+  "hack.vercel.3":
+    "<b>Idagdag ang dalawang key</b> sa Environment Variables, bago mag-deploy",
+  "hack.vercel.4":
+    "I-click ang <b>Deploy</b> at panoorin itong mag-build (mga isang minuto)",
+  "hack.vercel.5":
+    "Buksan ang link, mag-sign up, mag-post ng kahit ano. <b>Iyan ang app mo, live, may tunay na account at tunay na data.</b>",
+  "hack.vercel.6":
+    "Awtomatikong magre-redeploy ang bawat push sa GitHub mula ngayon",
+  "hack.vercel.liveUrl":
+    "Ang live URL ko",
+  "hack.bonus.title":
+    "Bonus — gawing mukhang sinadya",
+  "hack.bonus.lead":
+    "Kapag live na ang site mo lang. I-install mula sa project folder mo, saka i-reload ang Cursor.",
+  "hack.skill.install":
+    "I-install",
+  "hack.skill.run":
+    "Patakbuhin",
+  "hack.skill.emil":
+    "UI polish at animation judgement mula sa design engineer na nagtrabaho sa Vercel at Linear. Inaayos ang maliliit na timing at spacing na mali ang pili ng agent kapag mag-isa.",
+  "hack.skill.impeccable":
+    "Nagbibigay sa iyo at sa agent ng iisang bokabularyo sa disenyo. Tinatanong ng <code>init</code> kung para kanino ang site at isinusulat ito; nililinis naman ng <code>polish</code> ang nabuo mo na.",
+  "hack.skill.taste":
+    "Mga anti-slop na patakaran para sa mga landing page. Binabasa ng agent ang brief mo at pumipili ng direksyon sa halip na paulit-ulit na gumamit ng parehong template.",
+  "hack.bonus.oneAtATime":
+    "<b>Isa-isa, saka tingnan.</b> Magpatakbo ng skill, suriin ang browser, mag-push. Kapag tatlo nang sunod-sunod, hindi mo na alam kung alin ang gumawa ng ano — at laging maaaring i-undo ang push.",
+  "hack.bonus.seeLive":
+    "Tingnan nang live:",
+  "hack.bonus.seeLiveTail":
+    "— ang natapos na prayer wall mula sa mga screenshot na ito.",
+  "hack.ba.before":
+    "Bago",
+  "hack.ba.beforeSub":
+    "diretso mula sa Prompt 1",
+  "hack.ba.after":
+    "Pagkatapos ng /taste",
+  "hack.ba.afterSub":
+    "isang command ang lumipas",
+  "hack.ba.beforeLabel":
+    "Bago ang /taste — diretso mula sa Prompt 1",
+  "hack.ba.afterLabel":
+    "Pagkatapos ng /taste — isang command ang lumipas",
+  "hack.ba.beforeAlt":
+    "Ang prayer wall bago patakbuhin ang taste skill: simpleng layout, emoji logo, sort control sa kaliwa, walang call to action.",
+  "hack.ba.afterAlt":
+    "Ang parehong prayer wall pagkatapos patakbuhin ang taste skill: custom na marka ng kalapati, kitang-kitang button na Share a prayer request, stats line, at ang sort control na inilipat sa kanan.",
+  "hack.ba.clickHint":
+    "I-click ang alinmang larawan para makita nang buong laki.",
+  "hack.lb.label":
+    "Screenshot, buong laki",
+  "hack.lb.close":
+    "Isara",
+  "hack.warn.title":
+    "Ang ginawa mo, at ang susunod",
+  "hack.warn.p1":
+    "Inilarawan mo ang isang app sa isang talata at nailagay mo ang gumaganang bersyon nito sa internet — may mga account, database, at moderation — sa wala pang isang oras. Iyon ang buong loop. Ang lahat pagkatapos nito ay pag-uulit lamang.",
+  "hack.warn.p2":
+    "<b>Isang tapat na babala:</b> hindi pa nasusuri ang app na ginawa nang ganito kabilis. Bago mag-imbita ng tunay na mga tao na mag-post ng tunay na prayer request, kailangang may tumingin kung sino ang makababasa at makapag-e-edit ng ano — ang mga security rule sa <code>.sql</code> file ang unang dapat suriin. <b>Ituring ang bersyon ngayon bilang gumaganang demo, hindi ligtas na tahanan para sa mga salita ng iba.</b>",
+  "hack.warn.p3":
+    "<b>Susunod:</b> ang apat-na-linggong bersyon ay malalimang tatalakay sa mga login, email, sarili mong domain, at kung paano tiyaking nananatiling pribado ang mga pribado.",
+  "hack.app.band":
+    "Appendix — lahat ng ii-install at sasalihan",
+  "hack.app.intro":
+    "Gawin lahat ng ito <b>bago</b> ang session. Dalawa o tatlong download, tatlong account, mga dalawampung minuto — pero ilang minuto bago mag-start ang Supabase project, kaya huwag ipagpabukas hanggang umaga mismo.",
+  "hack.app.install.title":
+    "I-install sa laptop mo",
+  "hack.app.install.role":
+    "Node.js, at isang AI coding tool",
+  "hack.app.node.what":
+    "Node.js — ang LTS version",
+  "hack.app.node.hint":
+    "Walang gagana kung wala ito. Kunin ang may markang <b>LTS</b>, hindi ang Current, at tanggapin ang bawat default sa installer. Para tiyakin, magbukas ng terminal at i-type ang <code>node --version</code> — kapag may lumabas na numero, tapos na.",
+  "hack.app.claude.what":
+    "Claude — desktop app",
+  "hack.app.claude.hint":
+    "Hinahayaan ka ng desktop app na gamitin ang Claude Code nang walang terminal. <b>Kailangan ng bayad na Claude plan</b> — Pro o mas mataas; walang Claude Code ang libreng plan. Kung nagbabayad ka na sa Claude, gamitin ito. Kung hindi, gamitin ang Cursor sa ibaba. Mas gusto ang terminal? <code>curl -fsSL https://claude.ai/install.sh | bash</code> sa Mac o Linux, o <code>irm https://claude.ai/install.ps1 | iex</code> sa Windows PowerShell.",
+  "hack.app.cursor.what":
+    "Cursor — AI code editor",
+  "hack.app.cursor.hint":
+    "May <b>libreng tier na sapat na para ngayon</b>, kaya ito ang kunin kung hindi ka pa nagbabayad sa Claude. I-download, i-install, at <b>mag-sign in kahit isang beses</b> bago ang session.",
+  "hack.app.either.what":
+    "Isa lang sa dalawa ang kailangan mo",
+  "hack.app.either.hint":
+    "Claude o Cursor — parehong tumatakbo ang parehong mga prompt at pareho ang paraan ng paggana. Magde-demo kami sa Cursor; kung Claude ang gamit mo, ganoon pa rin ang lahat.",
+  "hack.app.github.role":
+    "Kung saan nakatira ang code mo",
+  "hack.app.github.create.what":
+    "Gumawa ng account",
+  "hack.app.github.create.hint":
+    "Libre. Gumamit ng email na matitingnan mo habang may session — magpapadala ito ng verification code. <b>Manatiling naka-sign in sa laptop na dadalhin mo.</b>",
+  "hack.app.github.login.what":
+    "May account ka na ba?",
+  "hack.app.github.login.hint":
+    "Tiyakin lang na makakapag-sign in ka. Matagal ayusin ang nakalimutang password habang naghihintay ang buong silid.",
+  "hack.app.vercel.role":
+    "Ang naglalagay nito sa internet",
+  "hack.app.vercel.signup.what":
+    "Mag-sign up — gamit ang GitHub",
+  "hack.app.vercel.signup.hint":
+    "Piliin ang <b>Continue with GitHub</b>, hindi email. Agad nitong iniuugnay ang dalawang account, kaya makikita ng Vercel ang mga repository mo mamaya. Kunin ang libreng <b>Hobby</b> plan — hindi kailangan ng card.",
+  "hack.app.supabase.role":
+    "Ang database at mga login mo",
+  "hack.app.supabase.signup.what":
+    "Mag-sign up",
+  "hack.app.supabase.signup.hint":
+    "Pinakamabilis ang Continue with GitHub. Libreng tier, walang card.",
+  "hack.app.supabase.project.what":
+    "Pagkatapos gumawa ng project — hindi lang ng account",
+  "hack.app.supabase.project.hint":
+    "Pangalanan ito ng kahit ano. <b>I-save ang database password na hihilingin nito.</b> Piliin ang pinakamalapit na region — Singapore kung nandito ka. Ilang minuto pa bago ito mag-start, kaya hindi ito maaaring ipagpabukas hanggang sa session.",
+  "hack.app.supabase.keys.what":
+    "Kopyahin ang dalawang key mo sa notes file",
+  "hack.app.supabase.keys.hint":
+    "Kailangan mo ang <b>Project URL</b> at ang <b>anon public</b> key. Huwag pansinin ang <code>service_role</code> — nilalampasan nito ang bawat security rule at hindi para ngayon.",
+  "hack.app.supabase.email.what":
+    "I-off ang email confirmation (opsyonal)",
+  "hack.app.supabase.email.hint":
+    "I-off ang <b>Confirm email</b>. Kapag naiwang naka-on, maghihintay ka ng confirmation mail para lang makapag-sign in sa sarili mong app. I-on ito ulit bago gamitin ng tunay na mga tao.",
+  "hack.footer.handout":
+    "handout para sa kalahok",
 };

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/i18n/T";
+import { Hack2026Sheet } from "@/components/vibe-code/Hack2026Sheet";
 
 export const metadata: Metadata = {
   title: "One Hour, One Live App — #HACK 2026 | KOINA",
@@ -20,11 +21,7 @@ export default function VibeCodeHack2026Page() {
           <T k="vibe.hackBannerLink" />
         </Link>
       </div>
-      <iframe
-        title="One Hour, One Live App — Run Sheet & Cheat Sheet"
-        src="/vibe-code-hack2026.html"
-        className="min-h-[calc(100vh-140px)] w-full flex-1 border-0 bg-[#0A0D18]"
-      />
+      <Hack2026Sheet />
     </div>
   );
 }

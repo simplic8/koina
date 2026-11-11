@@ -508,6 +508,151 @@ export type MessageKey =
   | "vibe.submitting"
   | "vibe.submitFailed"
   | "vibe.submitSuccess"
+  | "hack.builtFor"
+  | "hack.eyebrow"
+  | "hack.title1"
+  | "hack.title2"
+  | "hack.standfirst"
+  | "hack.jump"
+  | "hack.tl.brief"
+  | "hack.tl.build"
+  | "hack.tl.run"
+  | "hack.tl.share"
+  | "hack.build.band"
+  | "hack.build.whatTitle"
+  | "hack.build.what1"
+  | "hack.build.what2"
+  | "hack.build.what3"
+  | "hack.build.howTitle"
+  | "hack.build.how1"
+  | "hack.build.how2"
+  | "hack.build.how3"
+  | "hack.promptsEnglish"
+  | "hack.copy"
+  | "hack.copied"
+  | "hack.copyFail"
+  | "hack.p1.label"
+  | "hack.p1.note"
+  | "hack.p2.label"
+  | "hack.p2.note"
+  | "hack.run.band"
+  | "hack.run.colStep"
+  | "hack.run.colDo"
+  | "hack.run.colWatch"
+  | "hack.run.step"
+  | "hack.run.s1.title"
+  | "hack.run.s1.body"
+  | "hack.run.s1.check"
+  | "hack.run.s2.title"
+  | "hack.run.s2.body"
+  | "hack.run.s2.check"
+  | "hack.run.s3.title"
+  | "hack.run.s3.body"
+  | "hack.run.s3.check"
+  | "hack.run.s4.title"
+  | "hack.run.s4.body"
+  | "hack.run.s4.check"
+  | "hack.run.s5.title"
+  | "hack.run.s5.body"
+  | "hack.run.s5.check"
+  | "hack.run.s6.title"
+  | "hack.run.s6.body"
+  | "hack.run.s6.check"
+  | "hack.run.s7.title"
+  | "hack.run.s7.body"
+  | "hack.run.s7.check"
+  | "hack.concepts.band"
+  | "hack.concepts.intro"
+  | "hack.concepts.yourPart"
+  | "hack.concepts.nextjs.role"
+  | "hack.concepts.nextjs.body"
+  | "hack.concepts.nextjs.yours"
+  | "hack.concepts.supabase.role"
+  | "hack.concepts.supabase.body"
+  | "hack.concepts.supabase.yours"
+  | "hack.concepts.github.role"
+  | "hack.concepts.github.body"
+  | "hack.concepts.github.yours"
+  | "hack.concepts.vercel.role"
+  | "hack.concepts.vercel.body"
+  | "hack.concepts.vercel.yours"
+  | "hack.cheat.band"
+  | "hack.pre.title"
+  | "hack.pre.lead"
+  | "hack.pre.1"
+  | "hack.pre.2"
+  | "hack.pre.3"
+  | "hack.pre.4"
+  | "hack.pre.5"
+  | "hack.pre.6"
+  | "hack.keys.title"
+  | "hack.keys.1"
+  | "hack.keys.2"
+  | "hack.keys.3"
+  | "hack.vercel.title"
+  | "hack.vercel.lead"
+  | "hack.vercel.1"
+  | "hack.vercel.2"
+  | "hack.vercel.3"
+  | "hack.vercel.4"
+  | "hack.vercel.5"
+  | "hack.vercel.6"
+  | "hack.vercel.liveUrl"
+  | "hack.bonus.title"
+  | "hack.bonus.lead"
+  | "hack.skill.install"
+  | "hack.skill.run"
+  | "hack.skill.emil"
+  | "hack.skill.impeccable"
+  | "hack.skill.taste"
+  | "hack.bonus.oneAtATime"
+  | "hack.bonus.seeLive"
+  | "hack.bonus.seeLiveTail"
+  | "hack.ba.before"
+  | "hack.ba.beforeSub"
+  | "hack.ba.after"
+  | "hack.ba.afterSub"
+  | "hack.ba.beforeLabel"
+  | "hack.ba.afterLabel"
+  | "hack.ba.beforeAlt"
+  | "hack.ba.afterAlt"
+  | "hack.ba.clickHint"
+  | "hack.lb.label"
+  | "hack.lb.close"
+  | "hack.warn.title"
+  | "hack.warn.p1"
+  | "hack.warn.p2"
+  | "hack.warn.p3"
+  | "hack.app.band"
+  | "hack.app.intro"
+  | "hack.app.install.title"
+  | "hack.app.install.role"
+  | "hack.app.node.what"
+  | "hack.app.node.hint"
+  | "hack.app.claude.what"
+  | "hack.app.claude.hint"
+  | "hack.app.cursor.what"
+  | "hack.app.cursor.hint"
+  | "hack.app.either.what"
+  | "hack.app.either.hint"
+  | "hack.app.github.role"
+  | "hack.app.github.create.what"
+  | "hack.app.github.create.hint"
+  | "hack.app.github.login.what"
+  | "hack.app.github.login.hint"
+  | "hack.app.vercel.role"
+  | "hack.app.vercel.signup.what"
+  | "hack.app.vercel.signup.hint"
+  | "hack.app.supabase.role"
+  | "hack.app.supabase.signup.what"
+  | "hack.app.supabase.signup.hint"
+  | "hack.app.supabase.project.what"
+  | "hack.app.supabase.project.hint"
+  | "hack.app.supabase.keys.what"
+  | "hack.app.supabase.keys.hint"
+  | "hack.app.supabase.email.what"
+  | "hack.app.supabase.email.hint"
+  | "hack.footer.handout"
   | "settings.avatarTitle"
   | "settings.avatarHint"
   | "settings.upload"
@@ -1145,6 +1290,296 @@ const en: Dictionary = {
   "vibe.submitFailed": "Could not submit registration.",
   "vibe.submitSuccess":
     "Registration received. Check your email for a confirmation — we’ll get back to you soon.",
+  "hack.builtFor":
+    "Built for",
+  "hack.eyebrow":
+    "KOINA.SPACE · 60-minute workshop · Your run sheet",
+  "hack.title1":
+    "One hour.",
+  "hack.title2":
+    "One <em>live</em> app.",
+  "hack.standfirst":
+    "One prompt, one real app — logins, posts, upvotes and an admin view — live on the internet by the end of the hour. It's tight, so <b>do the pre-work before you sit down.</b>",
+  "hack.jump":
+    "Pre-work & setup links",
+  "hack.tl.brief":
+    "brief",
+  "hack.tl.build":
+    "build",
+  "hack.tl.run":
+    "run it",
+  "hack.tl.share":
+    "share",
+  "hack.build.band":
+    "What we're building, and the two prompts that build it",
+  "hack.build.whatTitle":
+    "What we're building today",
+  "hack.build.what1":
+    "Everyone builds the same app, so the hour stays on the rails: a <b>prayer wall</b> where people sign in, post a request, upvote the ones they've prayed for, comment, and report anything off — with an admin view to act on those reports.",
+  "hack.build.what2":
+    "Look at how Prompt 1 is written. It names <b>who signs in, what they can do, and what the admin sees.</b> That level of detail is why it produces a working app instead of a vague one — and it's the habit to copy when you write your own.",
+  "hack.build.what3":
+    "<b>Your own idea comes next time.</b> Write it in the same shape: who it's for, what they can do, what gets kept.",
+  "hack.build.howTitle":
+    "How to use these two prompts",
+  "hack.build.how1":
+    "<b>Prompt 1</b> builds the whole app. Paste it, then leave it alone while it works — it installs a lot.",
+  "hack.build.how2":
+    "<b>Prompt 2</b> puts it on the internet, once the app runs on your own machine.",
+  "hack.build.how3":
+    "Between the two you do the part the AI can't: run its <code>.sql</code> file in Supabase and paste in your real keys. The steps below say when.",
+  "hack.promptsEnglish":
+    "The prompts below stay in English — copy and paste them into your AI tool exactly as written.",
+  "hack.copy":
+    "Copy",
+  "hack.copied":
+    "Copied",
+  "hack.copyFail":
+    "Select & copy",
+  "hack.p1.label":
+    "Prompt 1 · Step 2 — build the whole thing",
+  "hack.p1.note":
+    "<b>Two things to do while it builds.</b> It writes <code>.env.local</code> with the key <i>names</i> but it cannot know your actual keys — paste those in yourself from Supabase → Project Settings → API, then restart the server. And when it finishes the <code>.sql</code> file, open it, copy all of it into Supabase → SQL Editor → Run. The app won't work until both are done.",
+  "hack.p2.label":
+    "Prompt 2 · Step 5 — push and deploy",
+  "hack.p2.note":
+    "<b>It will stop and ask you things</b> — to sign in to GitHub or Vercel, to name the repo, to approve a command. Answer each one and let it carry on. If it can't finish the Vercel part itself, do those steps in your browser — they're on the cheat sheet further down.",
+  "hack.run.band":
+    "Step by step",
+  "hack.run.colStep":
+    "Step",
+  "hack.run.colDo":
+    "What you do",
+  "hack.run.colWatch":
+    "What happens · what you watch for",
+  "hack.run.step":
+    "Step {n}",
+  "hack.run.s1.title":
+    "Read the brief",
+  "hack.run.s1.body":
+    "Everyone builds the same app, so nobody debugs a one-off idea under time pressure. Read Prompt 1 and notice <b>how specific it is</b> — who logs in, what they can do, what the admin sees. That detail is why it produces a working app instead of a vague one.",
+  "hack.run.s1.check":
+    "You can say what the app does. Cursor open, terminal visible, Supabase keys to hand.",
+  "hack.run.s2.title":
+    "Build it — Prompt 1",
+  "hack.run.s2.body":
+    "<b>Next.js builds everything people see and touch</b> — pages, forms, buttons — and the AI writes all of it. Paste Prompt 1 and leave it alone while it installs and writes; interrupting it is how you end up with half an app.",
+  "hack.run.s2.check":
+    "Checkpoint 1 — it finishes, and your project has a <code>.sql</code> file and a <code>.env.local</code>.",
+  "hack.run.s3.title":
+    "Run it",
+  "hack.run.s3.body":
+    "Generated code is just files until it's installed and started. <code>npm install</code> fetches what it needs — usually the AI has already done this — and <code>npm run dev</code> starts it.",
+  "hack.run.s3.check":
+    "Checkpoint 2 — a page loads at localhost:3000, even if logging in doesn't work yet.",
+  "hack.run.s4.title":
+    "Connect Supabase",
+  "hack.run.s4.body":
+    "<b>Supabase holds your database and handles logins</b> — but it needs two things only you can give it. <b>1.</b> Your <b>Project URL</b> and <b>anon key</b> pasted into <code>.env.local</code>, so the app can find your database. <b>2.</b> The AI's <code>.sql</code> file (often in <code>/supabase</code>) copied into Supabase → SQL Editor → Run, which creates the tables. Restart the server after.",
+  "hack.run.s4.check":
+    "Checkpoint 3 — you've signed up, posted, and can see your row in Supabase's Table Editor.",
+  "hack.run.s5.title":
+    "Push to GitHub — Prompt 2",
+  "hack.run.s5.body":
+    "<b>GitHub is the one central copy of your code,</b> and your version history — a mistake becomes something you walk back from, not something you lose. The AI automates this through GitHub's command line tool, but <b>only you can sign in</b>, so answer its prompts as they come.",
+  "hack.run.s5.check":
+    "Checkpoint 4 — your code is visible in a repo on github.com.",
+  "hack.run.s6.title":
+    "Deploy on Vercel",
+  "hack.run.s6.body":
+    "<b>Vercel serves your GitHub code from a real web server,</b> so it has an address anyone can open — and redeploys on every push from now on. Same pattern: the AI drives it, you sign in. <b>Add your keys here too</b> under Environment Variables, then redeploy; <code>.env.local</code> never left your laptop.",
+  "hack.run.s6.check":
+    "Checkpoint 5 — your live URL is in the chat and someone else has posted on it.",
+  "hack.run.s7.title":
+    "Share & close",
+  "hack.run.s7.body":
+    "A couple of URLs go up on the shared screen, the room posts and upvotes on someone's wall, and you watch the rows land in Supabase live. You've put something on the internet that collects real information from real people — that's the whole loop.",
+  "hack.run.s7.check":
+    "Send your URL to one person outside the room before you close the laptop.",
+  "hack.concepts.band":
+    "Key concepts — what each piece is doing",
+  "hack.concepts.intro":
+    "Four tools, one pattern: <b>the AI writes and automates; you install, paste and sign in.</b> Every piece below has a part it does for you and a part only you can do.",
+  "hack.concepts.yourPart":
+    "Your part",
+  "hack.concepts.nextjs.role":
+    "The app people see and use",
+  "hack.concepts.nextjs.body":
+    "Next.js and its component libraries handle the whole user interface — the pages, the forms, the buttons, what happens when someone clicks. Once Claude or Cursor has generated the code, there is nothing to design or wire by hand.",
+  "hack.concepts.nextjs.yours":
+    "Install it with <code>npm install</code> — usually the AI has already done this for you — then run <code>npm run dev</code> to see it in your browser.",
+  "hack.concepts.supabase.role":
+    "The database and the logins",
+  "hack.concepts.supabase.body":
+    "Supabase provides the ready-made functions your app calls: signing people in, saving a post, reading them back. It hosts the database too, so nothing lives on your laptop.",
+  "hack.concepts.supabase.yours":
+    "Two things. Paste your <b>Project URL</b> and <b>API key</b> (the anon one) into <code>.env.local</code> so the app can find your database. Then open the <code>.sql</code> file the AI generated — usually in a <code>/supabase</code> folder — and copy, paste and run it in Supabase yourself. <b>The AI cannot run it for you.</b>",
+  "hack.concepts.github.role":
+    "Where the code lives",
+  "hack.concepts.github.body":
+    "All your code is committed to GitHub as the one central copy. That is what gives you version control — every change is recorded, so a mistake is something you can walk back from rather than lose work to.",
+  "hack.concepts.github.yours":
+    "Sign in first. The AI can then automate the rest through the GitHub command line tool (the CLI), but it cannot log in as you.",
+  "hack.concepts.vercel.role":
+    "What puts it on the internet",
+  "hack.concepts.vercel.body":
+    "Vercel takes the code from your GitHub repository and serves it from a real web server, so your app has an address anyone can open. After the first setup, every push to GitHub redeploys it automatically.",
+  "hack.concepts.vercel.yours":
+    "Sign in first, here too. The AI can drive the Vercel CLI once you have — and remember your keys need adding in Vercel separately, since <code>.env.local</code> never leaves your laptop.",
+  "hack.cheat.band":
+    "Your cheat sheet — pre-work, keys and deployment",
+  "hack.pre.title":
+    "Before you arrive — all of it",
+  "hack.pre.lead":
+    "Every link is in the appendix at the end.",
+  "hack.pre.1":
+    "<b>Node.js installed</b> — the LTS version from nodejs.org",
+  "hack.pre.2":
+    "<b>Cursor installed</b> and signed in at least once",
+  "hack.pre.3":
+    "<b>GitHub account</b>, signed in on this laptop",
+  "hack.pre.4":
+    "<b>Vercel account</b> — sign up <b>with GitHub</b>",
+  "hack.pre.5":
+    "<b>Supabase project created</b> — the project itself, not just the account. It takes a few minutes to start up, so do not leave this to the day.",
+  "hack.pre.6":
+    "<b>Keys copied into a notes file:</b> Project Settings → API → the <b>Project URL</b> and the <b>anon public</b> key",
+  "hack.keys.title":
+    "Manage and Protect Your Keys — in two places",
+  "hack.keys.1":
+    "<b>On your laptop:</b> make a file called <code>.env.local</code> in the project folder with two lines — <code>NEXT_PUBLIC_SUPABASE_URL=</code> and <code>NEXT_PUBLIC_SUPABASE_ANON_KEY=</code> — then <b>restart the server</b>. Keys only load when it starts.",
+  "hack.keys.2":
+    "<b>In Vercel:</b> the same two lines go in Settings → Environment Variables before you deploy. <code>.env.local</code> never leaves your laptop, so Vercel cannot see it.",
+  "hack.keys.3":
+    "The <b>anon key is meant to be public</b> — it is safe in a browser. The <i>service_role</i> key on that same Supabase page is not. Don't touch it today.",
+  "hack.vercel.title":
+    "If it can't do the Vercel part",
+  "hack.vercel.lead":
+    "Prompt 2 will try. If it gets stuck or asks you to, do it yourself — it's five clicks.",
+  "hack.vercel.1":
+    "Go to <b>vercel.com</b> → Add New → Project",
+  "hack.vercel.2":
+    "Pick the repo it just pushed → <b>Import</b>",
+  "hack.vercel.3":
+    "<b>Add your two keys</b> under Environment Variables, before deploying",
+  "hack.vercel.4":
+    "Click <b>Deploy</b> and watch it build (about a minute)",
+  "hack.vercel.5":
+    "Open the link, sign up, post something. <b>That is your app, live, with real accounts and real data.</b>",
+  "hack.vercel.6":
+    "Every push to GitHub redeploys it automatically from now on",
+  "hack.vercel.liveUrl":
+    "My live URL",
+  "hack.bonus.title":
+    "Bonus — make it look like you meant it",
+  "hack.bonus.lead":
+    "Only once your site is live. Install from your project folder, then reload Cursor.",
+  "hack.skill.install":
+    "Install",
+  "hack.skill.run":
+    "Run",
+  "hack.skill.emil":
+    "UI polish and animation judgement from a design engineer who worked at Vercel and Linear. Fixes the small timing and spacing choices an agent gets wrong on its own.",
+  "hack.skill.impeccable":
+    "Gives you and the agent a shared design vocabulary. <code>init</code> asks who the site is for and writes it down; <code>polish</code> then cleans up what you already built.",
+  "hack.skill.taste":
+    "Anti-slop rules for landing pages. The agent reads your brief and picks a direction instead of reaching for the same template every time.",
+  "hack.bonus.oneAtATime":
+    "<b>One at a time, then look.</b> Run a skill, check the browser, push. Three in a row and you won't know which one did what — and you can always undo a push.",
+  "hack.bonus.seeLive":
+    "See it live:",
+  "hack.bonus.seeLiveTail":
+    "— the finished prayer wall from these screenshots.",
+  "hack.ba.before":
+    "Before",
+  "hack.ba.beforeSub":
+    "straight out of Prompt 1",
+  "hack.ba.after":
+    "After /taste",
+  "hack.ba.afterSub":
+    "one command later",
+  "hack.ba.beforeLabel":
+    "Before /taste — straight out of Prompt 1",
+  "hack.ba.afterLabel":
+    "After /taste — one command later",
+  "hack.ba.beforeAlt":
+    "The prayer wall before running the taste skill: plain layout, emoji logo, sort control on the left, no call to action.",
+  "hack.ba.afterAlt":
+    "The same prayer wall after running the taste skill: custom dove mark, a prominent Share a prayer request button, a stats line, and the sort control moved right.",
+  "hack.ba.clickHint":
+    "Click either shot to see it full size.",
+  "hack.lb.label":
+    "Screenshot, full size",
+  "hack.lb.close":
+    "Close",
+  "hack.warn.title":
+    "What you did, and what comes next",
+  "hack.warn.p1":
+    "You described an app in a paragraph and put a working version of it on the internet — with accounts, a database, and moderation — in under an hour. That is the whole loop. Everything after this is more of the same.",
+  "hack.warn.p2":
+    "<b>One honest caveat:</b> an app built this fast has not been checked. Before you invite real people to post real prayer requests, someone needs to look at who can read and edit what — the security rules in that <code>.sql</code> file are the thing to check first. <b>Treat today's version as a working demo, not a safe home for other people's words.</b>",
+  "hack.warn.p3":
+    "<b>Next:</b> the four-week version goes properly into logins, email, your own domain, and how to check that the private things stay private.",
+  "hack.app.band":
+    "Appendix — everything to install and sign up for",
+  "hack.app.intro":
+    "Do all of this <b>before</b> the session. Two or three downloads, three accounts, about twenty minutes — but the Supabase project takes a few minutes to start up on its own, so don't leave it to the morning of.",
+  "hack.app.install.title":
+    "Install on your laptop",
+  "hack.app.install.role":
+    "Node.js, plus one AI coding tool",
+  "hack.app.node.what":
+    "Node.js — the LTS version",
+  "hack.app.node.hint":
+    "Nothing else works without this. Take the one marked <b>LTS</b>, not Current, and accept every default in the installer. To check it worked, open a terminal and type <code>node --version</code> — a number means you're done.",
+  "hack.app.claude.what":
+    "Claude — desktop app",
+  "hack.app.claude.hint":
+    "The desktop app lets you use Claude Code without the terminal. <b>Needs a paid Claude plan</b> — Pro or above; the free plan doesn't include Claude Code. If you already pay for Claude, use this. If not, use Cursor below. Prefer the terminal? <code>curl -fsSL https://claude.ai/install.sh | bash</code> on Mac or Linux, or <code>irm https://claude.ai/install.ps1 | iex</code> in Windows PowerShell.",
+  "hack.app.cursor.what":
+    "Cursor — AI code editor",
+  "hack.app.cursor.hint":
+    "Has a <b>free tier that's plenty for today</b>, so this is the one to get if you're not already paying for Claude. Download, install, and <b>sign in at least once</b> before the session.",
+  "hack.app.either.what":
+    "You only need one of the two",
+  "hack.app.either.hint":
+    "Claude or Cursor — both run the same prompts and work the same way. We'll demo in Cursor; if you're on Claude, everything still applies.",
+  "hack.app.github.role":
+    "Where your code lives",
+  "hack.app.github.create.what":
+    "Create an account",
+  "hack.app.github.create.hint":
+    "Free. Use an email you can check during the session — it sends a verification code. <b>Stay signed in on the laptop you're bringing.</b>",
+  "hack.app.github.login.what":
+    "Already have one?",
+  "hack.app.github.login.hint":
+    "Just confirm you can sign in. A forgotten password is a slow thing to fix with a room waiting.",
+  "hack.app.vercel.role":
+    "What puts it on the internet",
+  "hack.app.vercel.signup.what":
+    "Sign up — with GitHub",
+  "hack.app.vercel.signup.hint":
+    "Choose <b>Continue with GitHub</b>, not email. It links the two accounts straight away, which is what lets Vercel see your repositories later. Take the free <b>Hobby</b> plan — no card needed.",
+  "hack.app.supabase.role":
+    "Your database and logins",
+  "hack.app.supabase.signup.what":
+    "Sign up",
+  "hack.app.supabase.signup.hint":
+    "Continue with GitHub is quickest. Free tier, no card.",
+  "hack.app.supabase.project.what":
+    "Then create a project — not just the account",
+  "hack.app.supabase.project.hint":
+    "Name it anything. <b>Save the database password it asks you to set.</b> Pick the region nearest you — Singapore if you're here. It then takes a few minutes to start up, which is why this can't wait until the session.",
+  "hack.app.supabase.keys.what":
+    "Copy your two keys into a notes file",
+  "hack.app.supabase.keys.hint":
+    "You need the <b>Project URL</b> and the <b>anon public</b> key. Ignore <code>service_role</code> — that one bypasses every security rule and is not for today.",
+  "hack.app.supabase.email.what":
+    "Turn off email confirmations (optional)",
+  "hack.app.supabase.email.hint":
+    "Switch off <b>Confirm email</b>. Leave it on and you'll sit waiting for a confirmation mail just to sign into your own app. Turn it back on before real people use it.",
+  "hack.footer.handout":
+    "participant handout",
   "settings.avatarTitle": "Profile picture",
   "settings.avatarHint": "JPEG, PNG, WebP, or GIF up to 2MB.",
   "settings.upload": "Upload",

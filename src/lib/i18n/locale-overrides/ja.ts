@@ -468,4 +468,294 @@ export const jaOverrides: Partial<Record<MessageKey, string>> = {
   "createSession.errCreate": "セッションを作成できませんでした。",
   "createSession.cancel": "キャンセル",
   "createSession.creating": "作成中…",
+  "hack.builtFor":
+    "対象イベント",
+  "hack.eyebrow":
+    "KOINA.SPACE · 60分ワークショップ · あなたの進行シート",
+  "hack.title1":
+    "1時間で、",
+  "hack.title2":
+    "<em>公開</em>アプリを1つ。",
+  "hack.standfirst":
+    "プロンプト1つで、ログイン・投稿・アップボート・管理画面を備えた本物のアプリを、1時間以内にインターネット上で公開します。時間はタイトなので、<b>席に着く前に事前準備を済ませてください。</b>",
+  "hack.jump":
+    "事前準備とセットアップリンク",
+  "hack.tl.brief":
+    "概要",
+  "hack.tl.build":
+    "構築",
+  "hack.tl.run":
+    "実行",
+  "hack.tl.share":
+    "共有",
+  "hack.build.band":
+    "今日つくるものと、それをつくる2つのプロンプト",
+  "hack.build.whatTitle":
+    "今日つくるもの",
+  "hack.build.what1":
+    "全員が同じアプリをつくるので、1時間が脱線しません。<b>祈りの壁（Prayer Wall）</b>です。ログインして祈りのリクエストを投稿し、祈ったものにアップボートし、コメントし、問題のある投稿を報告できます。報告に対応する管理画面もあります。",
+  "hack.build.what2":
+    "プロンプト1の書き方に注目してください。<b>誰がログインし、何ができ、管理者に何が見えるか</b>を具体的に書いています。この詳細さが、曖昧ではなく動くアプリを生み出す理由であり、自分のアイデアを書くときにも真似したい習慣です。",
+  "hack.build.what3":
+    "<b>自分のアイデアは次回です。</b>同じ形で書きましょう。誰のためか、何ができるか、何を保存するか。",
+  "hack.build.howTitle":
+    "2つのプロンプトの使い方",
+  "hack.build.how1":
+    "<b>プロンプト1</b>でアプリ全体をつくります。貼り付けたら、動いている間は触らずに待ちましょう。多くのものをインストールします。",
+  "hack.build.how2":
+    "<b>プロンプト2</b>は、アプリが自分のマシンで動いたあと、インターネットに公開します。",
+  "hack.build.how3":
+    "2つの間に、AIにできない作業をあなたが行います。Supabaseで<code>.sql</code>ファイルを実行し、本物のキーを貼り付けます。タイミングは下の手順に書かれています。",
+  "hack.promptsEnglish":
+    "以下のプロンプトは英語のままです。AIツールにそのままコピー＆ペーストしてください。",
+  "hack.copy":
+    "コピー",
+  "hack.copied":
+    "コピーしました",
+  "hack.copyFail":
+    "選択してコピー",
+  "hack.p1.label":
+    "プロンプト1 · ステップ2 — 全体を構築",
+  "hack.p1.note":
+    "<b>構築中にやることが2つあります。</b>AIは<code>.env.local</code>にキーの<i>名前</i>を書きますが、実際のキーは知りません。Supabase → Project Settings → API から自分で貼り付け、サーバーを再起動してください。また<code>.sql</code>ファイルが完成したら、開いて全文をSupabase → SQL Editor → Run にコピーします。両方終わるまでアプリは動きません。",
+  "hack.p2.label":
+    "プロンプト2 · ステップ5 — プッシュしてデプロイ",
+  "hack.p2.note":
+    "<b>途中で止まって質問されます。</b>GitHubやVercelへのログイン、リポジトリ名、コマンドの承認などです。一つずつ答えて続行させてください。AIがVercelの部分を完了できない場合は、ブラウザで手順を行います。下のチートシートにあります。",
+  "hack.run.band":
+    "ステップバイステップ",
+  "hack.run.colStep":
+    "ステップ",
+  "hack.run.colDo":
+    "やること",
+  "hack.run.colWatch":
+    "起こること · 注意点",
+  "hack.run.step":
+    "ステップ {n}",
+  "hack.run.s1.title":
+    "概要を読む",
+  "hack.run.s1.body":
+    "全員が同じアプリをつくるので、時間のない中で独自のアイデアをデバッグする人はいません。プロンプト1を読み、<b>どれだけ具体的か</b>に注目してください。誰がログインし、何ができ、管理者に何が見えるか。この詳細さが、曖昧ではなく動くアプリを生みます。",
+  "hack.run.s1.check":
+    "アプリが何をするか説明できる。Cursorを開き、ターミナルが見え、Supabaseのキーが手元にある。",
+  "hack.run.s2.title":
+    "構築 — プロンプト1",
+  "hack.run.s2.body":
+    "<b>Next.jsは、ユーザーが見て触れるものすべて</b>（ページ、フォーム、ボタン）を構築し、AIがそのすべてを書きます。プロンプト1を貼り付け、インストールと記述の間は触らないでください。中断すると中途半端なアプリになります。",
+  "hack.run.s2.check":
+    "チェックポイント1 — 完了し、プロジェクトに<code>.sql</code>ファイルと<code>.env.local</code>がある。",
+  "hack.run.s3.title":
+    "実行する",
+  "hack.run.s3.body":
+    "生成されたコードは、インストールして起動するまではただのファイルです。<code>npm install</code>で必要なものを取得し（通常はAIが済ませています）、<code>npm run dev</code>で起動します。",
+  "hack.run.s3.check":
+    "チェックポイント2 — ログインがまだ動かなくても、localhost:3000でページが表示される。",
+  "hack.run.s4.title":
+    "Supabaseに接続",
+  "hack.run.s4.body":
+    "<b>Supabaseはデータベースを保持し、ログインを処理します</b>が、あなたにしか渡せないものが2つ必要です。<b>1.</b> <b>Project URL</b>と<b>anonキー</b>を<code>.env.local</code>に貼り付け、アプリがデータベースを見つけられるようにします。<b>2.</b> AIが作った<code>.sql</code>ファイル（多くは<code>/supabase</code>内）をSupabase → SQL Editor → Run にコピーしてテーブルを作成します。その後サーバーを再起動します。",
+  "hack.run.s4.check":
+    "チェックポイント3 — サインアップして投稿し、SupabaseのTable Editorで自分の行が見える。",
+  "hack.run.s5.title":
+    "GitHubにプッシュ — プロンプト2",
+  "hack.run.s5.body":
+    "<b>GitHubはコードの唯一の中央コピー</b>であり、バージョン履歴です。ミスは失うものではなく、戻れるものになります。AIはGitHubのコマンドラインツールで自動化しますが、<b>ログインできるのはあなただけ</b>なので、質問が来たら答えてください。",
+  "hack.run.s5.check":
+    "チェックポイント4 — github.comのリポジトリにコードが表示されている。",
+  "hack.run.s6.title":
+    "Vercelにデプロイ",
+  "hack.run.s6.body":
+    "<b>VercelはGitHubのコードを本物のWebサーバーから配信する</b>ので、誰でも開けるアドレスができ、以後プッシュのたびに再デプロイされます。同じパターンで、AIが操作し、あなたがログインします。<b>ここにもキーを追加</b>してください（Environment Variables）。その後再デプロイします。<code>.env.local</code>はノートPCの外に出ていません。",
+  "hack.run.s6.check":
+    "チェックポイント5 — 公開URLがチャットにあり、他の誰かがそこに投稿している。",
+  "hack.run.s7.title":
+    "共有して終了",
+  "hack.run.s7.body":
+    "いくつかのURLが共有画面に映され、会場の全員が誰かのウォールに投稿やアップボートをし、Supabaseに行が届く様子をライブで見ます。実際の人から実際の情報を集めるものをインターネット上に公開した——これが一連の流れのすべてです。",
+  "hack.run.s7.check":
+    "ノートPCを閉じる前に、会場の外の誰か1人にURLを送りましょう。",
+  "hack.concepts.band":
+    "重要な概念 — それぞれの役割",
+  "hack.concepts.intro":
+    "4つのツール、1つのパターン：<b>AIが書いて自動化し、あなたはインストール・貼り付け・ログインを行います。</b>以下の各要素には、AIがやってくれる部分と、あなたにしかできない部分があります。",
+  "hack.concepts.yourPart":
+    "あなたの担当",
+  "hack.concepts.nextjs.role":
+    "ユーザーが見て使うアプリ",
+  "hack.concepts.nextjs.body":
+    "Next.jsとそのコンポーネントライブラリが、ページ、フォーム、ボタン、クリック時の動作など、ユーザーインターフェース全体を担当します。ClaudeやCursorがコードを生成したら、手作業でデザインや配線をする必要はありません。",
+  "hack.concepts.nextjs.yours":
+    "<code>npm install</code>でインストールします（通常はAIが済ませています）。その後<code>npm run dev</code>を実行して、ブラウザで確認します。",
+  "hack.concepts.supabase.role":
+    "データベースとログイン",
+  "hack.concepts.supabase.body":
+    "Supabaseは、アプリが呼び出す既製の関数（ログイン、投稿の保存、読み出し）を提供します。データベースもホストするので、ノートPCには何も保存されません。",
+  "hack.concepts.supabase.yours":
+    "2つあります。<b>Project URL</b>と<b>APIキー</b>（anon）を<code>.env.local</code>に貼り付けて、アプリがデータベースを見つけられるようにします。次にAIが生成した<code>.sql</code>ファイル（通常は<code>/supabase</code>フォルダ内）を開き、自分でSupabaseにコピー・貼り付け・実行します。<b>AIが代わりに実行することはできません。</b>",
+  "hack.concepts.github.role":
+    "コードの保管場所",
+  "hack.concepts.github.body":
+    "すべてのコードは唯一の中央コピーとしてGitHubにコミットされます。これがバージョン管理で、すべての変更が記録されるため、ミスは作業を失うのではなく、戻れるものになります。",
+  "hack.concepts.github.yours":
+    "まずログインします。残りはGitHubのコマンドラインツール（CLI）でAIが自動化できますが、あなたとしてログインすることはできません。",
+  "hack.concepts.vercel.role":
+    "インターネットに公開する仕組み",
+  "hack.concepts.vercel.body":
+    "VercelはGitHubリポジトリのコードを取得し、本物のWebサーバーから配信するので、アプリには誰でも開けるアドレスができます。初回設定後は、GitHubへのプッシュのたびに自動で再デプロイされます。",
+  "hack.concepts.vercel.yours":
+    "ここでも先にログインします。ログイン後はAIがVercel CLIを操作できます。キーはVercelにも別途追加が必要です。<code>.env.local</code>はノートPCの外に出ないためです。",
+  "hack.cheat.band":
+    "チートシート — 事前準備、キー、デプロイ",
+  "hack.pre.title":
+    "来場前にやること — すべて",
+  "hack.pre.lead":
+    "すべてのリンクは末尾の付録にあります。",
+  "hack.pre.1":
+    "<b>Node.jsをインストール</b> — nodejs.orgのLTS版",
+  "hack.pre.2":
+    "<b>Cursorをインストール</b>し、少なくとも一度ログイン",
+  "hack.pre.3":
+    "<b>GitHubアカウント</b>を作成し、このノートPCでログイン済み",
+  "hack.pre.4":
+    "<b>Vercelアカウント</b> — <b>GitHubで</b>登録",
+  "hack.pre.5":
+    "<b>Supabaseプロジェクトを作成</b> — アカウントだけでなくプロジェクト自体。起動に数分かかるので、当日まで待たないでください。",
+  "hack.pre.6":
+    "<b>キーをメモに保存：</b>Project Settings → API → <b>Project URL</b>と<b>anon public</b>キー",
+  "hack.keys.title":
+    "キーの管理と保護 — 2か所で",
+  "hack.keys.1":
+    "<b>ノートPC上：</b>プロジェクトフォルダに<code>.env.local</code>というファイルを作り、2行（<code>NEXT_PUBLIC_SUPABASE_URL=</code>と<code>NEXT_PUBLIC_SUPABASE_ANON_KEY=</code>）を書き、<b>サーバーを再起動</b>します。キーは起動時にのみ読み込まれます。",
+  "hack.keys.2":
+    "<b>Vercel上：</b>デプロイ前に、同じ2行をSettings → Environment Variablesに入力します。<code>.env.local</code>はノートPCの外に出ないため、Vercelからは見えません。",
+  "hack.keys.3":
+    "<b>anonキーは公開前提</b>で、ブラウザで使っても安全です。同じSupabaseページにある<i>service_role</i>キーは違います。今日は触らないでください。",
+  "hack.vercel.title":
+    "AIがVercelの部分をできない場合",
+  "hack.vercel.lead":
+    "プロンプト2が試みます。行き詰まったり、頼まれたりしたら自分で行いましょう。5クリックです。",
+  "hack.vercel.1":
+    "<b>vercel.com</b>へ → Add New → Project",
+  "hack.vercel.2":
+    "プッシュされたリポジトリを選択 → <b>Import</b>",
+  "hack.vercel.3":
+    "デプロイ前に、Environment Variablesに<b>2つのキーを追加</b>",
+  "hack.vercel.4":
+    "<b>Deploy</b>をクリックしてビルドを見守る（約1分）",
+  "hack.vercel.5":
+    "リンクを開いて、サインアップし、何か投稿します。<b>これがあなたの公開アプリで、本物のアカウントと本物のデータがあります。</b>",
+  "hack.vercel.6":
+    "以後、GitHubへのプッシュのたびに自動で再デプロイされます",
+  "hack.vercel.liveUrl":
+    "私の公開URL",
+  "hack.bonus.title":
+    "ボーナス — 意図してつくったように見せる",
+  "hack.bonus.lead":
+    "サイトが公開されてからにしてください。プロジェクトフォルダからインストールし、Cursorを再読み込みします。",
+  "hack.skill.install":
+    "インストール",
+  "hack.skill.run":
+    "実行",
+  "hack.skill.emil":
+    "VercelやLinearで働いたデザインエンジニアによる、UIの仕上げとアニメーションの判断。エージェントだけでは間違えがちな、細かなタイミングや余白の選択を直します。",
+  "hack.skill.impeccable":
+    "あなたとエージェントに共通のデザイン用語を与えます。<code>init</code>はサイトの対象者を尋ねて記録し、<code>polish</code>は既につくったものを整えます。",
+  "hack.skill.taste":
+    "ランディングページのための「ありきたり排除」ルール。エージェントはブリーフを読み、毎回同じテンプレートに頼らず方向性を選びます。",
+  "hack.bonus.oneAtATime":
+    "<b>1つずつ実行して確認。</b>スキルを実行し、ブラウザを確認し、プッシュします。3つ連続で実行すると何が何をしたか分からなくなります。プッシュはいつでも元に戻せます。",
+  "hack.bonus.seeLive":
+    "公開版を見る：",
+  "hack.bonus.seeLiveTail":
+    "— これらのスクリーンショットの完成版の祈りの壁です。",
+  "hack.ba.before":
+    "Before",
+  "hack.ba.beforeSub":
+    "プロンプト1の直後",
+  "hack.ba.after":
+    "After /taste",
+  "hack.ba.afterSub":
+    "コマンド1つのあと",
+  "hack.ba.beforeLabel":
+    "/taste の前 — プロンプト1の直後",
+  "hack.ba.afterLabel":
+    "/taste の後 — コマンド1つのあと",
+  "hack.ba.beforeAlt":
+    "tasteスキル実行前の祈りの壁：シンプルなレイアウト、絵文字のロゴ、左側の並べ替え、行動喚起なし。",
+  "hack.ba.afterAlt":
+    "tasteスキル実行後の同じ祈りの壁：オリジナルの鳩のマーク、目立つ「祈りのリクエストを共有」ボタン、統計行、右に移動した並べ替え。",
+  "hack.ba.clickHint":
+    "どちらかの画像をクリックすると拡大表示します。",
+  "hack.lb.label":
+    "スクリーンショット（拡大表示）",
+  "hack.lb.close":
+    "閉じる",
+  "hack.warn.title":
+    "あなたがやったこと、そして次は",
+  "hack.warn.p1":
+    "あなたは1段落でアプリを説明し、アカウント、データベース、モデレーションを備えた動くバージョンを、1時間足らずでインターネットに公開しました。これが一連の流れのすべてで、これ以降はその繰り返しです。",
+  "hack.warn.p2":
+    "<b>正直な注意点：</b>これほど速く作ったアプリは検証されていません。本物の人に本物の祈りのリクエストを投稿してもらう前に、誰が何を読み書きできるかを確認する必要があります。まず確認すべきは<code>.sql</code>ファイル内のセキュリティルールです。<b>今日のバージョンは動くデモであり、他の人の言葉を預ける安全な場所ではありません。</b>",
+  "hack.warn.p3":
+    "<b>次回：</b>4週間版では、ログイン、メール、独自ドメイン、非公開の情報が非公開のままであることの確認方法まで、しっかり取り組みます。",
+  "hack.app.band":
+    "付録 — インストールと登録がすべて必要なもの",
+  "hack.app.intro":
+    "これらはすべてセッションの<b>前に</b>行ってください。ダウンロードが2〜3個、アカウントが3つ、約20分。ただしSupabaseプロジェクトは起動に数分かかるので、当日の朝まで残さないでください。",
+  "hack.app.install.title":
+    "ノートPCにインストール",
+  "hack.app.install.role":
+    "Node.jsと、AIコーディングツール1つ",
+  "hack.app.node.what":
+    "Node.js — LTS版",
+  "hack.app.node.hint":
+    "これがないと他は動きません。Currentではなく<b>LTS</b>と書かれたものを選び、インストーラーの設定はすべてデフォルトで進めます。確認するには、ターミナルを開いて<code>node --version</code>と入力します。数字が表示されれば完了です。",
+  "hack.app.claude.what":
+    "Claude — デスクトップアプリ",
+  "hack.app.claude.hint":
+    "デスクトップアプリなら、ターミナルなしでClaude Codeを使えます。<b>Claudeの有料プランが必要</b>です（Pro以上。無料プランにClaude Codeは含まれません）。すでにClaudeに支払っているならこちら、そうでなければ下のCursorを使ってください。ターミナル派の方は、MacまたはLinuxでは<code>curl -fsSL https://claude.ai/install.sh | bash</code>、WindowsのPowerShellでは<code>irm https://claude.ai/install.ps1 | iex</code>。",
+  "hack.app.cursor.what":
+    "Cursor — AIコードエディタ",
+  "hack.app.cursor.hint":
+    "<b>今日には十分な無料枠</b>があるので、Claudeに支払っていない方はこちらを入手してください。ダウンロード、インストールし、セッション前に<b>少なくとも一度ログイン</b>しておきます。",
+  "hack.app.either.what":
+    "どちらか一方だけで大丈夫です",
+  "hack.app.either.hint":
+    "ClaudeでもCursorでも、同じプロンプトが動き、使い方も同じです。デモはCursorで行いますが、Claudeをお使いの場合もすべて当てはまります。",
+  "hack.app.github.role":
+    "コードの保管場所",
+  "hack.app.github.create.what":
+    "アカウントを作成",
+  "hack.app.github.create.hint":
+    "無料。セッション中に確認できるメールアドレスを使ってください。認証コードが送られます。<b>持参するノートPCでログインしたままにしておきます。</b>",
+  "hack.app.github.login.what":
+    "すでにお持ちですか？",
+  "hack.app.github.login.hint":
+    "ログインできることを確認するだけです。会場が待っている中でパスワードを忘れると、解決に時間がかかります。",
+  "hack.app.vercel.role":
+    "インターネットに公開する仕組み",
+  "hack.app.vercel.signup.what":
+    "登録 — GitHubで",
+  "hack.app.vercel.signup.hint":
+    "メールではなく<b>Continue with GitHub</b>を選びます。2つのアカウントがすぐに連携され、後でVercelがリポジトリを見られるようになります。無料の<b>Hobby</b>プランを選択します（カード不要）。",
+  "hack.app.supabase.role":
+    "データベースとログイン",
+  "hack.app.supabase.signup.what":
+    "登録",
+  "hack.app.supabase.signup.hint":
+    "GitHubで続けるのが最速です。無料枠、カード不要。",
+  "hack.app.supabase.project.what":
+    "次にプロジェクトを作成 — アカウントだけでは不十分",
+  "hack.app.supabase.project.hint":
+    "名前は何でも構いません。<b>設定を求められるデータベースパスワードは保存しておきます。</b>最も近いリージョンを選びます（シンガポールにいるならSingapore）。その後の起動に数分かかるため、セッションまで待てません。",
+  "hack.app.supabase.keys.what":
+    "2つのキーをメモにコピー",
+  "hack.app.supabase.keys.hint":
+    "<b>Project URL</b>と<b>anon public</b>キーが必要です。<code>service_role</code>は無視してください。すべてのセキュリティルールを回避するもので、今日は使いません。",
+  "hack.app.supabase.email.what":
+    "メール確認をオフにする（任意）",
+  "hack.app.supabase.email.hint":
+    "<b>Confirm email</b>をオフにします。オンのままだと、自分のアプリにログインするだけで確認メールを待つことになります。本物のユーザーが使う前にオンに戻してください。",
+  "hack.footer.handout":
+    "参加者向け資料",
 };

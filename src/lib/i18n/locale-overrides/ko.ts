@@ -468,4 +468,294 @@ export const koOverrides: Partial<Record<MessageKey, string>> = {
   "createSession.errCreate": "세션을 만들 수 없습니다.",
   "createSession.cancel": "취소",
   "createSession.creating": "만드는 중…",
+  "hack.builtFor":
+    "대상 행사",
+  "hack.eyebrow":
+    "KOINA.SPACE · 60분 워크숍 · 나의 진행 시트",
+  "hack.title1":
+    "한 시간.",
+  "hack.title2":
+    "<em>라이브</em> 앱 하나.",
+  "hack.standfirst":
+    "프롬프트 하나로 로그인, 게시글, 추천, 관리자 화면까지 갖춘 진짜 앱을 한 시간 안에 인터넷에 공개합니다. 시간이 빠듯하니 <b>자리에 앉기 전에 사전 준비를 끝내세요.</b>",
+  "hack.jump":
+    "사전 준비 및 설정 링크",
+  "hack.tl.brief":
+    "개요",
+  "hack.tl.build":
+    "구축",
+  "hack.tl.run":
+    "실행",
+  "hack.tl.share":
+    "공유",
+  "hack.build.band":
+    "오늘 만들 것과 이를 만드는 두 개의 프롬프트",
+  "hack.build.whatTitle":
+    "오늘 만들 것",
+  "hack.build.what1":
+    "모두가 같은 앱을 만들기 때문에 한 시간이 궤도를 벗어나지 않습니다. <b>기도 벽(Prayer Wall)</b>에서는 로그인해서 기도 제목을 올리고, 기도한 글에 추천을 누르고, 댓글을 달고, 문제 있는 글을 신고할 수 있습니다. 신고를 처리하는 관리자 화면도 있습니다.",
+  "hack.build.what2":
+    "프롬프트 1이 어떻게 쓰였는지 보세요. <b>누가 로그인하고, 무엇을 할 수 있고, 관리자에게 무엇이 보이는지</b>를 명시합니다. 이런 구체성이 모호한 앱이 아닌 작동하는 앱을 만들어 주며, 여러분이 직접 쓸 때도 따라야 할 습관입니다.",
+  "hack.build.what3":
+    "<b>여러분의 아이디어는 다음 기회에.</b> 같은 형식으로 쓰세요. 누구를 위한 것인지, 무엇을 할 수 있는지, 무엇을 저장하는지.",
+  "hack.build.howTitle":
+    "두 프롬프트 사용법",
+  "hack.build.how1":
+    "<b>프롬프트 1</b>은 앱 전체를 만듭니다. 붙여넣은 뒤 작업 중에는 건드리지 마세요. 많은 것을 설치합니다.",
+  "hack.build.how2":
+    "<b>프롬프트 2</b>는 앱이 내 컴퓨터에서 실행된 뒤 인터넷에 올립니다.",
+  "hack.build.how3":
+    "둘 사이에서 AI가 할 수 없는 부분을 직접 합니다. Supabase에서 <code>.sql</code> 파일을 실행하고 실제 키를 붙여넣습니다. 시점은 아래 단계에 나와 있습니다.",
+  "hack.promptsEnglish":
+    "아래 프롬프트는 영어로 유지됩니다. AI 도구에 쓰여 있는 그대로 복사해 붙여넣으세요.",
+  "hack.copy":
+    "복사",
+  "hack.copied":
+    "복사됨",
+  "hack.copyFail":
+    "선택 후 복사",
+  "hack.p1.label":
+    "프롬프트 1 · 2단계 — 전체 구축",
+  "hack.p1.note":
+    "<b>구축하는 동안 할 일이 두 가지 있습니다.</b> AI는 <code>.env.local</code>에 키의 <i>이름</i>만 쓰고 실제 키는 모릅니다. Supabase → Project Settings → API에서 직접 붙여넣고 서버를 다시 시작하세요. 또 <code>.sql</code> 파일이 완성되면 열어서 전체를 Supabase → SQL Editor → Run에 복사하세요. 두 가지를 모두 끝내야 앱이 작동합니다.",
+  "hack.p2.label":
+    "프롬프트 2 · 5단계 — 푸시 및 배포",
+  "hack.p2.note":
+    "<b>중간에 멈추고 질문합니다.</b> GitHub나 Vercel 로그인, 저장소 이름 지정, 명령 승인 등입니다. 하나씩 답하고 계속 진행하게 하세요. AI가 Vercel 부분을 끝내지 못하면 브라우저에서 직접 하세요. 아래 치트 시트에 있습니다.",
+  "hack.run.band":
+    "단계별 안내",
+  "hack.run.colStep":
+    "단계",
+  "hack.run.colDo":
+    "할 일",
+  "hack.run.colWatch":
+    "진행 상황 · 확인할 점",
+  "hack.run.step":
+    "{n}단계",
+  "hack.run.s1.title":
+    "개요 읽기",
+  "hack.run.s1.body":
+    "모두가 같은 앱을 만들기 때문에 시간에 쫓기며 혼자만의 아이디어를 디버깅할 일이 없습니다. 프롬프트 1을 읽고 <b>얼마나 구체적인지</b> 확인하세요. 누가 로그인하고, 무엇을 할 수 있고, 관리자에게 무엇이 보이는지. 이런 구체성이 모호한 앱이 아닌 작동하는 앱을 만듭니다.",
+  "hack.run.s1.check":
+    "앱이 무엇을 하는지 설명할 수 있다. Cursor가 열려 있고, 터미널이 보이며, Supabase 키가 준비되어 있다.",
+  "hack.run.s2.title":
+    "구축 — 프롬프트 1",
+  "hack.run.s2.body":
+    "<b>Next.js는 사람들이 보고 만지는 모든 것</b>(페이지, 폼, 버튼)을 만들고, AI가 이를 모두 작성합니다. 프롬프트 1을 붙여넣고 설치와 작성이 끝날 때까지 건드리지 마세요. 중간에 끊으면 반쪽짜리 앱이 됩니다.",
+  "hack.run.s2.check":
+    "체크포인트 1 — 작업이 끝나고 프로젝트에 <code>.sql</code> 파일과 <code>.env.local</code>이 있다.",
+  "hack.run.s3.title":
+    "실행하기",
+  "hack.run.s3.body":
+    "생성된 코드는 설치하고 시작하기 전까지는 그저 파일입니다. <code>npm install</code>이 필요한 것을 가져오고(대개 AI가 이미 했습니다), <code>npm run dev</code>로 시작합니다.",
+  "hack.run.s3.check":
+    "체크포인트 2 — 로그인이 아직 안 되더라도 localhost:3000에서 페이지가 열린다.",
+  "hack.run.s4.title":
+    "Supabase 연결",
+  "hack.run.s4.body":
+    "<b>Supabase는 데이터베이스를 보관하고 로그인을 처리하지만</b>, 여러분만 줄 수 있는 두 가지가 필요합니다. <b>1.</b> <b>Project URL</b>과 <b>anon key</b>를 <code>.env.local</code>에 붙여넣어 앱이 데이터베이스를 찾게 합니다. <b>2.</b> AI가 만든 <code>.sql</code> 파일(대개 <code>/supabase</code> 안)을 Supabase → SQL Editor → Run에 복사해 테이블을 만듭니다. 이후 서버를 다시 시작하세요.",
+  "hack.run.s4.check":
+    "체크포인트 3 — 가입하고 글을 올렸으며 Supabase의 Table Editor에서 내 행이 보인다.",
+  "hack.run.s5.title":
+    "GitHub에 푸시 — 프롬프트 2",
+  "hack.run.s5.body":
+    "<b>GitHub는 코드의 유일한 중앙 사본</b>이자 버전 기록입니다. 실수는 잃는 것이 아니라 되돌릴 수 있는 것이 됩니다. AI가 GitHub 명령줄 도구로 자동화하지만 <b>로그인은 여러분만 할 수 있으니</b> 질문이 나오면 답하세요.",
+  "hack.run.s5.check":
+    "체크포인트 4 — github.com의 저장소에서 코드가 보인다.",
+  "hack.run.s6.title":
+    "Vercel에 배포",
+  "hack.run.s6.body":
+    "<b>Vercel은 GitHub의 코드를 실제 웹 서버에서 제공하므로</b> 누구나 열 수 있는 주소가 생기고, 이후 푸시할 때마다 다시 배포됩니다. 같은 방식으로 AI가 진행하고 여러분은 로그인합니다. <b>여기에도 키를 추가</b>하세요(Environment Variables). 그런 다음 다시 배포합니다. <code>.env.local</code>은 노트북 밖으로 나간 적이 없습니다.",
+  "hack.run.s6.check":
+    "체크포인트 5 — 공개 URL이 채팅에 있고 다른 사람이 글을 올렸다.",
+  "hack.run.s7.title":
+    "공유 및 마무리",
+  "hack.run.s7.body":
+    "공유 화면에 몇 개의 URL이 올라가고, 모두가 누군가의 벽에 글을 올리고 추천하며, Supabase에 행이 실시간으로 쌓이는 것을 봅니다. 실제 사람들에게서 실제 정보를 수집하는 것을 인터넷에 올렸습니다. 이것이 전체 흐름입니다.",
+  "hack.run.s7.check":
+    "노트북을 덮기 전에 현장 밖의 한 사람에게 URL을 보내세요.",
+  "hack.concepts.band":
+    "핵심 개념 — 각 구성 요소의 역할",
+  "hack.concepts.intro":
+    "네 가지 도구, 하나의 패턴: <b>AI가 작성하고 자동화하며, 여러분은 설치하고 붙여넣고 로그인합니다.</b> 아래 각 요소에는 AI가 대신해 주는 부분과 여러분만 할 수 있는 부분이 있습니다.",
+  "hack.concepts.yourPart":
+    "내가 할 일",
+  "hack.concepts.nextjs.role":
+    "사람들이 보고 사용하는 앱",
+  "hack.concepts.nextjs.body":
+    "Next.js와 컴포넌트 라이브러리가 페이지, 폼, 버튼, 클릭 시 동작 등 사용자 인터페이스 전체를 담당합니다. Claude나 Cursor가 코드를 생성하면 직접 디자인하거나 연결할 것이 없습니다.",
+  "hack.concepts.nextjs.yours":
+    "<code>npm install</code>로 설치합니다(대개 AI가 이미 했습니다). 그런 다음 <code>npm run dev</code>를 실행해 브라우저에서 확인하세요.",
+  "hack.concepts.supabase.role":
+    "데이터베이스와 로그인",
+  "hack.concepts.supabase.body":
+    "Supabase는 앱이 호출하는 기성 함수(로그인, 글 저장, 다시 읽기)를 제공합니다. 데이터베이스도 호스팅하므로 노트북에는 아무것도 저장되지 않습니다.",
+  "hack.concepts.supabase.yours":
+    "두 가지입니다. <b>Project URL</b>과 <b>API 키</b>(anon)를 <code>.env.local</code>에 붙여넣어 앱이 데이터베이스를 찾게 하세요. 그런 다음 AI가 생성한 <code>.sql</code> 파일(보통 <code>/supabase</code> 폴더)을 열어 직접 Supabase에 복사, 붙여넣기, 실행하세요. <b>AI가 대신 실행할 수 없습니다.</b>",
+  "hack.concepts.github.role":
+    "코드가 있는 곳",
+  "hack.concepts.github.body":
+    "모든 코드는 유일한 중앙 사본으로 GitHub에 커밋됩니다. 이것이 버전 관리이며, 모든 변경이 기록되므로 실수해도 작업을 잃지 않고 되돌릴 수 있습니다.",
+  "hack.concepts.github.yours":
+    "먼저 로그인하세요. 이후 나머지는 AI가 GitHub 명령줄 도구(CLI)로 자동화할 수 있지만, 여러분 대신 로그인할 수는 없습니다.",
+  "hack.concepts.vercel.role":
+    "인터넷에 올려 주는 곳",
+  "hack.concepts.vercel.body":
+    "Vercel은 GitHub 저장소의 코드를 가져와 실제 웹 서버에서 제공하므로 앱에 누구나 열 수 있는 주소가 생깁니다. 처음 설정한 뒤에는 GitHub에 푸시할 때마다 자동으로 다시 배포됩니다.",
+  "hack.concepts.vercel.yours":
+    "여기서도 먼저 로그인하세요. 로그인하면 AI가 Vercel CLI를 실행할 수 있습니다. 키는 Vercel에도 따로 추가해야 합니다. <code>.env.local</code>은 노트북 밖으로 나가지 않기 때문입니다.",
+  "hack.cheat.band":
+    "치트 시트 — 사전 준비, 키, 배포",
+  "hack.pre.title":
+    "도착 전 준비 — 전부",
+  "hack.pre.lead":
+    "모든 링크는 마지막 부록에 있습니다.",
+  "hack.pre.1":
+    "<b>Node.js 설치</b> — nodejs.org의 LTS 버전",
+  "hack.pre.2":
+    "<b>Cursor 설치</b> 후 최소 한 번 로그인",
+  "hack.pre.3":
+    "<b>GitHub 계정</b>, 이 노트북에서 로그인된 상태",
+  "hack.pre.4":
+    "<b>Vercel 계정</b> — <b>GitHub로</b> 가입",
+  "hack.pre.5":
+    "<b>Supabase 프로젝트 생성</b> — 계정만이 아니라 프로젝트 자체. 시작하는 데 몇 분 걸리니 당일까지 미루지 마세요.",
+  "hack.pre.6":
+    "<b>키를 메모 파일에 복사:</b> Project Settings → API → <b>Project URL</b>과 <b>anon public</b> 키",
+  "hack.keys.title":
+    "키 관리 및 보호 — 두 곳에서",
+  "hack.keys.1":
+    "<b>노트북에서:</b> 프로젝트 폴더에 <code>.env.local</code> 파일을 만들고 두 줄(<code>NEXT_PUBLIC_SUPABASE_URL=</code>, <code>NEXT_PUBLIC_SUPABASE_ANON_KEY=</code>)을 쓴 다음 <b>서버를 다시 시작</b>하세요. 키는 시작할 때만 로드됩니다.",
+  "hack.keys.2":
+    "<b>Vercel에서:</b> 배포 전에 같은 두 줄을 Settings → Environment Variables에 넣으세요. <code>.env.local</code>은 노트북 밖으로 나가지 않아 Vercel이 볼 수 없습니다.",
+  "hack.keys.3":
+    "<b>anon 키는 공개용</b>이며 브라우저에서 안전합니다. 같은 Supabase 페이지의 <i>service_role</i> 키는 그렇지 않습니다. 오늘은 건드리지 마세요.",
+  "hack.vercel.title":
+    "AI가 Vercel 부분을 못 할 때",
+  "hack.vercel.lead":
+    "프롬프트 2가 시도합니다. 막히거나 요청하면 직접 하세요. 다섯 번의 클릭이면 됩니다.",
+  "hack.vercel.1":
+    "<b>vercel.com</b>으로 이동 → Add New → Project",
+  "hack.vercel.2":
+    "방금 푸시된 저장소 선택 → <b>Import</b>",
+  "hack.vercel.3":
+    "배포 전에 Environment Variables에 <b>두 키를 추가</b>",
+  "hack.vercel.4":
+    "<b>Deploy</b>를 클릭하고 빌드를 지켜보기(약 1분)",
+  "hack.vercel.5":
+    "링크를 열고 가입한 뒤 글을 올려 보세요. <b>이것이 실제 계정과 실제 데이터가 있는 여러분의 라이브 앱입니다.</b>",
+  "hack.vercel.6":
+    "이후 GitHub에 푸시할 때마다 자동으로 다시 배포됩니다",
+  "hack.vercel.liveUrl":
+    "내 라이브 URL",
+  "hack.bonus.title":
+    "보너스 — 의도한 것처럼 보이게 만들기",
+  "hack.bonus.lead":
+    "사이트가 공개된 후에만 하세요. 프로젝트 폴더에서 설치한 다음 Cursor를 다시 로드하세요.",
+  "hack.skill.install":
+    "설치",
+  "hack.skill.run":
+    "실행",
+  "hack.skill.emil":
+    "Vercel과 Linear에서 일한 디자인 엔지니어의 UI 마감과 애니메이션 감각. 에이전트가 혼자서는 놓치는 미세한 타이밍과 간격 선택을 바로잡아 줍니다.",
+  "hack.skill.impeccable":
+    "여러분과 에이전트에게 공통의 디자인 어휘를 제공합니다. <code>init</code>은 사이트의 대상이 누구인지 묻고 기록하며, <code>polish</code>는 이미 만든 것을 다듬습니다.",
+  "hack.skill.taste":
+    "랜딩 페이지를 위한 안티 슬롭 규칙. 에이전트가 브리프를 읽고 매번 같은 템플릿에 의존하지 않고 방향을 선택합니다.",
+  "hack.bonus.oneAtATime":
+    "<b>하나씩 실행하고 확인하세요.</b> 스킬을 실행하고, 브라우저를 확인하고, 푸시합니다. 세 개를 연달아 하면 무엇이 무엇을 했는지 알 수 없습니다. 푸시는 언제든 되돌릴 수 있습니다.",
+  "hack.bonus.seeLive":
+    "라이브로 보기:",
+  "hack.bonus.seeLiveTail":
+    "— 이 스크린샷의 완성된 기도 벽입니다.",
+  "hack.ba.before":
+    "Before",
+  "hack.ba.beforeSub":
+    "프롬프트 1 직후 그대로",
+  "hack.ba.after":
+    "After /taste",
+  "hack.ba.afterSub":
+    "명령 하나 후",
+  "hack.ba.beforeLabel":
+    "/taste 이전 — 프롬프트 1 직후 그대로",
+  "hack.ba.afterLabel":
+    "/taste 이후 — 명령 하나 후",
+  "hack.ba.beforeAlt":
+    "taste 스킬 실행 전의 기도 벽: 단순한 레이아웃, 이모지 로고, 왼쪽의 정렬 컨트롤, 행동 유도 없음.",
+  "hack.ba.afterAlt":
+    "taste 스킬 실행 후의 같은 기도 벽: 맞춤 비둘기 마크, 눈에 띄는 '기도 제목 공유' 버튼, 통계 줄, 오른쪽으로 옮겨진 정렬 컨트롤.",
+  "hack.ba.clickHint":
+    "스크린샷을 클릭하면 크게 볼 수 있습니다.",
+  "hack.lb.label":
+    "스크린샷, 전체 크기",
+  "hack.lb.close":
+    "닫기",
+  "hack.warn.title":
+    "여러분이 한 일, 그리고 다음 단계",
+  "hack.warn.p1":
+    "한 문단으로 앱을 설명했고, 계정, 데이터베이스, 관리 기능을 갖춘 작동하는 버전을 한 시간도 안 되어 인터넷에 올렸습니다. 이것이 전체 흐름이며, 이후는 모두 이것의 반복입니다.",
+  "hack.warn.p2":
+    "<b>솔직한 주의점:</b> 이렇게 빨리 만든 앱은 검증되지 않았습니다. 실제 사람들이 실제 기도 제목을 올리게 하기 전에, 누가 무엇을 읽고 수정할 수 있는지 누군가 확인해야 합니다. 먼저 확인할 것은 <code>.sql</code> 파일의 보안 규칙입니다. <b>오늘의 버전은 작동하는 데모일 뿐, 다른 사람의 글을 맡길 안전한 곳이 아닙니다.</b>",
+  "hack.warn.p3":
+    "<b>다음:</b> 4주 과정에서는 로그인, 이메일, 나만의 도메인, 비공개 정보가 비공개로 유지되는지 확인하는 방법까지 제대로 다룹니다.",
+  "hack.app.band":
+    "부록 — 설치하고 가입해야 할 모든 것",
+  "hack.app.intro":
+    "이 모든 것을 세션 <b>전에</b> 하세요. 다운로드 두세 개, 계정 세 개, 약 20분이 걸립니다. 다만 Supabase 프로젝트는 시작하는 데 몇 분 걸리니 당일 아침까지 미루지 마세요.",
+  "hack.app.install.title":
+    "노트북에 설치",
+  "hack.app.install.role":
+    "Node.js와 AI 코딩 도구 하나",
+  "hack.app.node.what":
+    "Node.js — LTS 버전",
+  "hack.app.node.hint":
+    "이것이 없으면 아무것도 작동하지 않습니다. Current가 아니라 <b>LTS</b>로 표시된 것을 받고 설치 프로그램의 기본값을 모두 수락하세요. 확인하려면 터미널을 열어 <code>node --version</code>을 입력하세요. 숫자가 나오면 완료입니다.",
+  "hack.app.claude.what":
+    "Claude — 데스크톱 앱",
+  "hack.app.claude.hint":
+    "데스크톱 앱으로는 터미널 없이 Claude Code를 사용할 수 있습니다. <b>유료 Claude 요금제가 필요</b>합니다. Pro 이상이며 무료 요금제에는 Claude Code가 포함되지 않습니다. 이미 Claude를 결제 중이면 이것을 쓰고, 아니면 아래 Cursor를 쓰세요. 터미널을 선호한다면 Mac이나 Linux에서는 <code>curl -fsSL https://claude.ai/install.sh | bash</code>, Windows PowerShell에서는 <code>irm https://claude.ai/install.ps1 | iex</code>.",
+  "hack.app.cursor.what":
+    "Cursor — AI 코드 에디터",
+  "hack.app.cursor.hint":
+    "<b>오늘 쓰기에 충분한 무료 플랜</b>이 있으니 Claude를 결제하지 않는다면 이것을 받으세요. 다운로드하고 설치한 뒤 세션 전에 <b>최소 한 번 로그인</b>하세요.",
+  "hack.app.either.what":
+    "둘 중 하나만 있으면 됩니다",
+  "hack.app.either.hint":
+    "Claude든 Cursor든 같은 프롬프트가 실행되고 같은 방식으로 작동합니다. 시연은 Cursor로 하지만 Claude를 쓰셔도 모두 그대로 적용됩니다.",
+  "hack.app.github.role":
+    "코드가 있는 곳",
+  "hack.app.github.create.what":
+    "계정 만들기",
+  "hack.app.github.create.hint":
+    "무료입니다. 세션 중에 확인할 수 있는 이메일을 사용하세요. 인증 코드가 전송됩니다. <b>가져올 노트북에서 로그인된 상태로 두세요.</b>",
+  "hack.app.github.login.what":
+    "이미 계정이 있나요?",
+  "hack.app.github.login.hint":
+    "로그인할 수 있는지만 확인하세요. 모두가 기다리는 중에 비밀번호를 잊어버리면 해결하기 오래 걸립니다.",
+  "hack.app.vercel.role":
+    "인터넷에 올려 주는 곳",
+  "hack.app.vercel.signup.what":
+    "가입 — GitHub로",
+  "hack.app.vercel.signup.hint":
+    "이메일이 아니라 <b>Continue with GitHub</b>를 선택하세요. 두 계정이 바로 연결되어 나중에 Vercel이 저장소를 볼 수 있습니다. 무료 <b>Hobby</b> 플랜을 선택하세요. 카드는 필요 없습니다.",
+  "hack.app.supabase.role":
+    "데이터베이스와 로그인",
+  "hack.app.supabase.signup.what":
+    "가입",
+  "hack.app.supabase.signup.hint":
+    "GitHub로 계속하는 것이 가장 빠릅니다. 무료 플랜, 카드 불필요.",
+  "hack.app.supabase.project.what":
+    "그다음 프로젝트 만들기 — 계정만으로는 부족합니다",
+  "hack.app.supabase.project.hint":
+    "이름은 아무거나 괜찮습니다. <b>설정하라고 요청하는 데이터베이스 비밀번호를 저장하세요.</b> 가장 가까운 리전을 고르세요(싱가포르에 계시면 Singapore). 이후 시작하는 데 몇 분 걸리므로 세션까지 미룰 수 없습니다.",
+  "hack.app.supabase.keys.what":
+    "두 키를 메모 파일에 복사",
+  "hack.app.supabase.keys.hint":
+    "<b>Project URL</b>과 <b>anon public</b> 키가 필요합니다. <code>service_role</code>은 무시하세요. 모든 보안 규칙을 우회하는 키로 오늘은 사용하지 않습니다.",
+  "hack.app.supabase.email.what":
+    "이메일 확인 끄기 (선택)",
+  "hack.app.supabase.email.hint":
+    "<b>Confirm email</b>을 끄세요. 켜 두면 내 앱에 로그인하려고 확인 메일을 기다리게 됩니다. 실제 사용자가 쓰기 전에 다시 켜세요.",
+  "hack.footer.handout":
+    "참가자 자료",
 };

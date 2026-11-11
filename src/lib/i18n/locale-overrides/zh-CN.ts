@@ -438,4 +438,294 @@ export const zhCNOverrides: Partial<Record<MessageKey, string>> = {
   "createSession.errCreate": "无法创建场次。",
   "createSession.cancel": "取消",
   "createSession.creating": "创建中…",
+  "hack.builtFor":
+    "专为以下活动打造",
+  "hack.eyebrow":
+    "KOINA.SPACE · 60 分钟工作坊 · 你的流程表",
+  "hack.title1":
+    "一小时。",
+  "hack.title2":
+    "一个<em>上线</em>的应用。",
+  "hack.standfirst":
+    "一个提示词，一个真实的应用——登录、发帖、点赞和管理员视图——在一小时结束前上线到互联网。时间很紧，所以<b>请在入座前完成准备工作。</b>",
+  "hack.jump":
+    "准备工作与设置链接",
+  "hack.tl.brief":
+    "简介",
+  "hack.tl.build":
+    "构建",
+  "hack.tl.run":
+    "运行",
+  "hack.tl.share":
+    "分享",
+  "hack.build.band":
+    "我们要构建什么，以及构建它的两个提示词",
+  "hack.build.whatTitle":
+    "今天要构建什么",
+  "hack.build.what1":
+    "每个人构建相同的应用，这样这一小时才不会跑偏：一面<b>祈祷墙</b>，人们可以登录、发布祈祷请求、为自己祷告过的请求点赞、评论，并举报不当内容——并配有管理员视图来处理这些举报。",
+  "hack.build.what2":
+    "看看提示词 1 是怎么写的。它写明了<b>谁登录、他们能做什么、管理员能看到什么。</b>正是这种详细程度，才让它生成可运行的应用而不是模糊的应用——也是你写自己提示词时应当效仿的习惯。",
+  "hack.build.what3":
+    "<b>你自己的创意留到下次。</b>用同样的结构来写：为谁而做、他们能做什么、保存什么。",
+  "hack.build.howTitle":
+    "如何使用这两个提示词",
+  "hack.build.how1":
+    "<b>提示词 1</b> 构建整个应用。粘贴后，在它工作期间不要打扰——它会安装很多东西。",
+  "hack.build.how2":
+    "<b>提示词 2</b> 在应用于你自己的机器上运行后，把它发布到互联网。",
+  "hack.build.how3":
+    "两者之间，你要完成 AI 做不了的部分：在 Supabase 中运行它生成的 <code>.sql</code> 文件，并粘贴你真实的密钥。下面的步骤会说明时机。",
+  "hack.promptsEnglish":
+    "下方的提示词保持英文——请原样复制并粘贴到你的 AI 工具中。",
+  "hack.copy":
+    "复制",
+  "hack.copied":
+    "已复制",
+  "hack.copyFail":
+    "选中并复制",
+  "hack.p1.label":
+    "提示词 1 · 第 2 步 — 构建全部",
+  "hack.p1.note":
+    "<b>构建期间要做两件事。</b>它会写入带有密钥<i>名称</i>的 <code>.env.local</code>，但它不知道你真实的密钥——请自己从 Supabase → Project Settings → API 粘贴进去，然后重启服务器。当 <code>.sql</code> 文件生成完毕后，打开它，把全部内容复制到 Supabase → SQL Editor → Run。这两件事都完成之前，应用无法工作。",
+  "hack.p2.label":
+    "提示词 2 · 第 5 步 — 推送并部署",
+  "hack.p2.note":
+    "<b>它会停下来向你提问</b>——登录 GitHub 或 Vercel、为仓库命名、批准某个命令。逐一回答并让它继续。如果它无法自己完成 Vercel 部分，请在浏览器中完成这些步骤——见下方速查表。",
+  "hack.run.band":
+    "分步指南",
+  "hack.run.colStep":
+    "步骤",
+  "hack.run.colDo":
+    "你要做什么",
+  "hack.run.colWatch":
+    "会发生什么 · 要留意什么",
+  "hack.run.step":
+    "第 {n} 步",
+  "hack.run.s1.title":
+    "阅读简介",
+  "hack.run.s1.body":
+    "每个人构建相同的应用，所以没有人需要在时间压力下调试独特的创意。阅读提示词 1，注意<b>它有多具体</b>——谁登录、能做什么、管理员能看到什么。这种细节让它生成可运行的应用，而不是模糊的应用。",
+  "hack.run.s1.check":
+    "你能说清楚这个应用做什么。Cursor 已打开，终端可见，Supabase 密钥在手边。",
+  "hack.run.s2.title":
+    "构建 — 提示词 1",
+  "hack.run.s2.body":
+    "<b>Next.js 构建人们看到和接触的一切</b>——页面、表单、按钮——全部由 AI 编写。粘贴提示词 1，在它安装和编写期间不要打扰；中途打断会得到一个半成品应用。",
+  "hack.run.s2.check":
+    "检查点 1 — 它完成了，并且你的项目里有一个 <code>.sql</code> 文件和一个 <code>.env.local</code>。",
+  "hack.run.s3.title":
+    "运行",
+  "hack.run.s3.body":
+    "生成的代码在安装并启动之前只是一堆文件。<code>npm install</code> 获取所需内容——通常 AI 已经做过了——然后 <code>npm run dev</code> 启动它。",
+  "hack.run.s3.check":
+    "检查点 2 — 页面能在 localhost:3000 加载，即使登录还不能用。",
+  "hack.run.s4.title":
+    "连接 Supabase",
+  "hack.run.s4.body":
+    "<b>Supabase 保存你的数据库并处理登录</b>——但它需要两样只有你能提供的东西。<b>1.</b> 把你的 <b>Project URL</b> 和 <b>anon key</b> 粘贴到 <code>.env.local</code>，让应用找到你的数据库。<b>2.</b> 把 AI 生成的 <code>.sql</code> 文件（通常在 <code>/supabase</code> 中）复制到 Supabase → SQL Editor → Run，创建数据表。之后重启服务器。",
+  "hack.run.s4.check":
+    "检查点 3 — 你已注册、发过帖，并能在 Supabase 的 Table Editor 中看到你的那一行。",
+  "hack.run.s5.title":
+    "推送到 GitHub — 提示词 2",
+  "hack.run.s5.body":
+    "<b>GitHub 是你代码唯一的中央副本，</b>也是你的版本历史——错误成为可以回退的事情，而不是丢失的东西。AI 通过 GitHub 的命令行工具自动完成，但<b>只有你能登录</b>，所以请在它提问时回答。",
+  "hack.run.s5.check":
+    "检查点 4 — 你的代码在 github.com 的仓库中可见。",
+  "hack.run.s6.title":
+    "部署到 Vercel",
+  "hack.run.s6.body":
+    "<b>Vercel 通过真实的网络服务器提供你的 GitHub 代码，</b>所以任何人都能打开它的地址——并且从现在起每次推送都会重新部署。模式相同：AI 操作，你登录。<b>也要在这里添加你的密钥</b>（Environment Variables），然后重新部署；<code>.env.local</code> 从未离开你的笔记本电脑。",
+  "hack.run.s6.check":
+    "检查点 5 — 你的上线网址已出现在聊天中，并且有其他人在上面发了帖。",
+  "hack.run.s7.title":
+    "分享与收尾",
+  "hack.run.s7.body":
+    "几个网址会显示在共享屏幕上，全场的人在别人的墙上发帖和点赞，你可以实时看到数据行落入 Supabase。你已经把一个从真实的人那里收集真实信息的东西放到了互联网上——这就是完整的流程。",
+  "hack.run.s7.check":
+    "合上笔记本电脑之前，把你的网址发给一位不在现场的人。",
+  "hack.concepts.band":
+    "关键概念 — 每个部分在做什么",
+  "hack.concepts.intro":
+    "四个工具，一个模式：<b>AI 编写并自动化；你负责安装、粘贴和登录。</b>下面每个部分都有 AI 替你完成的部分，以及只有你能完成的部分。",
+  "hack.concepts.yourPart":
+    "你的部分",
+  "hack.concepts.nextjs.role":
+    "人们看到并使用的应用",
+  "hack.concepts.nextjs.body":
+    "Next.js 及其组件库负责整个用户界面——页面、表单、按钮，以及点击后发生的事情。一旦 Claude 或 Cursor 生成了代码，就没有需要手动设计或连接的东西了。",
+  "hack.concepts.nextjs.yours":
+    "用 <code>npm install</code> 安装——通常 AI 已经替你做了——然后运行 <code>npm run dev</code> 在浏览器中查看。",
+  "hack.concepts.supabase.role":
+    "数据库与登录",
+  "hack.concepts.supabase.body":
+    "Supabase 提供你的应用调用的现成功能：用户登录、保存帖子、再读取出来。它还托管数据库，所以笔记本电脑上不保存任何东西。",
+  "hack.concepts.supabase.yours":
+    "两件事。把你的 <b>Project URL</b> 和 <b>API key</b>（anon 的那个）粘贴到 <code>.env.local</code>，让应用找到你的数据库。然后打开 AI 生成的 <code>.sql</code> 文件——通常在 <code>/supabase</code> 文件夹——自己复制、粘贴并在 Supabase 中运行。<b>AI 无法替你运行它。</b>",
+  "hack.concepts.github.role":
+    "代码存放的地方",
+  "hack.concepts.github.body":
+    "你所有的代码都作为唯一的中央副本提交到 GitHub。这就是版本控制——每次更改都有记录，所以错误可以回退，而不会丢失工作。",
+  "hack.concepts.github.yours":
+    "先登录。之后 AI 可以通过 GitHub 命令行工具（CLI）自动完成其余部分，但它无法以你的身份登录。",
+  "hack.concepts.vercel.role":
+    "把它放到互联网上的服务",
+  "hack.concepts.vercel.body":
+    "Vercel 从你的 GitHub 仓库获取代码，并通过真实的网络服务器提供，所以你的应用有了任何人都能打开的地址。首次设置之后，每次推送到 GitHub 都会自动重新部署。",
+  "hack.concepts.vercel.yours":
+    "这里也要先登录。登录后 AI 就能操作 Vercel CLI——并记住密钥需要在 Vercel 中单独添加，因为 <code>.env.local</code> 从不离开你的笔记本电脑。",
+  "hack.cheat.band":
+    "你的速查表 — 准备工作、密钥与部署",
+  "hack.pre.title":
+    "到场前 — 全部事项",
+  "hack.pre.lead":
+    "所有链接都在末尾的附录中。",
+  "hack.pre.1":
+    "<b>已安装 Node.js</b> — 来自 nodejs.org 的 LTS 版本",
+  "hack.pre.2":
+    "<b>已安装 Cursor</b>，并至少登录过一次",
+  "hack.pre.3":
+    "<b>GitHub 账号</b>，已在这台笔记本电脑上登录",
+  "hack.pre.4":
+    "<b>Vercel 账号</b> — <b>用 GitHub</b> 注册",
+  "hack.pre.5":
+    "<b>已创建 Supabase 项目</b> — 是项目本身，而不仅仅是账号。启动需要几分钟，所以不要拖到当天。",
+  "hack.pre.6":
+    "<b>密钥已复制到备忘文件：</b>Project Settings → API → <b>Project URL</b> 和 <b>anon public</b> 密钥",
+  "hack.keys.title":
+    "管理并保护你的密钥 — 在两个地方",
+  "hack.keys.1":
+    "<b>在你的笔记本电脑上：</b>在项目文件夹中创建名为 <code>.env.local</code> 的文件，写入两行——<code>NEXT_PUBLIC_SUPABASE_URL=</code> 和 <code>NEXT_PUBLIC_SUPABASE_ANON_KEY=</code>——然后<b>重启服务器</b>。密钥只在启动时加载。",
+  "hack.keys.2":
+    "<b>在 Vercel 中：</b>部署前，同样的两行填入 Settings → Environment Variables。<code>.env.local</code> 从不离开你的笔记本电脑，所以 Vercel 看不到它。",
+  "hack.keys.3":
+    "<b>anon 密钥本来就是公开的</b>——在浏览器中是安全的。同一个 Supabase 页面上的 <i>service_role</i> 密钥则不是。今天不要碰它。",
+  "hack.vercel.title":
+    "如果它无法完成 Vercel 部分",
+  "hack.vercel.lead":
+    "提示词 2 会尝试。如果它卡住或要求你操作，就自己来——只需五次点击。",
+  "hack.vercel.1":
+    "前往 <b>vercel.com</b> → Add New → Project",
+  "hack.vercel.2":
+    "选择刚刚推送的仓库 → <b>Import</b>",
+  "hack.vercel.3":
+    "部署前，在 Environment Variables 中<b>添加你的两个密钥</b>",
+  "hack.vercel.4":
+    "点击 <b>Deploy</b> 并观看构建（约一分钟）",
+  "hack.vercel.5":
+    "打开链接，注册，发个帖子。<b>这就是你上线的应用，有真实的账号和真实的数据。</b>",
+  "hack.vercel.6":
+    "从现在起，每次推送到 GitHub 都会自动重新部署",
+  "hack.vercel.liveUrl":
+    "我的上线网址",
+  "hack.bonus.title":
+    "加分项 — 让它看起来是精心设计的",
+  "hack.bonus.lead":
+    "仅在你的网站上线之后进行。在项目文件夹中安装，然后重新加载 Cursor。",
+  "hack.skill.install":
+    "安装",
+  "hack.skill.run":
+    "运行",
+  "hack.skill.emil":
+    "来自曾在 Vercel 和 Linear 工作的设计工程师的 UI 打磨与动画判断。修正代理自己容易搞错的细微时间和间距选择。",
+  "hack.skill.impeccable":
+    "为你和代理提供共同的设计词汇。<code>init</code> 会询问网站面向谁并记录下来；<code>polish</code> 然后打磨你已构建的内容。",
+  "hack.skill.taste":
+    "面向落地页的反“AI 味”规则。代理会阅读你的简介并选定方向，而不是每次都套用同一个模板。",
+  "hack.bonus.oneAtATime":
+    "<b>一次一个，然后查看。</b>运行一个技能，检查浏览器，推送。连续运行三个，你就不知道哪个做了什么——而推送总是可以撤销的。",
+  "hack.bonus.seeLive":
+    "查看线上版本：",
+  "hack.bonus.seeLiveTail":
+    "— 这些截图中完成的祈祷墙。",
+  "hack.ba.before":
+    "之前",
+  "hack.ba.beforeSub":
+    "直接来自提示词 1",
+  "hack.ba.after":
+    "/taste 之后",
+  "hack.ba.afterSub":
+    "一条命令之后",
+  "hack.ba.beforeLabel":
+    "/taste 之前 — 直接来自提示词 1",
+  "hack.ba.afterLabel":
+    "/taste 之后 — 一条命令之后",
+  "hack.ba.beforeAlt":
+    "运行 taste 技能之前的祈祷墙：朴素的布局、表情符号徽标、左侧的排序控件、没有行动号召。",
+  "hack.ba.afterAlt":
+    "运行 taste 技能之后的同一面祈祷墙：自定义的鸽子标志、醒目的“分享祈祷请求”按钮、统计行，以及移到右侧的排序控件。",
+  "hack.ba.clickHint":
+    "点击任一截图查看大图。",
+  "hack.lb.label":
+    "截图，完整尺寸",
+  "hack.lb.close":
+    "关闭",
+  "hack.warn.title":
+    "你做了什么，以及接下来",
+  "hack.warn.p1":
+    "你用一段话描述了一个应用，并在不到一小时内把它的可运行版本——包括账号、数据库和内容审核——放到了互联网上。这就是完整的流程。之后的一切都是同样的重复。",
+  "hack.warn.p2":
+    "<b>一个坦率的提醒：</b>这样快速构建的应用没有经过检查。在邀请真实的人发布真实的祈祷请求之前，需要有人检查谁能读取和编辑什么——那个 <code>.sql</code> 文件中的安全规则是最先要检查的。<b>请把今天的版本视为可运行的演示，而不是存放他人文字的安全之所。</b>",
+  "hack.warn.p3":
+    "<b>接下来：</b>四周版本会认真讲解登录、电子邮件、你自己的域名，以及如何确认私密内容保持私密。",
+  "hack.app.band":
+    "附录 — 需要安装和注册的一切",
+  "hack.app.intro":
+    "请在课程<b>之前</b>完成所有这些。两三个下载、三个账号、大约二十分钟——但 Supabase 项目启动需要几分钟，所以不要拖到当天早上。",
+  "hack.app.install.title":
+    "在你的笔记本电脑上安装",
+  "hack.app.install.role":
+    "Node.js，加一个 AI 编程工具",
+  "hack.app.node.what":
+    "Node.js — LTS 版本",
+  "hack.app.node.hint":
+    "没有它，其他都无法工作。选择标有 <b>LTS</b> 的，而不是 Current，并接受安装程序中的所有默认设置。要检查是否成功，打开终端输入 <code>node --version</code>——出现数字就完成了。",
+  "hack.app.claude.what":
+    "Claude — 桌面应用",
+  "hack.app.claude.hint":
+    "桌面应用让你无需终端即可使用 Claude Code。<b>需要付费的 Claude 方案</b>——Pro 及以上；免费方案不包含 Claude Code。如果你已经在为 Claude 付费，就用这个；否则请使用下面的 Cursor。偏好终端？在 Mac 或 Linux 上用 <code>curl -fsSL https://claude.ai/install.sh | bash</code>，在 Windows PowerShell 中用 <code>irm https://claude.ai/install.ps1 | iex</code>。",
+  "hack.app.cursor.what":
+    "Cursor — AI 代码编辑器",
+  "hack.app.cursor.hint":
+    "有<b>足够今天使用的免费额度</b>，所以如果你还没有为 Claude 付费，就用这个。下载、安装，并在课程前<b>至少登录一次</b>。",
+  "hack.app.either.what":
+    "两者选其一即可",
+  "hack.app.either.hint":
+    "Claude 或 Cursor——两者运行相同的提示词，工作方式也相同。我们会用 Cursor 演示；如果你用 Claude，一切依然适用。",
+  "hack.app.github.role":
+    "你的代码存放的地方",
+  "hack.app.github.create.what":
+    "创建账号",
+  "hack.app.github.create.hint":
+    "免费。使用你在课程期间能查看的邮箱——它会发送验证码。<b>在你带来的笔记本电脑上保持登录。</b>",
+  "hack.app.github.login.what":
+    "已经有账号了？",
+  "hack.app.github.login.hint":
+    "只需确认你能登录。忘记密码在全场等待时很难快速解决。",
+  "hack.app.vercel.role":
+    "把它放到互联网上的服务",
+  "hack.app.vercel.signup.what":
+    "注册 — 用 GitHub",
+  "hack.app.vercel.signup.hint":
+    "选择 <b>Continue with GitHub</b>，而不是邮箱。它会立即关联两个账号，这样 Vercel 之后才能看到你的仓库。选择免费的 <b>Hobby</b> 方案——无需银行卡。",
+  "hack.app.supabase.role":
+    "你的数据库与登录",
+  "hack.app.supabase.signup.what":
+    "注册",
+  "hack.app.supabase.signup.hint":
+    "用 GitHub 继续最快。免费额度，无需银行卡。",
+  "hack.app.supabase.project.what":
+    "然后创建项目 — 而不仅仅是账号",
+  "hack.app.supabase.project.hint":
+    "名字随意。<b>保存它要求你设置的数据库密码。</b>选择离你最近的区域——如果你在新加坡就选 Singapore。之后启动需要几分钟，这就是为什么这件事不能拖到课程时。",
+  "hack.app.supabase.keys.what":
+    "把你的两个密钥复制到备忘文件",
+  "hack.app.supabase.keys.hint":
+    "你需要 <b>Project URL</b> 和 <b>anon public</b> 密钥。忽略 <code>service_role</code>——它会绕过所有安全规则，今天不使用。",
+  "hack.app.supabase.email.what":
+    "关闭邮箱确认（可选）",
+  "hack.app.supabase.email.hint":
+    "关闭 <b>Confirm email</b>。如果保持开启，你只是为了登录自己的应用就要等确认邮件。真实用户使用之前再把它打开。",
+  "hack.footer.handout":
+    "参与者资料",
 };
